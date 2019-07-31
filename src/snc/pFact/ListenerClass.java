@@ -97,20 +97,27 @@ public class ListenerClass implements Listener{
 		ev.setCancelled(true);
 		if(players.get(ev.getPlayer().getUniqueId()).getF() == null) {
 			Bukkit.broadcastMessage(
-					ChatColor.GRAY 
-					+ "AYLAK " 
-							+ ChatColor.DARK_AQUA 
-							+ ev.getPlayer().getDisplayName() 
-							+ ": " 
-							+ ChatColor.WHITE 
-							+ ev.getMessage());
-		} else {
-			Bukkit.broadcastMessage(ChatColor.GRAY 
-					+ players.get(ev.getPlayer().getUniqueId()).getF().getName() 
+					 ChatColor.BOLD
+					+ ""
+					+ ChatColor.GRAY
+					+ "AYLAK "
+					+ ChatColor.RESET
 					+ ChatColor.DARK_AQUA 
 					+ ev.getPlayer().getDisplayName() 
 					+ ": " 
-					+ ChatColor.WHITE 
+					+ ChatColor.RESET 
+					+ ev.getMessage());
+		} else {
+			Bukkit.broadcastMessage(
+					ChatColor.BOLD
+					+ ""
+					+ ChatColor.GRAY 
+					+ players.get(ev.getPlayer().getUniqueId()).getF().getName() 
+					+ ChatColor.RESET
+					+ ChatColor.DARK_AQUA 
+					+ ev.getPlayer().getDisplayName() 
+					+ ": " 
+					+ ChatColor.RESET
 					+ ev.getMessage());
 		}
 		

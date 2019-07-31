@@ -1,6 +1,7 @@
 package snc.pFact;
 
 
+import org.apache.commons.io.FilenameUtils;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -10,9 +11,11 @@ import snc.pFact.obj.cl.b_Faction;
 import snc.pFact.obj.cl.b_Player;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +41,23 @@ public class Main extends JavaPlugin{
 			  }
 		}
 		for (String a : fNames) {
+			
 			File fpath = new File(factionFile, a);
+			try {
+				FileInputStream fi = new FileInputStream(
+						fpath);
+				ObjectInputStream oi = new ObjectInputStream(fi);
+				factions.put(FilenameUtils.removeExtension(a), (b_Faction) oi.readObject());
+				oi.close();
+				fi.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 		
 		ekl = this;
@@ -66,26 +85,39 @@ public class Main extends JavaPlugin{
 						sender.sendMessage("Bir isim gir!");
 						return true;
 					} else {  // Faction oluþturma
-						File fpath = new File(factionFile, arg[1] + ".df");
-						
-						
-						
-						
-						
-						
-						HashMap<UUID, b_Player> p = new HashMap<UUID, b_Player>();
-						p.put(plyr.getUniqueId(), ListenerClass.players.get(plyr.getUniqueId()));
-						b_Faction bf = new b_Faction(arg[1], 1, 1, 0.0, 0.0, ListenerClass.players);
-						p.get(plyr.getUniqueId()).setF(bf);
-						
-						
-						
-						
-						
-						sender.sendMessage("Klanýn baþarýyla oluþturuldu!! ::: " + arg[1]);
-						return true;
+						if (ListenerClass.players.get(plyr.getUniqueId()).getF() == null) {
+							
+							HashMap<UUID, b_Player> p = new HashMap<UUID, b_Player>();
+							p.put(plyr.getUniqueId(), ListenerClass.players.get(plyr.getUniqueId()));
+							b_Faction bf = new b_Faction(arg[1], 1, 1, 0.0, 0.0, p);
+							p.get(plyr.getUniqueId()).setF(bf);
+							
+							
+							File fpath = new File(factionFile, arg[1] + ".df");
+							
+							factions.put(arg[1], bf);
+							// Write objects to file
+							try {	
+								FileOutputStream f = new FileOutputStream(
+										fpath);
+								
+								ObjectOutputStream o = new ObjectOutputStream(f);
+								o.writeObject(bf);
+								o.close();
+								f.close();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							
+							sender.sendMessage("Klanýn baþarýyla oluþturuldu!! ::: " + arg[1]);
+							return true;
+						} else {
+							plyr.sendMessage("Bir klana mensup olduðun için klan oluþturamazsýn!");
+							return true;
+						}
+					}
 				}
-			}
 			}
 		}
 		return false;
