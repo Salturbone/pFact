@@ -1,6 +1,11 @@
-package snc.pFact;
+	package snc.pFact;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -14,35 +19,24 @@ import snc.pFact.obj.cl.b_Player;
 
 public class ListenerClass implements Listener{
 	
-	public static HashMap<UUID, b_Player> players;
-	String path;
+	public static HashMap<UUID, b_Player> players = new HashMap<UUID, b_Player>();
+	public static File playerFile = new File(Main.ekl.getDataFolder(), "Players/");
 	
-	
-	public ListenerClass(Main plugin) {
-		
+	public ListenerClass() {
+		playerFile.mkdirs();
 	}
 	
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event){
 		Player player = event.getPlayer();
-		try {
-			path = new File(".").getCanonicalPath();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		File fpath = new File(path 
-				+ "/ProjectFactions/Players/" 
-				+ player.getUniqueId() 
+		File fpath = new File(playerFile, player.getUniqueId() 
 				+ ".dp");
 		if (!fpath.exists()) {
 			b_Player plyr = new b_Player(player.getUniqueId(), null, 0);
 			players.put(player.getUniqueId(), plyr);
 			// Write objects to file
-			try {
-				fpath.mkdirs();
-				fpath.createNewFile();
+			try {	
 				FileOutputStream f = new FileOutputStream(
 						fpath);
 				
@@ -81,9 +75,7 @@ public class ListenerClass implements Listener{
 		try {
 			b_Player plyr = players.get(ev.getPlayer().getUniqueId());
 			FileOutputStream f = new FileOutputStream(
-					new File(path 
-							+ "/ProjectFactions/Players/" 
-							+ ev.getPlayer().getUniqueId()
+					new File(playerFile, ev.getPlayer().getUniqueId()
 							+ ".dp"));
 			ObjectOutputStream o = new ObjectOutputStream(f);
 

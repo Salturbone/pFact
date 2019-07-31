@@ -14,14 +14,15 @@ import java.util.UUID;
 
 public class Main extends JavaPlugin{
 	
-	
+	public static JavaPlugin ekl;
 	
 	@Override
 	public void onEnable() 
 	{
+		ekl = this;
 		System.out.println("pFact baþlatýldý!");
 		PluginManager pm = getServer().getPluginManager();
-		ListenerClass lc = new ListenerClass(this);
+		ListenerClass lc = new ListenerClass();
 		pm.registerEvents(lc, this);
 	}
 	
