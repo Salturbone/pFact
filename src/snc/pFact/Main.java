@@ -12,14 +12,12 @@ import snc.pFact.obj.cl.b_Player;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.UUID;
 
 public class Main extends JavaPlugin{
@@ -28,6 +26,7 @@ public class Main extends JavaPlugin{
 	public static File factionFile = new File(Main.ekl.getDataFolder(), "Factions/");
 	public static HashMap<String, b_Faction> factions = new HashMap<String, b_Faction>();
 	ArrayList<String> fNames = new ArrayList<String>();
+	//Player player = getServer().getPlayer(playerName);
 	//FilenameUtils.removeExtension(fileNameWithExt);
 	@Override
 	public void onEnable() 
