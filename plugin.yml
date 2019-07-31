@@ -1,0 +1,9 @@
+name: pFact
+author: biri
+main: snc.pFact.Main
+version: 0.1
+api-version: 1.13
+commands:
+  klan:
+    description: use command
+    usage: /<command> <arg1> <arg2>
