@@ -37,23 +37,15 @@ public class Main extends JavaPlugin{
 				  fNames.add(ff[i].getName());
 			  }
 		}
+		for (String a : fNames) {
+			File fpath = new File(factionFile, a);
+		}
 		
 		ekl = this;
 		System.out.println("pFact baþlatýldý!");
 		PluginManager pm = getServer().getPluginManager();
 		ListenerClass lc = new ListenerClass();
 		pm.registerEvents(lc, this);
-		for (File file : factionFile.listFiles()) {
-			try {
-				Scanner sc = new Scanner(file);
-				sc.close();
-			} catch (FileNotFoundException e) {
-				
-				e.printStackTrace();
-				break;
-			}
-		}
-		
 		
 	}
 	

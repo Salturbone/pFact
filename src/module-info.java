@@ -1,3 +1,0 @@
-module pFact {
-	requires craftbukkit;
-}
