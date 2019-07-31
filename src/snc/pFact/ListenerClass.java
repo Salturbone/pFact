@@ -9,9 +9,12 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -87,5 +90,29 @@ public class ListenerClass implements Listener{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	@EventHandler
+	public void onPlayerChat(AsyncPlayerChatEvent ev) {
+		ev.setCancelled(true);
+		if(players.get(ev.getPlayer().getUniqueId()).getF() == null) {
+			Bukkit.broadcastMessage(
+					ChatColor.GRAY 
+					+ "AYLAK " 
+							+ ChatColor.DARK_AQUA 
+							+ ev.getPlayer().getDisplayName() 
+							+ ": " 
+							+ ChatColor.WHITE 
+							+ ev.getMessage());
+		} else {
+			Bukkit.broadcastMessage(ChatColor.GRAY 
+					+ players.get(ev.getPlayer().getUniqueId()).getF().getName() 
+					+ ChatColor.DARK_AQUA 
+					+ ev.getPlayer().getDisplayName() 
+					+ ": " 
+					+ ChatColor.WHITE 
+					+ ev.getMessage());
+		}
+		
 	}
 }

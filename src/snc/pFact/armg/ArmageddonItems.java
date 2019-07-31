@@ -79,7 +79,7 @@ public class ArmageddonItems {
 	}
 	//Eþya 4
 	public static ItemStack Item4() {
-		ItemStack item = new ItemStack(Material.CLOCK, 1);
+		ItemStack item = new ItemStack(Material.COMPASS, 1);
 		ItemMeta im = item.getItemMeta();
 		
 		im.setDisplayName(ChatColor.GREEN + "Eþya 3");
