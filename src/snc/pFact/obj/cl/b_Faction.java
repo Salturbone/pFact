@@ -24,4 +24,40 @@ public class b_Faction implements Serializable {
 		this.players = players;
 	}
 	
+	//Level
+	public int getLevel() {
+		return level;
+	}
+	public void setLevel(int lvl) {
+		level = lvl;
+	}
+	public void addLevel(int a) {
+		level += a;
+	}
+	
+	//Name
+	public String getName() {
+		return name;
+	}
+	
+	//MemberCount
+	public int getMemberCount() {
+		return member_count;
+	}
+	public void setMemberCount(int mc) {
+		member_count = mc;
+	}
+	public void addMember(UUID idd, b_Player pp) {
+		players.put(idd, pp);
+		member_count += 1;
+	}
+	
+	public double getXP() {
+		return xp;
+	}
+	
+	public double getPrst( ) {
+		return prestige;
+	}
+	
 }
