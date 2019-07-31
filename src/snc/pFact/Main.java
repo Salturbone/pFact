@@ -25,7 +25,7 @@ public class Main extends JavaPlugin{
 	public static File factionFile = new File(Main.ekl.getDataFolder(), "Factions/");
 	public static HashMap<String, b_Faction> factions = new HashMap<String, b_Faction>();
 	ArrayList<String> fNames = new ArrayList<String>();
-	
+	//FilenameUtils.removeExtension(fileNameWithExt);
 	@Override
 	public void onEnable() 
 	{
@@ -35,10 +35,8 @@ public class Main extends JavaPlugin{
 		for (int i = 0; i < ff.length; i++) {
 			  if (ff[i].isFile()) {
 				  fNames.add(ff[i].getName());
-			  } else if (ff[i].isDirectory()) {
-			    System.out.println("Directory " + ff[i].getName());
 			  }
-			}
+		}
 		
 		ekl = this;
 		System.out.println("pFact baþlatýldý!");
