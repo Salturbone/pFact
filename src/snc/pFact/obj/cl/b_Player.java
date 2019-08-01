@@ -1,12 +1,15 @@
 package snc.pFact.obj.cl;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class b_Player implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	public static HashMap<UUID, b_Player> players = new HashMap<UUID, b_Player>();
+	
 	private UUID id;
 	private b_Faction fct = null;
 	private double coin;

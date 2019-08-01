@@ -6,8 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,26 +16,22 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import snc.pFact.DM.dataIssues;
 import snc.pFact.obj.cl.b_Player;
 
 public class ListenerClass implements Listener{
 	
-	public static HashMap<UUID, b_Player> players = new HashMap<UUID, b_Player>();
-	public static File playerFile = new File(Main.ekl.getDataFolder(), "Players/");
 	
-	public ListenerClass() {
-		playerFile.mkdirs();
-	}
 	
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event){
 		Player player = event.getPlayer();
-		File fpath = new File(playerFile, player.getUniqueId() 
+		File fpath = new File(dataIssues.playerFile, player.getUniqueId() 
 				+ ".dp");
 		if (!fpath.exists()) {
 			b_Player plyr = new b_Player(player.getUniqueId(), null, 0);
-			players.put(player.getUniqueId(), plyr);
+			b_Player.players.put(player.getUniqueId(), plyr);
 			// Write objects to file
 			try {	
 				FileOutputStream f = new FileOutputStream(
@@ -57,7 +51,7 @@ public class ListenerClass implements Listener{
 				FileInputStream fi = new FileInputStream(
 						fpath);
 				ObjectInputStream oi = new ObjectInputStream(fi);
-				players.put(player.getUniqueId(), (b_Player) oi.readObject());
+				b_Player.players.put(player.getUniqueId(), (b_Player) oi.readObject());
 				oi.close();
 				fi.close();
 			} catch (IOException e) {
@@ -76,9 +70,9 @@ public class ListenerClass implements Listener{
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent ev){
 		try {
-			b_Player plyr = players.get(ev.getPlayer().getUniqueId());
+			b_Player plyr = b_Player.players.get(ev.getPlayer().getUniqueId());
 			FileOutputStream f = new FileOutputStream(
-					new File(playerFile, ev.getPlayer().getUniqueId()
+					new File(dataIssues.playerFile, ev.getPlayer().getUniqueId()
 							+ ".dp"));
 			ObjectOutputStream o = new ObjectOutputStream(f);
 
@@ -95,7 +89,7 @@ public class ListenerClass implements Listener{
 	@EventHandler
 	public void onPlayerChat(AsyncPlayerChatEvent ev) {
 		ev.setCancelled(true);
-		b_Player plyr = players.get(ev.getPlayer().getUniqueId());
+		b_Player plyr = b_Player.players.get(ev.getPlayer().getUniqueId());
 		if(plyr == null || plyr.getF() == null) {
 			Bukkit.broadcastMessage(
 					 ChatColor.BOLD
@@ -113,7 +107,7 @@ public class ListenerClass implements Listener{
 					ChatColor.BOLD
 					+ ""
 					+ ChatColor.GRAY 
-					+ players.get(ev.getPlayer().getUniqueId()).getF().getName() 
+					+ b_Player.players.get(ev.getPlayer().getUniqueId()).getF().getName() 
 					+ ChatColor.RESET
 					+ ChatColor.DARK_AQUA 
 					+ ev.getPlayer().getDisplayName() 

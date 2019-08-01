@@ -16,20 +16,24 @@ import snc.pFact.obj.cl.b_Faction;
 public class dataIssues {
 
 	public static File factionFile;
-
+	public static File playerFile;
+	
 	//onEnable'da ilk çalýþan metod, factionFile'ý fln tanýmlýyor, gerekirse oluþturuyor
 	public static void create() {
 		
 		factionFile = new File(Main.ekl.getDataFolder(), "Factions/");
+		playerFile = new File(Main.ekl.getDataFolder(), "Players/");
 		if (!factionFile.exists())
 			factionFile.mkdirs();
+		if(!playerFile.exists())
+			playerFile.mkdirs();
 	}
 	//onEnable'da çalýþan 2. metod, yüklemen gereken filelarý okumak için
 	public static void load() {
 		File[] ff = factionFile.listFiles();
 		for (File file : ff) {
 			b_Faction fact = (b_Faction) loadObject(file);
-			Main.factions.put(fact.getName(), fact);
+			b_Faction.factions.put(fact.getName(), fact);
 		}
 	}
 
@@ -39,7 +43,7 @@ public class dataIssues {
 		//kaydedilecek yani varolan factionlarýn dosya isimlerini bir listeye at
 		List<String> names = new ArrayList<String>();
 		//aktif factionlarý loopla
-		for(b_Faction fact : Main.factions.values()) {
+		for(b_Faction fact : b_Faction.factions.values()) {
 			File file = new File(factionFile, fact.getName() + ".df");
 			//kaydet iþte dosyasýna
 			saveObject(fact, file);

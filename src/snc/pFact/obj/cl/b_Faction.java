@@ -8,6 +8,8 @@ public class b_Faction implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
+	public static HashMap<String, b_Faction> factions = new HashMap<String, b_Faction>();
+	
 	private String name;
 	private int level;
 	private int member_count;

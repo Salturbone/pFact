@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -21,7 +22,7 @@ import snc.pFact.obj.cl.b_Player;
 public class Main extends JavaPlugin{
 	
 	public static JavaPlugin ekl;
-	public static HashMap<String, b_Faction> factions = null;
+	
 	
 	//Player player = getServer().getPlayer(playerName);
 	//FilenameUtils.removeExtension(fileNameWithExt);
@@ -29,10 +30,10 @@ public class Main extends JavaPlugin{
 	public void onEnable() 
 	{
 		ekl = this;
-		factions = new HashMap<String, b_Faction>();
+		
 		dataIssues.create();
 		dataIssues.load();
-		
+		loadPlayers();
 		System.out.println("pFact baþlatýldý!");
 		PluginManager pm = getServer().getPluginManager();
 		ListenerClass lc = new ListenerClass();
@@ -40,10 +41,36 @@ public class Main extends JavaPlugin{
 		
 	}
 	
+	private void loadPlayers() {
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			File pFile = new File(dataIssues.playerFile, p.getUniqueId() + ".dp");
+			b_Player plyr;
+			if(!pFile.exists()) {
+				plyr = new b_Player(p.getUniqueId(), null, 0);
+			}
+			else {
+				plyr = (b_Player) dataIssues.loadObject(pFile);
+			}
+			b_Player.players.put(p.getUniqueId(), plyr);
+		}
+	}
+	
 	@Override
 	public void onDisable() {
 		dataIssues.save();
+		savePlayers();
 		System.out.println("pFact kapatýldý!");
+	}
+	
+	private void savePlayers() {
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			File pFile = new File(dataIssues.playerFile, p.getUniqueId() + ".dp");
+			b_Player plyr = b_Player.players.get(p.getUniqueId());
+			if(plyr == null) {
+				plyr = new b_Player(p.getUniqueId(), null, 0);
+			}
+			dataIssues.saveObject(plyr, pFile);
+		}
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] arg) {
@@ -58,17 +85,18 @@ public class Main extends JavaPlugin{
 						sender.sendMessage("Bir isim gir!");
 						return true;
 					} else {  // Faction oluþturma
-						if (ListenerClass.players.get(plyr.getUniqueId()).getF() == null) {
+						Bukkit.broadcastMessage(b_Player.players.get(plyr.getUniqueId()) + "");
+						if (b_Player.players.get(plyr.getUniqueId()).getF() == null) {
 							
 							HashMap<UUID, b_Player> p = new HashMap<UUID, b_Player>();
-							p.put(plyr.getUniqueId(), ListenerClass.players.get(plyr.getUniqueId()));
+							p.put(plyr.getUniqueId(), b_Player.players.get(plyr.getUniqueId()));
 							b_Faction bf = new b_Faction(arg[1], 1, 1, 0.0, 0.0, p);
 							p.get(plyr.getUniqueId()).setF(bf);
 							
 							
 							File fpath = new File(dataIssues.factionFile, arg[1] + ".df");
 							
-							factions.put(arg[1], bf);
+							b_Faction.factions.put(arg[1], bf);
 							// Write objects to file
 							try {	
 								FileOutputStream f = new FileOutputStream(
