@@ -98,13 +98,14 @@ public class Main extends JavaPlugin {
 		}
 		
 		if (arg[0].equalsIgnoreCase("oyuncu")) {
+			//if (b_Player.players.get(p.getUniqueId()).getF().)
 			if (arg.length == 1) {
 				sender.sendMessage(ChatColor.RED + "Bir iþlev gir!");
 				return true;
 			}
 			if (arg.length == 2) {
 				if (arg[1].equalsIgnoreCase("ekle") || arg[1].equalsIgnoreCase("çýkar")) {
-					sender.sendMessage(ChatColor.RED + "");
+					sender.sendMessage(ChatColor.RED + "Bir oyuncunun adýný gir!");
 				}
 			}
 

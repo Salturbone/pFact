@@ -4,6 +4,11 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.UUID;
 
+enum Auth
+{ 
+    OWNER,MODERATOR; 
+} 
+
 public class b_Player implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -13,6 +18,7 @@ public class b_Player implements Serializable {
 	private UUID id;
 	private b_Faction fct = null;
 	private double coin;
+	private boolean yetki = false;
 
 	public b_Player(UUID id, b_Faction fct, double coin) {
 		this.id = id;
