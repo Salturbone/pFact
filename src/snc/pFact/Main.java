@@ -80,7 +80,6 @@ public class Main extends JavaPlugin{
 						sender.sendMessage("Bir isim gir!");
 						return true;
 					} else {  // Faction oluþturma
-						Bukkit.broadcastMessage(b_Player.players.get(plyr.getUniqueId()) + "");
 						if (b_Player.players.get(plyr.getUniqueId()).getF() == null) {
 							
 							HashMap<UUID, b_Player> p = new HashMap<UUID, b_Player>();
