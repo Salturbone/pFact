@@ -26,6 +26,16 @@ public class b_Faction implements Serializable {
 		this.players = players;
 	}
 	
+	public b_Faction(String name, b_Player founder) {
+        this.name = name;
+        this.level = 0;
+        this.member_count = 0;
+        this.xp = 0;
+        this.prestige = 0;
+        players = new HashMap<UUID,b_Player>();
+        players.put(founder.uuid(), founder);
+    }
+	
 	//Level
 	public int getLevel() {
 		return level;
