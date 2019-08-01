@@ -18,14 +18,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import snc.pFact.DM.dataIssues;
 import snc.pFact.obj.cl.b_Faction;
 import snc.pFact.obj.cl.b_Player;
-
 public class Main extends JavaPlugin{
 	
 	public static JavaPlugin ekl;
-	
-	
-	//Player player = getServer().getPlayer(playerName);
-	//FilenameUtils.removeExtension(fileNameWithExt);
 	@Override
 	public void onEnable() 
 	{
