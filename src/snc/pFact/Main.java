@@ -1,8 +1,15 @@
 package snc.pFact;
 
 
-import org.apache.commons.io.FilenameUtils;
-import org.bukkit.command.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.UUID;
+
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -11,6 +18,7 @@ import snc.pFact.DM.dataIssues;
 import snc.pFact.obj.cl.b_Faction;
 import snc.pFact.obj.cl.b_Player;
 
+<<<<<<< HEAD
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,10 +26,11 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.UUID;
 
+=======
+>>>>>>> 061ca054223d4f30af5caaf6304eaa9a4083e383
 public class Main extends JavaPlugin{
 	
 	public static JavaPlugin ekl;
-	public static File factionFile;
 	public static HashMap<String, b_Faction> factions = null;
 	
 	//Player player = getServer().getPlayer(playerName);
@@ -31,7 +40,8 @@ public class Main extends JavaPlugin{
 	{
 		ekl = this;
 		factions = new HashMap<String, b_Faction>();
-		dataIssues.initFactions(factionFile, factions);
+		dataIssues.create();
+		dataIssues.load();
 		
 		System.out.println("pFact baþlatýldý!");
 		PluginManager pm = getServer().getPluginManager();
@@ -42,6 +52,7 @@ public class Main extends JavaPlugin{
 	
 	@Override
 	public void onDisable() {
+		dataIssues.save();
 		System.out.println("pFact kapatýldý!");
 	}
 	
@@ -65,7 +76,7 @@ public class Main extends JavaPlugin{
 							p.get(plyr.getUniqueId()).setF(bf);
 							
 							
-							File fpath = new File(factionFile, arg[1] + ".df");
+							File fpath = new File(dataIssues.factionFile, arg[1] + ".df");
 							
 							factions.put(arg[1], bf);
 							// Write objects to file

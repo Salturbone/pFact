@@ -1,7 +1,7 @@
 # Compiled class file
 #*.class
 module-info.java
-
+bin\
 # Log file
 *.log
 

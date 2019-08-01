@@ -95,7 +95,8 @@ public class ListenerClass implements Listener{
 	@EventHandler
 	public void onPlayerChat(AsyncPlayerChatEvent ev) {
 		ev.setCancelled(true);
-		if(players.get(ev.getPlayer().getUniqueId()).getF() == null) {
+		b_Player plyr = players.get(ev.getPlayer().getUniqueId());
+		if(plyr != null && plyr.getF() == null) {
 			Bukkit.broadcastMessage(
 					 ChatColor.BOLD
 					+ ""
