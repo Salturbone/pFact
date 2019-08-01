@@ -1,11 +1,6 @@
-	package snc.pFact;
+package snc.pFact;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,102 +14,42 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import snc.pFact.DM.dataIssues;
 import snc.pFact.obj.cl.b_Player;
 
-public class ListenerClass implements Listener{
-	
-	
-	
-	
+public class ListenerClass implements Listener {
+
 	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent event){
+	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		File fpath = new File(dataIssues.playerFile, player.getUniqueId() 
-				+ ".dp");
+		File fpath = new File(dataIssues.playerFile, player.getUniqueId() + ".dp");
 		if (!fpath.exists()) {
 			b_Player plyr = new b_Player(player.getUniqueId(), null, 0);
 			b_Player.players.put(player.getUniqueId(), plyr);
-			// Write objects to file
-			try {	
-				FileOutputStream f = new FileOutputStream(
-						fpath);
-				
-				ObjectOutputStream o = new ObjectOutputStream(f);
-				o.writeObject(plyr);
-				o.close();
-				f.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
 		} else {
-			try {
-				FileInputStream fi = new FileInputStream(
-						fpath);
-				ObjectInputStream oi = new ObjectInputStream(fi);
-				b_Player.players.put(player.getUniqueId(), (b_Player) oi.readObject());
-				oi.close();
-				fi.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			
+			b_Player.players.put(player.getUniqueId(), (b_Player) dataIssues.loadObject(fpath));
 		}
-		
-	}
-	
-	@EventHandler
-	public void onPlayerQuit(PlayerQuitEvent ev){
-		try {
-			b_Player plyr = b_Player.players.get(ev.getPlayer().getUniqueId());
-			FileOutputStream f = new FileOutputStream(
-					new File(dataIssues.playerFile, ev.getPlayer().getUniqueId()
-							+ ".dp"));
-			ObjectOutputStream o = new ObjectOutputStream(f);
 
-			// Write objects to file
-			o.writeObject(plyr);
-			o.close();
-			f.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
-	
+
+	@EventHandler
+	public void onPlayerQuit(PlayerQuitEvent ev) {
+		b_Player plyr = b_Player.players.get(ev.getPlayer().getUniqueId());
+		if (plyr == null)
+			return;
+		File f = new File(dataIssues.playerFile, ev.getPlayer().getUniqueId() + ".dp");
+		dataIssues.saveObject(plyr, f);
+	}
+
 	@EventHandler
 	public void onPlayerChat(AsyncPlayerChatEvent ev) {
 		ev.setCancelled(true);
 		b_Player plyr = b_Player.players.get(ev.getPlayer().getUniqueId());
-		if(plyr == null || plyr.getF() == null) {
-			Bukkit.broadcastMessage(
-					 ChatColor.BOLD
-					+ ""
-					+ ChatColor.GRAY
-					+ "AYLAK "
-					+ ChatColor.RESET
-					+ ChatColor.DARK_AQUA 
-					+ ev.getPlayer().getDisplayName() 
-					+ ": " 
-					+ ChatColor.RESET 
-					+ ev.getMessage());
+		if (plyr == null || plyr.getF() == null) {
+			Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GRAY + "AYLAK " + ChatColor.RESET
+					+ ChatColor.DARK_AQUA + ev.getPlayer().getDisplayName() + ": " + ChatColor.RESET + ev.getMessage());
 		} else {
-			Bukkit.broadcastMessage(
-					ChatColor.BOLD
-					+ ""
-					+ ChatColor.GRAY 
-					+ b_Player.players.get(ev.getPlayer().getUniqueId()).getF().getName() 
-					+ ChatColor.RESET
-					+ ChatColor.DARK_AQUA 
-					+ ev.getPlayer().getDisplayName() 
-					+ ": " 
-					+ ChatColor.RESET
-					+ ev.getMessage());
+			Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GRAY
+					+ b_Player.players.get(ev.getPlayer().getUniqueId()).getF().getName() + ChatColor.RESET
+					+ ChatColor.DARK_AQUA + ev.getPlayer().getDisplayName() + ": " + ChatColor.RESET + ev.getMessage());
 		}
-		
+
 	}
 }
