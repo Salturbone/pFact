@@ -13,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import snc.pFact.DM.dataIssues;
 import snc.pFact.obj.cl.b_Faction;
 import snc.pFact.obj.cl.b_Player;
+import snc.pFact.obj.cl.b_Player.Rank;
 
 public class Main extends JavaPlugin {
 
@@ -39,7 +40,7 @@ public class Main extends JavaPlugin {
 			File pFile = new File(dataIssues.playerFile, p.getUniqueId() + ".dp");
 			b_Player plyr;
 			if (!pFile.exists()) {
-				plyr = new b_Player(p.getUniqueId(), null, 0);
+				plyr = new b_Player(p.getUniqueId(), null, 0, Rank.Single);
 			} else {
 				plyr = (b_Player) dataIssues.loadObject(pFile);
 			}
@@ -59,7 +60,7 @@ public class Main extends JavaPlugin {
 			File pFile = new File(dataIssues.playerFile, p.getUniqueId() + ".dp");
 			b_Player plyr = b_Player.players.get(p.getUniqueId());
 			if (plyr == null) {
-				plyr = new b_Player(p.getUniqueId(), null, 0);
+				plyr = new b_Player(p.getUniqueId(), null, 0, Rank.Single);
 			}
 			dataIssues.saveObject(plyr, pFile);
 		}
@@ -81,7 +82,7 @@ public class Main extends JavaPlugin {
 			} else { // Faction oluþturma
 				b_Player bp = b_Player.players.get(p.getUniqueId());
 				if (bp != null && bp.getF() == null) {
-
+					bp.setRank(Rank.Founder);
 					b_Faction bf = new b_Faction(arg[1], bp);
 					bp.setF(bf);
 					b_Faction.factions.put(bf.getName(), bf);

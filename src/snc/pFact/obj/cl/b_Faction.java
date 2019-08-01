@@ -1,8 +1,12 @@
 package snc.pFact.obj.cl;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
+
+import snc.pFact.obj.cl.b_Player.Rank;
 
 public class b_Faction implements Serializable {
 	
@@ -15,9 +19,8 @@ public class b_Faction implements Serializable {
 	private int member_count;
 	private double xp;
 	private double prestige;
-	HashMap<UUID, b_Player> players;
-	HashMap<UUID, b_Player> auths;
-	b_Player owner;
+	private HashMap<UUID, b_Player> players;
+	private b_Player founder;
 	
 	/*public b_Faction(String name, int level, int member_count, double xp, double prestige, HashMap<UUID, b_Player> players) {
 		this.name = name;
@@ -36,8 +39,7 @@ public class b_Faction implements Serializable {
         this.prestige = 0;
         players = new HashMap<UUID,b_Player>();
         players.put(founder.uuid(), founder);
-        auths.put(founder.uuid(), founder);
-        this.owner = founder;
+        this.founder = founder;
     }
 	
 	//Level
@@ -74,6 +76,23 @@ public class b_Faction implements Serializable {
 	
 	public double getPrst( ) {
 		return prestige;
+	}
+	
+	public b_Player getPlayer(UUID id) {
+		return players.get(id);
+	}
+	
+	public b_Player getFounder() {
+		return founder;
+	}
+	
+	public List<b_Player> getByRank(Rank rank) {
+		List<b_Player> list = new ArrayList<b_Player>();
+		for(b_Player bp : players.values()) {
+			if(bp.rank() == rank)
+				list.add(bp);
+		}
+		return list;
 	}
 	
 }

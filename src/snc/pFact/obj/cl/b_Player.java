@@ -15,20 +15,26 @@ public class b_Player implements Serializable {
 
 	public static HashMap<UUID, b_Player> players = new HashMap<UUID, b_Player>();
 	
+	public enum Rank {
+		Single,Player, Moderator, Founder;
+	}
+	
 	private UUID id;
 	private b_Faction fct = null;
 	private double coin;
-	private boolean yetki = false;
-
-	public b_Player(UUID id, b_Faction fct, double coin) {
+	private Rank rank = Rank.Single;
+	
+	
+	public b_Player(UUID id, b_Faction fct, double coin, Rank rank) {
 		this.id = id;
 		if (fct != null) {
-			if (fct.players.get(id).id == id) {
+			if (fct.getPlayer(id).id == id) {
 				this.fct = fct;
 			} else {
 				this.fct = null;
 			}
 		}
+		this.rank = rank;
 		this.coin = coin;
 	}
 
@@ -57,5 +63,13 @@ public class b_Player implements Serializable {
 	public void addCoin(double d) {
 		coin += d;
 	}
-
+	
+	public Rank rank() {
+		return rank;
+	}
+	
+	public void setRank(Rank rank) {
+		this.rank = rank;
+	}
+	
 }

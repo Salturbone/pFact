@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import snc.pFact.DM.dataIssues;
 import snc.pFact.obj.cl.b_Player;
+import snc.pFact.obj.cl.b_Player.Rank;
 
 public class ListenerClass implements Listener {
 
@@ -21,7 +22,7 @@ public class ListenerClass implements Listener {
 		Player player = event.getPlayer();
 		File fpath = new File(dataIssues.playerFile, player.getUniqueId() + ".dp");
 		if (!fpath.exists()) {
-			b_Player plyr = new b_Player(player.getUniqueId(), null, 0);
+			b_Player plyr = new b_Player(player.getUniqueId(), null, 0, Rank.Single);
 			b_Player.players.put(player.getUniqueId(), plyr);
 		} else {
 			b_Player.players.put(player.getUniqueId(), (b_Player) dataIssues.loadObject(fpath));
