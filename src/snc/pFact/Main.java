@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import snc.pFact.DM.dataIssues;
 import snc.pFact.obj.cl.b_Faction;
 import snc.pFact.obj.cl.b_Player;
 
@@ -23,43 +24,18 @@ import java.util.UUID;
 public class Main extends JavaPlugin{
 	
 	public static JavaPlugin ekl;
-	public static File factionFile = new File(Main.ekl.getDataFolder(), "Factions/");
-	public static HashMap<String, b_Faction> factions = new HashMap<String, b_Faction>();
-	ArrayList<String> fNames = new ArrayList<String>();
+	public static File factionFile;
+	public static HashMap<String, b_Faction> factions = null;
+	
 	//Player player = getServer().getPlayer(playerName);
 	//FilenameUtils.removeExtension(fileNameWithExt);
 	@Override
 	public void onEnable() 
 	{
-		factionFile.mkdirs();
-		File[] ff = factionFile.listFiles();
-		
-		for (int i = 0; i < ff.length; i++) {
-			  if (ff[i].isFile()) {
-				  fNames.add(ff[i].getName());
-			  }
-		}
-		for (String a : fNames) {
-			
-			File fpath = new File(factionFile, a);
-			try {
-				FileInputStream fi = new FileInputStream(
-						fpath);
-				ObjectInputStream oi = new ObjectInputStream(fi);
-				factions.put(FilenameUtils.removeExtension(a), (b_Faction) oi.readObject());
-				oi.close();
-				fi.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-		
 		ekl = this;
+		factions = new HashMap<String, b_Faction>();
+		dataIssues.initFactions(factionFile, factions);
+		
 		System.out.println("pFact baþlatýldý!");
 		PluginManager pm = getServer().getPluginManager();
 		ListenerClass lc = new ListenerClass();
