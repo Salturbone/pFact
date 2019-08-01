@@ -16,15 +16,17 @@ public class b_Faction implements Serializable {
 	private double xp;
 	private double prestige;
 	HashMap<UUID, b_Player> players;
+	HashMap<UUID, b_Player> auths;
+	b_Player owner;
 	
-	public b_Faction(String name, int level, int member_count, double xp, double prestige, HashMap<UUID, b_Player> players) {
+	/*public b_Faction(String name, int level, int member_count, double xp, double prestige, HashMap<UUID, b_Player> players) {
 		this.name = name;
 		this.level = level;
 		this.member_count = member_count;
 		this.xp = xp;
 		this.prestige = prestige;
 		this.players = players;
-	}
+	}*/
 	
 	public b_Faction(String name, b_Player founder) {
         this.name = name;
@@ -34,6 +36,8 @@ public class b_Faction implements Serializable {
         this.prestige = 0;
         players = new HashMap<UUID,b_Player>();
         players.put(founder.uuid(), founder);
+        auths.put(founder.uuid(), founder);
+        this.owner = founder;
     }
 	
 	//Level

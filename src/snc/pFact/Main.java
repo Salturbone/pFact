@@ -1,10 +1,9 @@
 package snc.pFact;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -19,6 +18,8 @@ public class Main extends JavaPlugin {
 
 	public static JavaPlugin ekl;
 
+	//Player player = getServer().getPlayer(playerName);
+	
 	@Override
 	public void onEnable() {
 		ekl = this;
@@ -81,8 +82,6 @@ public class Main extends JavaPlugin {
 				b_Player bp = b_Player.players.get(p.getUniqueId());
 				if (bp != null && bp.getF() == null) {
 
-					HashMap<UUID, b_Player> players = new HashMap<UUID, b_Player>();
-					players.put(p.getUniqueId(), bp);
 					b_Faction bf = new b_Faction(arg[1], bp);
 					bp.setF(bf);
 					b_Faction.factions.put(bf.getName(), bf);
@@ -97,6 +96,20 @@ public class Main extends JavaPlugin {
 			}
 
 		}
+		
+		if (arg[0].equalsIgnoreCase("oyuncu")) {
+			if (arg.length == 1) {
+				sender.sendMessage(ChatColor.RED + "Bir iþlev gir!");
+				return true;
+			}
+			if (arg.length == 2) {
+				if (arg[1].equalsIgnoreCase("ekle") || arg[1].equalsIgnoreCase("çýkar")) {
+					sender.sendMessage(ChatColor.RED + "");
+				}
+			}
+
+		}
+		
 		if(arg[0].equalsIgnoreCase("clearfiles")) {
 			for(File f : dataIssues.factionFile.listFiles()) {
 				f.delete();
