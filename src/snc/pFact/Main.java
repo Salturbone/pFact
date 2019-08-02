@@ -1,6 +1,7 @@
 package snc.pFact;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -265,16 +266,25 @@ public class Main extends JavaPlugin {
             B_Player.players.get(p.getUniqueId()).setRank(Rank.Player);
             sender.sendMessage(ChatColor.GREEN + B_Player.players.get(p.getUniqueId()).getF().getName()
                     + ChatColor.RESET + " Klanına katıldın!");
+            for ( HashMap.Entry<UUID, B_Player> entry : B_Player.players.get(p.getUniqueId()).getF().players.entrySet()) {
+                    Bukkit.getPlayer(
+                        entry.getKey()).sendMessage(ChatColor.BOLD 
+                        + ""
+                        + ChatColor.GREEN 
+                        + p.getDisplayName() 
+                        + ChatColor.RESET 
+                        + " Adlı oyuncu klana katıldı!");
+            }
             return true;
         }
         if (arg[0].equalsIgnoreCase("ret")) {
             if (!B_Player.players.get(p.getUniqueId()).getES()) {
                 sender.sendMessage(ChatColor.RED + "Bir davet almadın ya da halihazırda bir klana mensupsun!");
             }
+            sender.sendMessage(ChatColor.GREEN + B_Player.players.get(p.getUniqueId()).getEF().getName()
+                    + ChatColor.RESET + " Klanının daveti reddedildi!");
             B_Player.players.get(p.getUniqueId()).setEF(null);
             B_Player.players.get(p.getUniqueId()).setES(false);
-            sender.sendMessage(ChatColor.GREEN + B_Player.players.get(p.getUniqueId()).getF().getName()
-                    + ChatColor.RESET + " Klanının daveti reddedildi!");
             return true;
         }
 
