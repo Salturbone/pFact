@@ -83,5 +83,14 @@ public class B_Player implements Serializable {
 	public void setES(boolean s) {
 		e_state = s;
 	}
+
+	public boolean hasFaction() {
+		if (rank == Rank.Single || fct == null) {
+			rank = Rank.Single;
+			fct = null;
+			return false;
+		}
+		return true;
+	}
 	
 }
