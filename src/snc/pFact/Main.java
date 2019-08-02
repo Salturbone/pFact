@@ -1,7 +1,7 @@
 package snc.pFact;
 
 import java.io.File;
-import java.sql.Time;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -159,33 +159,7 @@ public class Main extends JavaPlugin {
             // oyuncu davet etme ve ��karma
             if (arg.length == 3) {
                 if (arg[1].equalsIgnoreCase("davet")) {
-                    long time = System.currentTimeMillis();
                     Player gp = Bukkit.getPlayer(arg[2]);
-                    if (gp == null || B_Player.players.get(gp.getUniqueId()).getF() != null
-                            || B_Player.players.get(gp.getUniqueId()).getES()) {
-                        sender.sendMessage(ChatColor.RED + "Oyuncu bulunamadı. Oyuncu "
-                                + "başka bir klana üye ya da başka bir klan tarafından" + "davet edilmiş olabilir:"
-                                + ChatColor.RESET + arg[2]);
-                        return true;
-                    } else {
-                        B_Player.players.get(gp.getUniqueId()).setES(true);
-                        B_Player.players.get(gp.getUniqueId()).setEF(B_Player.players.get(p.getUniqueId()).getF());
-                        sender.sendMessage(ChatColor.GREEN + "Oyuncu davet edildi! "
-                                + "Teklifini kabul ederse klanının bir üyesi olacak!:" + ChatColor.RESET + arg[2]);
-                        gp.sendMessage(ChatColor.RED + B_Player.players.get(p.getUniqueId()).getF().getName()
-                                + ChatColor.GREEN + " Klanı tarafından davet edildin!");
-                        gp.sendMessage(ChatColor.GREEN + "Kabul etmek için: /klan kabul");
-                        gp.sendMessage(ChatColor.GREEN + "Reddetmek için: /klan ret");
-                        time = -time + System.currentTimeMillis();
-                        Bukkit.broadcastMessage(time + "");
-                        return true;
-                    }
-                }
-                if (arg[1].equalsIgnoreCase("davet2")) {
-                    long time = System.currentTimeMillis();
-                    Bukkit.broadcastMessage(time + "");
-                    Player gp = Bukkit.getPlayer(arg[2]);
-
                     if (gp == null) {
                         sender.sendMessage(ChatColor.RED + "Oyuncu bulunamadı. Oyuncu "
                                 + "başka bir klana üye ya da başka bir klan tarafından" + "davet edilmiş olabilir:"
@@ -207,8 +181,6 @@ public class Main extends JavaPlugin {
                             ChatColor.RED + bp.getF().getName() + ChatColor.GREEN + " Klanı tarafından davet edildin!");
                     gp.sendMessage(ChatColor.GREEN + "Kabul etmek için: /klan kabul");
                     gp.sendMessage(ChatColor.GREEN + "Reddetmek için: /klan ret");
-                    time = -time + System.currentTimeMillis();
-                    Bukkit.broadcastMessage(time + "");
                     return true;
                 }
                 if (arg[1].equalsIgnoreCase("çıkar")) {
@@ -346,6 +318,31 @@ public class Main extends JavaPlugin {
                 bpp.setF(null);
             }
             Bukkit.broadcastMessage(ChatColor.AQUA + "Cleared Faction & Player files and Factions.");
+            return true;
+        }
+        if (arg[0].equalsIgnoreCase("time")) {
+            UUID id = Bukkit.getPlayer("GodofMilker").getUniqueId();
+            long time = System.currentTimeMillis();
+            double coin = 0;
+            for (int i = 0; i < 200000; i++) {
+                B_Player bpp = B_Player.players.get(id);
+                bpp.addCoin(1);
+                coin = bpp.getCoin();
+            }
+            time = -time + System.currentTimeMillis();
+            Bukkit.broadcastMessage("Time:" + time + "         Coin:" + coin);
+            return true;
+        }
+        if (arg[0].equalsIgnoreCase("time2")) {
+            UUID id = Bukkit.getPlayer("GodofMilker").getUniqueId();
+            long time = System.currentTimeMillis();
+            double coin = 0;
+            for (int i = 0; i < 200000; i++) {
+                B_Player.players.get(id).addCoin(1);
+                coin = B_Player.players.get(id).getCoin();
+            }
+            time = -time + System.currentTimeMillis();
+            Bukkit.broadcastMessage("Time:" + time + "         Coin:" + coin);
             return true;
         }
         return false;
