@@ -1,6 +1,7 @@
 package snc.pFact;
 
 import java.io.File;
+import java.sql.Time;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -75,13 +76,13 @@ public class Main extends JavaPlugin {
             return false;
         if (arg.length == 0)
             return false;
+        B_Player bp = B_Player.players.get(p.getUniqueId());
         if (arg[0].equalsIgnoreCase("oluştur")) {
             if (arg.length == 1) {
                 sender.sendMessage("Bir isim gir!");
                 return true;
             } else { // Faction olu�turma
-                B_Player bp = B_Player.players.get(p.getUniqueId());
-                if (bp != null && bp.getF() == null) {
+                if (bp.getF() == null) {
                     bp.setRank(Rank.Founder);
                     B_Faction bf = new B_Faction(arg[1], bp);
                     bp.setF(bf);
@@ -158,6 +159,7 @@ public class Main extends JavaPlugin {
             // oyuncu davet etme ve ��karma
             if (arg.length == 3) {
                 if (arg[1].equalsIgnoreCase("davet")) {
+                    long time = System.currentTimeMillis();
                     Player gp = Bukkit.getPlayer(arg[2]);
                     if (gp == null || B_Player.players.get(gp.getUniqueId()).getF() != null
                             || B_Player.players.get(gp.getUniqueId()).getES()) {
@@ -170,12 +172,44 @@ public class Main extends JavaPlugin {
                         B_Player.players.get(gp.getUniqueId()).setEF(B_Player.players.get(p.getUniqueId()).getF());
                         sender.sendMessage(ChatColor.GREEN + "Oyuncu davet edildi! "
                                 + "Teklifini kabul ederse klanının bir üyesi olacak!:" + ChatColor.RESET + arg[2]);
-                        gp.sendMessage(ChatColor.RED + B_Player.players.get(gp.getUniqueId()).getF().getName()
+                        gp.sendMessage(ChatColor.RED + B_Player.players.get(p.getUniqueId()).getF().getName()
                                 + ChatColor.GREEN + " Klanı tarafından davet edildin!");
                         gp.sendMessage(ChatColor.GREEN + "Kabul etmek için: /klan kabul");
                         gp.sendMessage(ChatColor.GREEN + "Reddetmek için: /klan ret");
+                        time = -time + System.currentTimeMillis();
+                        Bukkit.broadcastMessage(time + "");
                         return true;
                     }
+                }
+                if (arg[1].equalsIgnoreCase("davet2")) {
+                    long time = System.currentTimeMillis();
+                    Bukkit.broadcastMessage(time + "");
+                    Player gp = Bukkit.getPlayer(arg[2]);
+
+                    if (gp == null) {
+                        sender.sendMessage(ChatColor.RED + "Oyuncu bulunamadı. Oyuncu "
+                                + "başka bir klana üye ya da başka bir klan tarafından" + "davet edilmiş olabilir:"
+                                + ChatColor.RESET + arg[2]);
+                        return true;
+                    }
+                    B_Player bgp = B_Player.players.get(gp.getUniqueId());
+                    if (bgp.getF() != null || bgp.getES()) {
+                        sender.sendMessage(ChatColor.RED + "Oyuncu bulunamadı. Oyuncu "
+                                + "başka bir klana üye ya da başka bir klan tarafından" + "davet edilmiş olabilir:"
+                                + ChatColor.RESET + arg[2]);
+                        return true;
+                    }
+                    bgp.setES(true);
+                    bgp.setEF(bp.getF());
+                    sender.sendMessage(ChatColor.GREEN + "Oyuncu davet edildi! "
+                            + "Teklifini kabul ederse klanının bir üyesi olacak!:" + ChatColor.RESET + arg[2]);
+                    gp.sendMessage(
+                            ChatColor.RED + bp.getF().getName() + ChatColor.GREEN + " Klanı tarafından davet edildin!");
+                    gp.sendMessage(ChatColor.GREEN + "Kabul etmek için: /klan kabul");
+                    gp.sendMessage(ChatColor.GREEN + "Reddetmek için: /klan ret");
+                    time = -time + System.currentTimeMillis();
+                    Bukkit.broadcastMessage(time + "");
+                    return true;
                 }
                 if (arg[1].equalsIgnoreCase("çıkar")) {
                     if (B_Player.players.get(p.getUniqueId()).rank() == Rank.Founder) {
@@ -308,8 +342,8 @@ public class Main extends JavaPlugin {
                 f.delete();
             }
             B_Faction.factions.clear();
-            for (B_Player bp : B_Player.players.values()) {
-                bp.setF(null);
+            for (B_Player bpp : B_Player.players.values()) {
+                bpp.setF(null);
             }
             Bukkit.broadcastMessage(ChatColor.AQUA + "Cleared Faction & Player files and Factions.");
             return true;
