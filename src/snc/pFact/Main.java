@@ -3,6 +3,7 @@ package snc.pFact;
 import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.regex.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -84,7 +85,7 @@ public class Main extends JavaPlugin {
                 return true;
             } else { // Faction olu�turma
                 if (bp.getF() == null) {
-                    Pattern p = Pattern.compile("[\\w\\-+|<>şçıüö,&*?/\#]+");
+                    Pattern p = Pattern.compile("[\\w\\-+|<>şçıüö,&*?/\\\\#]+");
                     if (arg[1].length() < 4 || arg[1].length() > 20 || arg[1].matches(p)) {
                         sender.sendMessage(ChatColor.DARK_RED + "Girdiğin klan ismi uyumsuz!");
                         sender.sendMessage(ChatColor.DARK_RED + "Klan isimleri yalnızca harf ve sayı içerebilir, özel karakterleri içeremez!");
