@@ -1,6 +1,7 @@
 package snc.pFact;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -318,31 +319,6 @@ public class Main extends JavaPlugin {
                 bpp.setF(null);
             }
             Bukkit.broadcastMessage(ChatColor.AQUA + "Cleared Faction & Player files and Factions.");
-            return true;
-        }
-        if (arg[0].equalsIgnoreCase("time")) {
-            UUID id = Bukkit.getPlayer("GodofMilker").getUniqueId();
-            long time = System.currentTimeMillis();
-            double coin = 0;
-            for (int i = 0; i < 200000; i++) {
-                B_Player bpp = B_Player.players.get(id);
-                bpp.addCoin(1);
-                coin = bpp.getCoin();
-            }
-            time = -time + System.currentTimeMillis();
-            Bukkit.broadcastMessage("Time:" + time + "         Coin:" + coin);
-            return true;
-        }
-        if (arg[0].equalsIgnoreCase("time2")) {
-            UUID id = Bukkit.getPlayer("GodofMilker").getUniqueId();
-            long time = System.currentTimeMillis();
-            double coin = 0;
-            for (int i = 0; i < 200000; i++) {
-                B_Player.players.get(id).addCoin(1);
-                coin = B_Player.players.get(id).getCoin();
-            }
-            time = -time + System.currentTimeMillis();
-            Bukkit.broadcastMessage("Time:" + time + "         Coin:" + coin);
             return true;
         }
         return false;
