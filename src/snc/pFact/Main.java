@@ -80,16 +80,22 @@ public class Main extends JavaPlugin {
         B_Player bp = B_Player.players.get(p.getUniqueId());
         if (arg[0].equalsIgnoreCase("oluştur")) {
             if (arg.length == 1) {
-                sender.sendMessage("Bir isim gir!");
+                sender.sendMessage(ChatColor.DARK_RED + "Bir isim gir!");
                 return true;
             } else { // Faction olu�turma
                 if (bp.getF() == null) {
+                    Pattern p = Pattern.compile("[\\w\\-+|<>şçıüö,&*?/\#]+");
+                    if (arg[1].length() < 4 || arg[1].length() > 20 || arg[1].matches(p)) {
+                        sender.sendMessage(ChatColor.DARK_RED + "Girdiğin klan ismi uyumsuz!");
+                        sender.sendMessage(ChatColor.DARK_RED + "Klan isimleri yalnızca harf ve sayı içerebilir, özel karakterleri içeremez!");
+                        return true;
+                    }
                     bp.setRank(Rank.Founder);
                     B_Faction bf = new B_Faction(arg[1], bp);
                     bp.setF(bf);
                     B_Faction.factions.put(bf.getName(), bf);
 
-                    sender.sendMessage(ChatColor.BOLD + "Klanın başarıyla oluşturuldu!! ::: " + bf.getName());
+                    sender.sendMessage(ChatColor.GREEN + "Klanın başarıyla oluşturuldu!! ::: " + bf.getName());
                     return true;
                 } else {
                     p.sendMessage("Bir klana mensup olduğun için klan oluşturamazsın!");
