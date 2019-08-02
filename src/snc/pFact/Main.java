@@ -23,8 +23,6 @@ public class Main extends JavaPlugin {
 
     public static JavaPlugin ekl;
 
-    // Player player = getServer().getPlayer(playerName);
-
     @Override
     public void onEnable() {
         ekl = this;
@@ -71,6 +69,16 @@ public class Main extends JavaPlugin {
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] arg) {
+        // ./klan kur <isim>
+        // ./klan oyuncu davet <oyuncu_ismi>
+        // ./klan oyuncu at <oyuncu_ismi>
+        // ./klan yetki ver <oyuncu_ismi>
+        // ./klan yetki al <oyuncu_ismi>
+        // ./klan kurucuyap <oyuncu_ismi>
+        // ./klan kabul
+        // ./klan ret
+        // ./klan ayrıl
+
         Player p = null;
         if (sender instanceof Player) {
             p = (Player) sender;
