@@ -11,44 +11,44 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import snc.pFact.DM.dataIssues;
-import snc.pFact.obj.cl.b_Player;
-import snc.pFact.obj.cl.b_Player.Rank;
+import snc.pFact.DM.DataIssues;
+import snc.pFact.obj.cl.B_Player;
+import snc.pFact.obj.cl.B_Player.Rank;
 
 public class ListenerClass implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		File fpath = new File(dataIssues.playerFile, player.getUniqueId() + ".dp");
+		File fpath = new File(DataIssues.playerFile, player.getUniqueId() + ".dp");
 		if (!fpath.exists()) {
-			b_Player plyr = new b_Player(player.getUniqueId(), null, 0, Rank.Single);
-			b_Player.players.put(player.getUniqueId(), plyr);
+			B_Player plyr = new B_Player(player.getUniqueId(), null, 0, Rank.Single);
+			B_Player.players.put(player.getUniqueId(), plyr);
 		} else {
-			b_Player.players.put(player.getUniqueId(), (b_Player) dataIssues.loadObject(fpath));
+			B_Player.players.put(player.getUniqueId(), (B_Player) DataIssues.loadObject(fpath));
 		}
 
 	}
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent ev) {
-		b_Player plyr = b_Player.players.get(ev.getPlayer().getUniqueId());
+		B_Player plyr = B_Player.players.get(ev.getPlayer().getUniqueId());
 		if (plyr == null)
 			return;
-		File f = new File(dataIssues.playerFile, ev.getPlayer().getUniqueId() + ".dp");
-		dataIssues.saveObject(plyr, f);
+		File f = new File(DataIssues.playerFile, ev.getPlayer().getUniqueId() + ".dp");
+		DataIssues.saveObject(plyr, f);
 	}
 
 	@EventHandler
 	public void onPlayerChat(AsyncPlayerChatEvent ev) {
 		ev.setCancelled(true);
-		b_Player plyr = b_Player.players.get(ev.getPlayer().getUniqueId());
+		B_Player plyr = B_Player.players.get(ev.getPlayer().getUniqueId());
 		if (plyr == null || plyr.rank() == Rank.Single) {
 			Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GRAY + "AYLAK " + ChatColor.RESET
 					+ ChatColor.DARK_AQUA + ev.getPlayer().getDisplayName() + ": " + ChatColor.RESET + ev.getMessage());
 		} else {
 			Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GRAY
-					+ b_Player.players.get(ev.getPlayer().getUniqueId()).getF().getName() + " " + ChatColor.RESET
+					+ B_Player.players.get(ev.getPlayer().getUniqueId()).getF().getName() + " " + ChatColor.RESET
 					+ ChatColor.DARK_AQUA + ev.getPlayer().getDisplayName() + ": " + ChatColor.RESET + ev.getMessage());
 		}
 

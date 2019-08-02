@@ -4,25 +4,25 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class b_Player implements Serializable {
+public class B_Player implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static HashMap<UUID, b_Player> players = new HashMap<UUID, b_Player>();
+	public static HashMap<UUID, B_Player> players = new HashMap<UUID, B_Player>();
 	
 	public enum Rank {
 		Single, Player, Moderator, Founder;
 	}
 	
 	private UUID id;
-	private b_Faction fct = null;
-	private b_Faction e_fct = null;
+	private B_Faction fct = null;
+	private B_Faction e_fct = null;
 	private boolean e_state = false;
 	private double coin;
 	private Rank rank = Rank.Single;
 	
 	
-	public b_Player(UUID id, b_Faction fct, double coin, Rank rank) {
+	public B_Player(UUID id, B_Faction fct, double coin, Rank rank) {
 		this.id = id;
 		if (fct != null) {
 			if (fct.getPlayer(id).id == id) {
@@ -36,11 +36,11 @@ public class b_Player implements Serializable {
 	}
 
 	// Faction
-	public void setF(b_Faction fct) {
+	public void setF(B_Faction fct) {
 		this.fct = fct;
 	}
 
-	public b_Faction getF() {
+	public B_Faction getF() {
 		return fct;
 	}
 
@@ -69,11 +69,11 @@ public class b_Player implements Serializable {
 		this.rank = rank;
 	}
 	
-	public b_Faction getEF() {
+	public B_Faction getEF() {
 		return e_fct;
 	}
 	
-	public void setEF(b_Faction fff) {
+	public void setEF(B_Faction fff) {
 		e_fct = fff;
 	}
 	

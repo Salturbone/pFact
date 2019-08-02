@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import snc.pFact.Main;
-import snc.pFact.obj.cl.b_Faction;
+import snc.pFact.obj.cl.B_Faction;
 
-public class dataIssues {
+public class DataIssues {
 
 	public static File factionFile;
 	public static File playerFile;
 	
-	//onEnable'da ilk çalýþan metod, factionFile'ý fln tanýmlýyor, gerekirse oluþturuyor
+	//onEnable'da ilk ï¿½alï¿½ï¿½an metod, factionFile'ï¿½ fln tanï¿½mlï¿½yor, gerekirse oluï¿½turuyor
 	public static void create() {
 		
 		factionFile = new File(Main.ekl.getDataFolder(), "Factions/");
@@ -28,38 +28,38 @@ public class dataIssues {
 		if(!playerFile.exists())
 			playerFile.mkdirs();
 	}
-	//onEnable'da çalýþan 2. metod, yüklemen gereken filelarý okumak için
+	//onEnable'da ï¿½alï¿½ï¿½an 2. metod, yï¿½klemen gereken filelarï¿½ okumak iï¿½in
 	public static void load() {
 		File[] ff = factionFile.listFiles();
 		for (File file : ff) {
-			b_Faction fact = (b_Faction) loadObject(file);
-			b_Faction.factions.put(fact.getName(), fact);
+			B_Faction fact = (B_Faction) loadObject(file);
+			B_Faction.factions.put(fact.getName(), fact);
 		}
 	}
 
 	public static void save() {
-		//Eðer bir faction silinirse main'deki hashmapdan da silinecek ve kaydedilmeyecek ama dosyasý kalacaðýndan
-		//sonraki load çalýþtýðýnda sanki hala varmýþ gibi onu da okuyacak, o yüzden aktif olmayan factionlarý silmek gerek
-		//kaydedilecek yani varolan factionlarýn dosya isimlerini bir listeye at
+		//Eï¿½er bir faction silinirse main'deki hashmapdan da silinecek ve kaydedilmeyecek ama dosyasï¿½ kalacaï¿½ï¿½ndan
+		//sonraki load ï¿½alï¿½ï¿½tï¿½ï¿½ï¿½nda sanki hala varmï¿½ï¿½ gibi onu da okuyacak, o yï¿½zden aktif olmayan factionlarï¿½ silmek gerek
+		//kaydedilecek yani varolan factionlarï¿½n dosya isimlerini bir listeye at
 		List<String> names = new ArrayList<String>();
-		//aktif factionlarý loopla
-		for(b_Faction fact : b_Faction.factions.values()) {
+		//aktif factionlarï¿½ loopla
+		for(B_Faction fact : B_Faction.factions.values()) {
 			File file = new File(factionFile, fact.getName() + ".df");
-			//kaydet iþte dosyasýna
+			//kaydet iï¿½te dosyasï¿½na
 			saveObject(fact, file);
-			//aktif olduðu için aktifler listesine ekle
+			//aktif olduï¿½u iï¿½in aktifler listesine ekle
 			names.add(fact.getName() + ".df");
 		}
-		//bütün faction file'larýný dolaþ
+		//bï¿½tï¿½n faction file'larï¿½nï¿½ dolaï¿½
 		for(File file : factionFile.listFiles()) {
-			//eðer aktif faction listesinde yoksa sil
+			//eï¿½er aktif faction listesinde yoksa sil
 			if(!names.contains(file.getName())) {
 				file.delete();
 			}
 		}
 	}
 
-	//objeyi file'a yazdýrma metodu
+	//objeyi file'a yazdï¿½rma metodu
 	public static void saveObject(Object a, File f) {
 		try {
 			FileOutputStream d = new FileOutputStream(f);
