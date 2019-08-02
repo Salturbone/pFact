@@ -3,11 +3,8 @@ package snc.pFact;
 import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
-<<<<<<< HEAD
-import java.util.regex.*;
-=======
 import java.util.regex.Pattern;
->>>>>>> f3f19f01c2a880c73a5f5dcbf3827fa26b7719d6
+
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -89,13 +86,8 @@ public class Main extends JavaPlugin {
                 return true;
             } else { // Faction olu�turma
                 if (bp.getF() == null) {
-<<<<<<< HEAD
-                    Pattern p = Pattern.compile("[\\w\\-+|<>şçıüö,&*?/\\\\#]+");
-                    if (arg[1].length() < 4 || arg[1].length() > 20 || arg[1].matches(p)) {
-=======
                     Pattern pt = Pattern.compile("[\\w\\-+|<>şçıüö,&*?/\\\\#]+");
-                    if (arg[1].length() < 4 || arg[1].length() > 20 || !pt.matcher(arg[1]).matches()) {
->>>>>>> f3f19f01c2a880c73a5f5dcbf3827fa26b7719d6
+                    if (arg[1].length() < 4 || arg[1].length() > 20 || !pt.matcher(arg[1]).matches() || B_Faction.factions.containsKey(arg[1])) {
                         sender.sendMessage(ChatColor.DARK_RED + "Girdiğin klan ismi uyumsuz!");
                         sender.sendMessage(ChatColor.DARK_RED
                                 + "Klan isimleri yalnızca harf ve sayı içerebilir, özel karakterleri içeremez!");
