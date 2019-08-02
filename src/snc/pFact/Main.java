@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -95,7 +94,8 @@ public class Main extends JavaPlugin {
             } else { // Faction olu�turma
                 if (bp.getF() == null) {
                     Pattern pt = Pattern.compile("[\\w\\-+|<>şçıüö,&*?/\\\\#]+");
-                    if (arg[1].length() < 4 || arg[1].length() > 20 || !pt.matcher(arg[1]).matches() || B_Faction.factions.containsKey(arg[1])) {
+                    if (arg[1].length() < 4 || arg[1].length() > 20 || !pt.matcher(arg[1]).matches()
+                            || B_Faction.factions.containsKey(arg[1])) {
                         sender.sendMessage(ChatColor.DARK_RED + "Girdiğin klan ismi uyumsuz!");
                         sender.sendMessage(ChatColor.DARK_RED
                                 + "Klan isimleri yalnızca harf ve sayı içerebilir, özel karakterleri içeremez!");
@@ -371,11 +371,12 @@ public class Main extends JavaPlugin {
             for (B_Player bpp : B_Player.players.values()) {
                 bpp.setF(null);
             }
+            HashMap<UUID, B_Player> temp = new HashMap<>();
             for (UUID idd : B_Player.players.keySet()) {
                 B_Player ps = new B_Player(idd, null, 0, Rank.Single);
-                B_Player.players.remove(idd);
-                B_Player.players.put(idd,ps);
+                temp.put(idd, ps);
             }
+            B_Player.players = temp;
             Bukkit.broadcastMessage(ChatColor.AQUA + "Cleared Faction & Player files and Factions.");
             return true;
         }
