@@ -3,6 +3,7 @@ package snc.pFact;
 import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -84,10 +85,11 @@ public class Main extends JavaPlugin {
                 return true;
             } else { // Faction olu�turma
                 if (bp.getF() == null) {
-                    Pattern p = Pattern.compile("[\\w\\-+|<>şçıüö,&*?/\#]+");
-                    if (arg[1].length() < 4 || arg[1].length() > 20 || arg[1].matches(p)) {
+                    Pattern pt = Pattern.compile("[\\w\\-+|<>şçıüö,&*?/\\\\#]+");
+                    if (arg[1].length() < 4 || arg[1].length() > 20 || !pt.matcher(arg[1]).matches()) {
                         sender.sendMessage(ChatColor.DARK_RED + "Girdiğin klan ismi uyumsuz!");
-                        sender.sendMessage(ChatColor.DARK_RED + "Klan isimleri yalnızca harf ve sayı içerebilir, özel karakterleri içeremez!");
+                        sender.sendMessage(ChatColor.DARK_RED
+                                + "Klan isimleri yalnızca harf ve sayı içerebilir, özel karakterleri içeremez!");
                         return true;
                     }
                     bp.setRank(Rank.Founder);
@@ -119,12 +121,13 @@ public class Main extends JavaPlugin {
                         B_Player.players.get(p.getUniqueId()).setRank(Rank.Moderator);
                         B_Player.players.get(p.getUniqueId()).getF().setFounder(B_Player.players.get(gp.getUniqueId()));
                         B_Faction.factions.get(B_Player.players.get(p.getUniqueId()).getF().getName())
-                            .setFounder(B_Player.players.get(gp.getUniqueId()));
+                                .setFounder(B_Player.players.get(gp.getUniqueId()));
                         sender.sendMessage(ChatColor.RED + "Artık kurucu değilsin!");
                         gp.sendMessage(ChatColor.GREEN + "Klanının yeni kurucusu sensin!");
                         return true;
                     }
                 } else {
+                    @SuppressWarnings("deprecation")
                     Player gp = (Player) Bukkit.getOfflinePlayer(arg[1]);
                     if (B_Player.players.get(gp.getUniqueId()).getF() != B_Player.players.get(p.getUniqueId()).getF()) {
                         sender.sendMessage(ChatColor.RED + "Oyuncu klanının bir mensubu değil!");
@@ -134,13 +137,13 @@ public class Main extends JavaPlugin {
                         B_Player.players.get(p.getUniqueId()).setRank(Rank.Moderator);
                         B_Player.players.get(p.getUniqueId()).getF().setFounder(B_Player.players.get(gp.getUniqueId()));
                         B_Faction.factions.get(B_Player.players.get(p.getUniqueId()).getF().getName())
-                            .setFounder(B_Player.players.get(gp.getUniqueId()));
+                                .setFounder(B_Player.players.get(gp.getUniqueId()));
                         sender.sendMessage(ChatColor.RED + "Artık kurucu değilsin!");
                         gp.sendMessage(ChatColor.GREEN + "Klanının yeni kurucusu sensin!");
                         return true;
                     }
                 }
-                
+
             }
         }
 
@@ -155,18 +158,19 @@ public class Main extends JavaPlugin {
                         if (B_Player.players.get(p.getUniqueId()).getF().players.size() != 1) {
                             p.sendMessage(ChatColor.RED + "Kurucusu olduğun klandan ayrılamazsın!!");
                             p.sendMessage(ChatColor.RED + "Klanını devretmek için:" + ChatColor.RESET
-                                + " /klan kurucuyap <oyuncu_ismi>");
+                                    + " /klan kurucuyap <oyuncu_ismi>");
                             return true;
                         } else {
                             B_Player.players.get(p.getUniqueId()).setRank(Rank.Single);
-                            File aaf = new File(DataIssues.factionFile, B_Player.players.get(p.getUniqueId()).getF().getName() + ".df");
+                            File aaf = new File(DataIssues.factionFile,
+                                    B_Player.players.get(p.getUniqueId()).getF().getName() + ".df");
                             aaf.delete();
                             B_Faction.factions.remove(B_Player.players.get(p.getUniqueId()).getF().getName());
                             B_Player.players.get(p.getUniqueId()).setF(null);
                             p.sendMessage(ChatColor.GREEN + "Artık bir klana mensup değilsin!");
                             return true;
                         }
-                        
+
                     }
                 } else {
                     p.sendMessage(ChatColor.RED + "Bir klana mensup de�ilsin!");
@@ -301,14 +305,10 @@ public class Main extends JavaPlugin {
             B_Player.players.get(p.getUniqueId()).setRank(Rank.Player);
             sender.sendMessage(ChatColor.GREEN + B_Player.players.get(p.getUniqueId()).getF().getName()
                     + ChatColor.RESET + " Klanına katıldın!");
-            for ( HashMap.Entry<UUID, B_Player> entry : B_Player.players.get(p.getUniqueId()).getF().players.entrySet()) {
-                    Bukkit.getPlayer(
-                        entry.getKey()).sendMessage(ChatColor.BOLD 
-                        + ""
-                        + ChatColor.GREEN 
-                        + p.getDisplayName() 
-                        + ChatColor.RESET 
-                        + " Adlı oyuncu klana katıldı!");
+            for (HashMap.Entry<UUID, B_Player> entry : B_Player.players.get(p.getUniqueId()).getF().players
+                    .entrySet()) {
+                Bukkit.getPlayer(entry.getKey()).sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + p.getDisplayName()
+                        + ChatColor.RESET + " Adlı oyuncu klana katıldı!");
             }
             return true;
         }
