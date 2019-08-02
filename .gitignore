@@ -2,6 +2,7 @@
 *.class
 module-info.java
 bin\
+settings.json
 # Log file
 *.log
 
