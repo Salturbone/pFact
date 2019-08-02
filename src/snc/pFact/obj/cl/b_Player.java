@@ -4,11 +4,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.UUID;
 
-enum Auth
-{ 
-    OWNER,MODERATOR; 
-} 
-
 public class b_Player implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -16,11 +11,13 @@ public class b_Player implements Serializable {
 	public static HashMap<UUID, b_Player> players = new HashMap<UUID, b_Player>();
 	
 	public enum Rank {
-		Single,Player, Moderator, Founder;
+		Single, Player, Moderator, Founder;
 	}
 	
 	private UUID id;
 	private b_Faction fct = null;
+	private b_Faction e_fct = null;
+	private boolean e_state = false;
 	private double coin;
 	private Rank rank = Rank.Single;
 	
@@ -70,6 +67,21 @@ public class b_Player implements Serializable {
 	
 	public void setRank(Rank rank) {
 		this.rank = rank;
+	}
+	
+	public b_Faction getEF() {
+		return e_fct;
+	}
+	
+	public void setEF(b_Faction fff) {
+		e_fct = fff;
+	}
+	
+	public boolean getES() {
+		return e_state;
+	}
+	public void setES(boolean s) {
+		e_state = s;
 	}
 	
 }

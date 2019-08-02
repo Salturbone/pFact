@@ -19,7 +19,7 @@ public class b_Faction implements Serializable {
 	private int member_count;
 	private double xp;
 	private double prestige;
-	private HashMap<UUID, b_Player> players;
+	public HashMap<UUID, b_Player> players;
 	private b_Player founder;
 	
 	/*public b_Faction(String name, int level, int member_count, double xp, double prestige, HashMap<UUID, b_Player> players) {
@@ -84,6 +84,10 @@ public class b_Faction implements Serializable {
 	
 	public b_Player getFounder() {
 		return founder;
+	}
+	
+	public void setFounder(b_Player pll) {
+		founder = pll;
 	}
 	
 	public List<b_Player> getByRank(Rank rank) {

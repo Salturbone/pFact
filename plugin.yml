@@ -6,4 +6,4 @@ api-version: 1.13
 commands:
   klan:
     description: use command
-    usage: /<command> <arg1> <arg2>
+    usage: /<command> <event> <arg2> <arg3>

@@ -43,12 +43,12 @@ public class ListenerClass implements Listener {
 	public void onPlayerChat(AsyncPlayerChatEvent ev) {
 		ev.setCancelled(true);
 		b_Player plyr = b_Player.players.get(ev.getPlayer().getUniqueId());
-		if (plyr == null || plyr.getF() == null) {
+		if (plyr == null || plyr.rank() == Rank.Single) {
 			Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GRAY + "AYLAK " + ChatColor.RESET
 					+ ChatColor.DARK_AQUA + ev.getPlayer().getDisplayName() + ": " + ChatColor.RESET + ev.getMessage());
 		} else {
 			Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GRAY
-					+ b_Player.players.get(ev.getPlayer().getUniqueId()).getF().getName() + " "+ ChatColor.RESET
+					+ b_Player.players.get(ev.getPlayer().getUniqueId()).getF().getName() + " " + ChatColor.RESET
 					+ ChatColor.DARK_AQUA + ev.getPlayer().getDisplayName() + ": " + ChatColor.RESET + ev.getMessage());
 		}
 
