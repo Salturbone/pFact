@@ -30,7 +30,7 @@
 
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
+                <directory></directory>
                 <filtering>true</filtering>
                 <includes>
                     <include>plugin.yml</include>
