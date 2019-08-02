@@ -140,7 +140,7 @@ public class Main extends JavaPlugin {
 
         if (arg[0].equalsIgnoreCase("oyuncu")) {
             if (B_Player.players.get(p.getUniqueId()).rank() != Rank.Moderator
-                    || B_Player.players.get(p.getUniqueId()).rank() != Rank.Founder) {
+                    && B_Player.players.get(p.getUniqueId()).rank() != Rank.Founder) {
                 sender.sendMessage(ChatColor.DARK_RED + "Bu komutu girmek için "
                         + "gerekli yetkiye sahip değilsin ya da bir klana dahil değil.");
                 return true;
