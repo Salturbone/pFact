@@ -88,7 +88,7 @@ public class Main extends JavaPlugin {
         if (arg.length == 0)
             return false;
         B_Player bp = B_Player.players.get(p.getUniqueId());
-        if (arg[0].equalsIgnoreCase("oluştur")) {
+        if (arg[0].equalsIgnoreCase("kur")) {
             if (arg.length == 1) {
                 sender.sendMessage(ChatColor.DARK_RED + "Bir isim gir!");
                 return true;
@@ -370,6 +370,11 @@ public class Main extends JavaPlugin {
             B_Faction.factions.clear();
             for (B_Player bpp : B_Player.players.values()) {
                 bpp.setF(null);
+            }
+            for (UUID idd : B_Player.players.keySet()) {
+                B_Player ps = new B_Player(idd, null, 0, Rank.Single);
+                B_Player.players.remove(idd);
+                B_Player.players.put(idd,ps);
             }
             Bukkit.broadcastMessage(ChatColor.AQUA + "Cleared Faction & Player files and Factions.");
             return true;
