@@ -1,7 +1,5 @@
 package snc.pFact;
 
-import java.io.File;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -12,45 +10,59 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import snc.pFact.DM.DataIssues;
+import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.obj.cl.B_Player;
-import snc.pFact.obj.cl.B_Player.Rank;
 
 public class ListenerClass implements Listener {
 
-	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent event) {
-		Player player = event.getPlayer();
-		File fpath = new File(DataIssues.playerFile, player.getUniqueId() + ".dp");
-		if (!fpath.exists()) {
-			B_Player plyr = new B_Player(player.getUniqueId(), null, 0, Rank.Single);
-			B_Player.players.put(player.getUniqueId(), plyr);
-		} else {
-			B_Player.players.put(player.getUniqueId(), (B_Player) DataIssues.loadObject(fpath));
-		}
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        onJoin(event.getPlayer());
+    }
 
-	}
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent ev) {
+        onQuit(ev.getPlayer());
+    }
 
-	@EventHandler
-	public void onPlayerQuit(PlayerQuitEvent ev) {
-		B_Player plyr = B_Player.players.get(ev.getPlayer().getUniqueId());
-		if (plyr == null)
-			return;
-		File f = new File(DataIssues.playerFile, ev.getPlayer().getUniqueId() + ".dp");
-		DataIssues.saveObject(plyr, f);
-	}
+    public static void onJoin(Player player) {
+        if (!DataIssues.players.containsKey(player.getUniqueId())) {
+            B_Player plyr = new B_Player(player.getUniqueId(), null, 0);
+            DataIssues.players.put(player.getUniqueId(), plyr);
+        } else {
+            B_Player bp = DataIssues.players.loadData(player.getUniqueId());
+            B_Faction bf = bp.getF();
+            if (bf == null && bp.hasFaction()) {
+                bp.setF(null);
+                player.sendMessage("Klanın dağıldı.");
+            }
+            if (bf != null && bf.getPlayer(player.getUniqueId()) == null) {
+                bp.setF(null);
+                player.sendMessage("Klanından atıldın.");
+            }
+        }
+    }
 
-	@EventHandler
-	public void onPlayerChat(AsyncPlayerChatEvent ev) {
-		ev.setCancelled(true);
-		B_Player plyr = B_Player.players.get(ev.getPlayer().getUniqueId());
-		if (!plyr.hasFaction()) {
-			Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GRAY + "AYLAK " + ChatColor.RESET
-					+ ChatColor.DARK_AQUA + ev.getPlayer().getDisplayName() + ": " + ChatColor.RESET + ev.getMessage());
-		} else {
-			Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GRAY
-					+ B_Player.players.get(ev.getPlayer().getUniqueId()).getF().getName() + " " + ChatColor.RESET
-					+ ChatColor.DARK_AQUA + ev.getPlayer().getDisplayName() + ": " + ChatColor.RESET + ev.getMessage());
-		}
+    public static void onQuit(Player player) {
+        B_Player plyr = DataIssues.players.get(player.getUniqueId());
+        if (plyr == null) {
+            plyr = new B_Player(player.getUniqueId(), null, 0);
+            DataIssues.players.put(player.getUniqueId(), plyr);
+        }
+        DataIssues.players.saveAndUnloadData(plyr.uuid());
+    }
 
-	}
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent ev) {
+        ev.setCancelled(true);
+        B_Player plyr = DataIssues.players.get(ev.getPlayer().getUniqueId());
+        if (!plyr.hasFaction()) {
+            Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GRAY + "AYLAK " + ChatColor.RESET
+                    + ChatColor.DARK_AQUA + ev.getPlayer().getDisplayName() + ": " + ChatColor.RESET + ev.getMessage());
+        } else {
+            Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GRAY + plyr.getF().getName() + " " + ChatColor.RESET
+                    + ChatColor.DARK_AQUA + ev.getPlayer().getDisplayName() + ": " + ChatColor.RESET + ev.getMessage());
+        }
+
+    }
 }

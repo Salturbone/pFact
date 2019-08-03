@@ -1,14 +1,13 @@
 package snc.pFact.obj.cl;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.UUID;
+
+import snc.pFact.DM.DataIssues;
 
 public class B_Player implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    public static HashMap<UUID, B_Player> players = new HashMap<UUID, B_Player>();
 
     public enum Rank {
         Single, Player, Moderator, Founder;
@@ -20,18 +19,10 @@ public class B_Player implements Serializable {
     private boolean e_state = false;
     public int timer = 0;
     private double coin;
-    private Rank rank = Rank.Single;
 
-    public B_Player(UUID id, String fct, double coin, Rank rank) {
+    public B_Player(UUID id, String fct, double coin) {
         this.id = id;
-        if (fct != null) {
-            if (B_Faction.factions.get(fct).getPlayer(id).id == id) {
-                this.fct = fct;
-            } else {
-                this.fct = null;
-            }
-        }
-        this.rank = rank;
+        this.fct = fct;
         this.coin = coin;
     }
 
@@ -41,7 +32,7 @@ public class B_Player implements Serializable {
     }
 
     public B_Faction getF() {
-        return B_Faction.factions.get(fct);
+        return fct == null ? null : DataIssues.factions.get(fct);
     }
 
     // UUID
@@ -61,16 +52,8 @@ public class B_Player implements Serializable {
         coin += d;
     }
 
-    public Rank rank() {
-        return rank;
-    }
-
-    public void setRank(Rank rank) {
-        this.rank = rank;
-    }
-
     public B_Faction getEF() {
-        return B_Faction.factions.get(e_fct);
+        return DataIssues.factions.get(e_fct);
     }
 
     public void setEF(String fff) {
@@ -86,12 +69,7 @@ public class B_Player implements Serializable {
     }
 
     public boolean hasFaction() {
-        if (rank == Rank.Single || fct == null) {
-            rank = Rank.Single;
-            fct = null;
-            return false;
-        }
-        return true;
+        return fct != null;
     }
 
     public void update() {
