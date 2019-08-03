@@ -23,6 +23,7 @@ public class B_Faction implements Serializable {
     private double prestige;
     public HashMap<UUID, B_Player> players;
     public int timer = 0;
+    private double level_block = 1;
     private double bank = 0;
     UUID founder;
 
@@ -120,8 +121,8 @@ public class B_Faction implements Serializable {
         timer++;
         // klanların xp kazanma mekaniği
         if (timer == 60 * 5) {
-            // sabit 10 üzerinden her aktif üye başına %1 artar
-            // sabit 10 üzerinden her seviye başına %2 azalır
+            // sabit 10 üzerinden her aktif üye başına %2 artar
+            // sabit 10 üzerinden her 5 seviye başına level_blocker kadar sağlar
             // aktif oyuncu yoksa deneyim kazanılmaz.
             int on = 0;
             for (UUID idd : players.keySet()) {
@@ -130,7 +131,9 @@ public class B_Faction implements Serializable {
                 }
             }
             if (on != 0) {
-                addXP(10.0 * ((100 + (on)) / 100) * ((100 - (2 * getLevel())) / 100));
+                addXP(10.0 
+                * ((100 + (2 * (on))) / 100) 
+                * level_block);
             }
             timer = 0;
         }

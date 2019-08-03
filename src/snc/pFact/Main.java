@@ -49,7 +49,6 @@ public class Main extends JavaPlugin {
                     if (Bukkit.getPlayer(entry.getKey()).isOnline())
                         entry.getValue().update();
                 }
-
             }
         }, 0L, 20L);
 
@@ -251,6 +250,9 @@ public class Main extends JavaPlugin {
                 if (bp.getF() != null) {
                     if (bp.rank() != Rank.Founder) {
                         bp.setRank(Rank.Single);
+                        B_Faction ffct = B_Faction.factions.get(bp.getF().getName());
+                        ffct.players.remove(bp.uuid());
+                        bp.setF(null);
                         p.sendMessage(ChatColor.GREEN + "Artık bir klana mensup değilsin!");
                         return true;
                     } else {
@@ -261,6 +263,8 @@ public class Main extends JavaPlugin {
                                     + " /klan kurucuyap <oyuncu_ismi>");
                             return true;
                         } else {
+                            B_Faction ffct = B_Faction.factions.get(bp.getF().getName());
+                            ffct.players.remove(bp.uuid());
                             bp.setRank(Rank.Single);
                             File aaf = new File(DataIssues.factionFile, fcc.getName() + ".df");
                             aaf.delete();
@@ -392,16 +396,16 @@ public class Main extends JavaPlugin {
             if (!bp.getES()) {
                 sender.sendMessage(ChatColor.RED + "Bir davet almadın ya da halihazırda bir klana mensupsun!");
             }
+            for (HashMap.Entry<UUID, B_Player> entry : bp.getF().players.entrySet()) {
+                Bukkit.getPlayer(entry.getKey()).sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + p.getDisplayName()
+                        + ChatColor.RESET + " Adlı oyuncu klana katıldı!");
+            }
             bp.setF(bp.getEF().getName());
             B_Faction.factions.get(bp.getEF().getName()).addMember(p.getUniqueId(), bp);
             bp.setEF(null);
             bp.setES(false);
             bp.setRank(Rank.Player);
             sender.sendMessage(ChatColor.GREEN + bp.getF().getName() + ChatColor.RESET + " Klanına katıldın!");
-            for (HashMap.Entry<UUID, B_Player> entry : bp.getF().players.entrySet()) {
-                Bukkit.getPlayer(entry.getKey()).sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + p.getDisplayName()
-                        + ChatColor.RESET + " Adlı oyuncu klana katıldı!");
-            }
             return true;
         }
         if (arg[0].equalsIgnoreCase("ret")) {
