@@ -146,7 +146,7 @@ public class Main extends JavaPlugin {
                 }
                 p.sendMessage(ChatColor.GREEN + " Seviye: " + fac.getLevel());
                 p.sendMessage(ChatColor.GREEN + " Deneyim: " + fac.getXP());
-                p.sendMessage(ChatColor.GREEN + " Prestij: " + fac.getPrst());
+                p.sendMessage(ChatColor.GREEN + " Prestij: " + fac.getPrestige());
                 return true;
             } else {
                 p.sendMessage(ChatColor.DARK_RED + "Bir klana mensup olmadığın için bu komuta erişemezsin!");
