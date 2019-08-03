@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -25,10 +24,16 @@ public class FAC implements Claim, Listener {
     private int t = 0;
     int FMC_R = 4;
 
-
+    @EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent e) {
         if (e.getItem().equals(FAC_Item) && e.getAction() == Action.LEFT_CLICK_BLOCK) {
-            
+            if(!ClaimCollision(DataIssues.players.get(e.getPlayer().getUniqueId()).getF(), e.getClickedBlock().getLocation())) {
+                e.getPlayer().getInventory().removeItem(e.getItem());
+                e.getClickedBlock().getLocation(FAC_center);
+            } else {
+                e.setCancelled(true);
+                e.getPlayer().sendMessage(ChatColor.DARK_RED + "Seçtiğin nokta başka bir klanın arazisiyle çakışıyor!");
+            }
         }
             
     }
@@ -39,7 +44,7 @@ public class FAC implements Claim, Listener {
         z1 = lc.getBlockZ() - FMC_R;
         w1 = (lc.getBlockX() + FMC_R) - x1;
         d1 = (lc.getBlockZ() + FMC_R) - z1;
-        int[][] a = b.GetClaim().CalculateMainClaimArea();
+        int[][] a = ((FMC)b.GetClaim()).CalculateMainClaimArea();
         int x2 = a[0][0];
         int z2 = a[0][1];
         int w2 = a[1][0] - x2;
@@ -86,7 +91,7 @@ public class FAC implements Claim, Listener {
             return;
         }
         if (t == 1) {
-            FAC_Item = new ItemStack(Material.GOLD_INGOT, 1);
+            FAC_Item = new ItemStack(Material.STICK, 1);
             ItemMeta im = FAC_Item.getItemMeta();
 
             im.setDisplayName(ChatColor.GREEN + "Klan Deneyim Kazancı Arttırıcı");
