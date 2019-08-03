@@ -36,7 +36,7 @@ public class B_FactionMember implements Serializable {
 
     public String getName() {
         if (isOnline()) {
-            Bukkit.getPlayer(id).getDisplayName();
+            return Bukkit.getPlayer(id).getDisplayName();
         }
         return Bukkit.getOfflinePlayer(id).getName();
     }

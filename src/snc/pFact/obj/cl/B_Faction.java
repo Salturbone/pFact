@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.lang.Math;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -110,7 +111,7 @@ public class B_Faction implements Serializable {
     }
 
     public double getNXP() {
-        return (1 / level_block) * (50 + 25 * level * level);
+        return (1 / level_block) * (25 + 25 * level * level);
     }
 
     public double getBank() {
@@ -133,7 +134,7 @@ public class B_Faction implements Serializable {
     public void update() {
         timer++;
         // klanların xp kazanma mekaniği
-        if (timer == 60 * 5) {
+        if (timer == 60) {
             // sabit 10 üzerinden her aktif üye başına %2 artar
             // sabit 10 üzerinden her 5 seviye başına level_blocker kadar sağlar
             // aktif oyuncu yoksa deneyim kazanılmaz.
@@ -144,12 +145,12 @@ public class B_Faction implements Serializable {
                 }
             }
             if (on != 0) {
-                addXP(10.0 * ((100 + (2 * ((double) on))) / 100) * level_block);
+                addXP(1.0 * (100 +  (2* Math.sqrt(on*on*on))) / 100 * level_block);
             }
             timer = 0;
             // seviye atlama
-            if (xp >= (1 / level_block) * (50 + 25 * level * level)) {
-                xp -= (1 / level_block) * (50 + 25 * level * level);
+            if (xp >= (1 / level_block) * (25 + 25 * level * level)) {
+                xp -= (1 / level_block) * (25 + 25 * level * level);
                 level += 1;
                 for (B_FactionMember bfm : players.values()) {
                     if (bfm.isOnline()) {
