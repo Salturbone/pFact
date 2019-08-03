@@ -67,7 +67,7 @@ public class Main extends JavaPlugin {
             DataIssues.saveObject(plyr, pFile);
         }
     }
-
+    @SuppressWarnings("deprecation")
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] arg) {
         // ./klan kur <isim>
         // ./klan oyuncu davet <oyuncu_ismi>
@@ -179,7 +179,6 @@ public class Main extends JavaPlugin {
                         return true;
                     }
                 } else {
-                    @SuppressWarnings("deprecation")
                     Player gp = (Player) Bukkit.getOfflinePlayer(arg[1]);
                     B_Player ggp = B_Player.players.get(gp.getUniqueId());
                     B_Faction fcc = B_Faction.factions.get(bp.getF().getName());
@@ -291,7 +290,6 @@ public class Main extends JavaPlugin {
                             gp.sendMessage(ChatColor.DARK_RED + "Bulunduğun klandan atıldın!");
                             return true;
                         } else {
-                            @SuppressWarnings("deprecation")
                             Player gp = (Player) Bukkit.getOfflinePlayer(arg[2]);
                             B_Player ggp = B_Player.players.get(gp.getUniqueId());
                             if (ggp.rank() == Rank.Founder || ggp.getF() != bp.getF()) {
@@ -322,7 +320,6 @@ public class Main extends JavaPlugin {
                             gp.sendMessage(ChatColor.DARK_RED + "Bulunduğun klandan atıldın!");
                             return true;
                         } else {
-                            @SuppressWarnings("deprecation")
                             Player gp = (Player) Bukkit.getOfflinePlayer(arg[2]);
                             B_Player ggp = B_Player.players.get(gp.getUniqueId());
                             if (ggp.rank() == Rank.Moderator || ggp.rank() == Rank.Founder || ggp.getF() != bp.getF()) {
@@ -394,7 +391,6 @@ public class Main extends JavaPlugin {
                         }
                     }
                 } else {
-                    @SuppressWarnings("deprecation")
                     Player gp = (Player) Bukkit.getOfflinePlayer(arg[2]);
                     B_Player ggp = B_Player.players.get(gp.getUniqueId());
                     if (ggp.getF() != bp.getF()) {
