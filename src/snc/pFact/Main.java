@@ -116,6 +116,28 @@ public class Main extends JavaPlugin {
         if (arg.length == 0)
             return false;
 
+
+        if (arg[0].equalsIgnoreCase("bağış")) {
+            if (arg.length == 2 && bp.getF() != null) {
+                double bagis;
+                try {
+                    bagis = Double.parseDouble(arg[1]);
+                } catch (NumberFormatException e) {
+                    p.sendMessage(ChatColor.DARK_RED + "Geçerli bir değer gir!");
+                    e.printStackTrace();
+                    return false;
+                }
+                if (bp.getCoin() >= bagis) {
+                    bp.addCoin((-1)*bagis);
+                    bp.getF().addBankAmount(bagis);
+                    p.sendMessage("Klanına yaptığın bağış miktarı: " + ChatColor.GREEN + bagis);
+                } else {
+                    p.sendMessage(ChatColor.DARK_RED + "Sahip olduğundan fazla bağış yapamazsın!");
+                }
+            } else {
+                p.sendMessage(ChatColor.DARK_RED + "Bir klana mensup değilsin!");
+            }
+        }
         if (arg[0].equalsIgnoreCase("bilgi")) {
             if (bp.getF() != null) {
                 B_Faction fac = B_Faction.factions.get(bp.getF().getName());
@@ -147,6 +169,7 @@ public class Main extends JavaPlugin {
                 p.sendMessage(ChatColor.GREEN + " Seviye: " + fac.getLevel());
                 p.sendMessage(ChatColor.GREEN + " Deneyim: " + fac.getXP());
                 p.sendMessage(ChatColor.GREEN + " Prestij: " + fac.getPrestige());
+                p.sendMessage(ChatColor.GREEN + " Banka: " + fac.getBank());
                 return true;
             } else {
                 p.sendMessage(ChatColor.DARK_RED + "Bir klana mensup olmadığın için bu komuta erişemezsin!");

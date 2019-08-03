@@ -23,6 +23,7 @@ public class B_Faction implements Serializable {
     private double prestige;
     public HashMap<UUID, B_Player> players;
     public int timer = 0;
+    private double bank = 0;
     UUID founder;
 
     /*
@@ -97,6 +98,13 @@ public class B_Faction implements Serializable {
 
     public void setFounder(B_Player pll) {
         founder = pll.uuid();
+    }
+
+    public double getBank() {
+        return bank;
+    }
+    public void addBankAmount(double a) {
+        bank += a;
     }
 
     public List<B_Player> getByRank(Rank rank) {
