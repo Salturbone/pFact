@@ -210,14 +210,12 @@ public class Main extends JavaPlugin {
                     return true;
                 }
             } else {
-                Player gp = (Player) Bukkit.getOfflinePlayer(arg[1]);
-                B_Player ggp = DataIssues.players.get(gp.getUniqueId());
-                B_Faction gf = bp.getF();
-                if (ggp.getF() != bp.getF()) {
+                OfflinePlayer gp = Bukkit.getOfflinePlayer(arg[1]);
+                if (bp.getF().getPlayer(gp.getUniqueId()) == null) {
                     sender.sendMessage(ChatColor.RED + "Oyuncu klanının bir mensubu değil!");
                     return true;
                 } else {
-                    gf.changeFounder(ggp.uuid());
+                    bf.changeFounder(gp.getUniqueId());
                     sender.sendMessage(ChatColor.RED + "Artık kurucu değilsin!");
                     return true;
                 }
