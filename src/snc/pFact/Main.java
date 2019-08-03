@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import snc.pFact.DM.DataIssues;
 import snc.pFact.obj.cl.B_Faction;
@@ -22,6 +23,7 @@ import snc.pFact.obj.cl.B_Player.Rank;
 public class Main extends JavaPlugin {
 
     public static JavaPlugin ekl;
+    public static int task;
 
     @Override
     public void onEnable() {
@@ -34,6 +36,42 @@ public class Main extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         ListenerClass lc = new ListenerClass();
         pm.registerEvents(lc, this);
+
+        BukkitScheduler scheduler = getServer().getScheduler();
+        task = scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override
+            public void run() {
+                for (B_Faction fct : B_Faction.factions.values()) {
+                    fct.timer++;
+                    //klanların xp kazanma mekaniği
+                    if (fct.timer == 60*5) {
+                        //sabit 10 üzerinden her aktif üye başına %1 artar
+                        //sabit 10 üzerinden her seviye başına %2 azalır
+                        for (UUID idd : fct.players.keySet()) {
+                            if(Bukkit.getPlayer(idd).isOnline()) {
+                                fct.on += 1;
+                            }
+                        }
+                        fct.addXP(10.0 
+                        * ((100 + (fct.on))/100)
+                        * ((100 - (2*fct.getLevel()))/100)
+                        );
+                        fct.on = 0;
+                        fct.timer = 0;
+                    }
+                }
+                for (UUID idd : B_Player.players.keySet()) {
+                    if(Bukkit.getPlayer(idd).isOnline()) {
+                        B_Player.players.get(idd).timer++;
+                        if (B_Player.players.get(idd).timer == 60) {
+                            B_Player.players.get(idd).addCoin(1);
+                        }
+                    }
+                }
+
+            }
+        }, 0L, 20L);
+
 
     }
 
@@ -54,6 +92,7 @@ public class Main extends JavaPlugin {
     public void onDisable() {
         DataIssues.save();
         savePlayers();
+        Bukkit.getScheduler().cancelTask(task);
         System.out.println("pFact kapatıldı!");
     }
 

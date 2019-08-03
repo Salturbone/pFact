@@ -20,6 +20,8 @@ public class B_Faction implements Serializable {
     private double xp;
     private double prestige;
     public HashMap<UUID, B_Player> players;
+    public int timer = 0;
+    public int on = 0;
     UUID founder;
 
     /*
@@ -74,6 +76,10 @@ public class B_Faction implements Serializable {
 
     public double getXP() {
         return xp;
+    }
+
+    public void addXP(double a) {
+        xp += a;
     }
 
     public double getPrst() {

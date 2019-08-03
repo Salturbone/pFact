@@ -18,6 +18,7 @@ public class B_Player implements Serializable {
 	private String fct = null;
 	private String e_fct = null;
 	private boolean e_state = false;
+	public int timer = 0;
 	private double coin;
 	private Rank rank = Rank.Single;
 	
