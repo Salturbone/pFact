@@ -15,17 +15,17 @@ public class B_Player implements Serializable {
 	}
 	
 	private UUID id;
-	private B_Faction fct = null;
-	private B_Faction e_fct = null;
+	private String fct = null;
+	private String e_fct = null;
 	private boolean e_state = false;
 	private double coin;
 	private Rank rank = Rank.Single;
 	
 	
-	public B_Player(UUID id, B_Faction fct, double coin, Rank rank) {
+	public B_Player(UUID id, String fct, double coin, Rank rank) {
 		this.id = id;
 		if (fct != null) {
-			if (fct.getPlayer(id).id == id) {
+			if (B_Faction.factions.get(fct).getPlayer(id).id == id) {
 				this.fct = fct;
 			} else {
 				this.fct = null;
@@ -36,12 +36,12 @@ public class B_Player implements Serializable {
 	}
 
 	// Faction
-	public void setF(B_Faction fct) {
+	public void setF(String fct) {
 		this.fct = fct;
 	}
 
 	public B_Faction getF() {
-		return fct;
+		return B_Faction.factions.get(fct);
 	}
 
 	// UUID
@@ -70,10 +70,10 @@ public class B_Player implements Serializable {
 	}
 	
 	public B_Faction getEF() {
-		return e_fct;
+		return B_Faction.factions.get(e_fct);
 	}
 	
-	public void setEF(B_Faction fff) {
+	public void setEF(String fff) {
 		e_fct = fff;
 	}
 	

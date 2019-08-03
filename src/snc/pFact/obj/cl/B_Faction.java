@@ -20,7 +20,7 @@ public class B_Faction implements Serializable {
     private double xp;
     private double prestige;
     public HashMap<UUID, B_Player> players;
-    private B_Player founder;
+    UUID founder;
 
     /*
      * public b_Faction(String name, int level, int member_count, double xp, double
@@ -37,7 +37,7 @@ public class B_Faction implements Serializable {
         this.prestige = 0;
         players = new HashMap<UUID, B_Player>();
         players.put(founder.uuid(), founder);
-        this.founder = founder;
+        this.founder = founder.uuid();
     }
 
     // Level
@@ -84,12 +84,12 @@ public class B_Faction implements Serializable {
         return players.get(id);
     }
 
-    public B_Player getFounder() {
+    public UUID getFounder() {
         return founder;
     }
 
     public void setFounder(B_Player pll) {
-        founder = pll;
+        founder = pll.uuid();
     }
 
     public List<B_Player> getByRank(Rank rank) {
