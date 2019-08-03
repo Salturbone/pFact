@@ -224,34 +224,30 @@ public class Main extends JavaPlugin {
             }
         }
 
-        if (arg.length == 1)
+        if (arg[0].equalsIgnoreCase("ayrıl")) {
+            if (bf == null) {
+                sender.sendMessage(ChatColor.RED + "Bir klana mensup değilsin.");
+                return true;
+            }
+            if (bf.getFounder().uuid() != bp.uuid()) {
 
-        {
-            if (arg[0].equalsIgnoreCase("ayrıl")) {
-                if (bf == null) {
-                    sender.sendMessage(ChatColor.RED + "Bir klana mensup değilsin.");
+                bf.players.remove(bp.uuid());
+                bp.setF(null);
+                p.sendMessage(ChatColor.GREEN + "Artık bir klana mensup değilsin!");
+                return true;
+            } else {
+                if (bf.players.size() != 1) {
+                    p.sendMessage(ChatColor.RED + "Kurucusu olduğun klandan ayrılamazsın!!");
+                    p.sendMessage(ChatColor.RED + "Klanını devretmek için:" + ChatColor.RESET
+                            + " /klan kurucuyap <oyuncu_ismi>");
                     return true;
-                }
-                if (bf.getFounder().uuid() != bp.uuid()) {
-
-                    bf.players.remove(bp.uuid());
+                } else {
+                    DataIssues.factions.remove(bf.getName());
                     bp.setF(null);
                     p.sendMessage(ChatColor.GREEN + "Artık bir klana mensup değilsin!");
                     return true;
-                } else {
-                    if (bf.players.size() != 1) {
-                        p.sendMessage(ChatColor.RED + "Kurucusu olduğun klandan ayrılamazsın!!");
-                        p.sendMessage(ChatColor.RED + "Klanını devretmek için:" + ChatColor.RESET
-                                + " /klan kurucuyap <oyuncu_ismi>");
-                        return true;
-                    } else {
-                        DataIssues.factions.remove(bf.getName());
-                        bp.setF(null);
-                        p.sendMessage(ChatColor.GREEN + "Artık bir klana mensup değilsin!");
-                        return true;
-                    }
-
                 }
+
             }
         }
 
@@ -410,13 +406,17 @@ public class Main extends JavaPlugin {
             return true;
         }
 
-        if (arg.length >= 3) {
+        if (arg[0].equalsIgnoreCase("yetki")) {
             if (bf == null) {
                 sender.sendMessage(ChatColor.RED + "Bir klana mensup değilsin.");
                 return true;
             }
+            if (arg.length < 3) {
+                sender.sendMessage(ChatColor.RED + "/klan yetki ver/al <isim>");
+                return true;
+            }
             B_FactionMember bfm = bf.getPlayer(p.getUniqueId());
-            if (arg[0].equalsIgnoreCase("yetki") && bfm.rank() == Rank.Founder) {
+            if (bfm.rank() == Rank.Founder) {
                 Player gp = Bukkit.getPlayer(arg[2]);
                 if (gp != null && gp.isOnline()) {
                     // B_Player ggp = DataIssues.players.get(gp.getUniqueId());
