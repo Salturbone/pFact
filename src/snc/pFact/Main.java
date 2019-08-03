@@ -119,15 +119,22 @@ public class Main extends JavaPlugin {
         // ./klan ayrıl
         // ./klan bilgi
 
+        // ./param
+
+
         Player p = null;
         if (sender instanceof Player) {
             p = (Player) sender;
+        }
+        B_Player bp = B_Player.players.get(p.getUniqueId());
+        if (label.equalsIgnoreCase("param")) {
+            p.sendMessage(ChatColor.GREEN + "Mevcut Paranız: " + ChatColor.RESET + bp.getCoin());
         }
         if (!label.equalsIgnoreCase("klan"))
             return false;
         if (arg.length == 0)
             return false;
-        B_Player bp = B_Player.players.get(p.getUniqueId());
+        
 
         if (arg[0].equalsIgnoreCase("bilgi")) {
             if (bp.getF() != null) {
