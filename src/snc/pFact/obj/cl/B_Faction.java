@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
 import snc.pFact.obj.cl.B_Player.Rank;
 
@@ -101,6 +102,10 @@ public class B_Faction implements Serializable {
         founder = pll.uuid();
     }
 
+    public double getNXP() {
+        return (1/level_block) * (50 + 25*level*level);
+    }
+
     public double getBank() {
         return bank;
     }
@@ -136,6 +141,26 @@ public class B_Faction implements Serializable {
                 * level_block);
             }
             timer = 0;
+            //seviye atlama
+            if (xp >= (1/level_block) * (50 + 25*level*level)) {
+                xp -= (1/level_block) * (50 + 25*level*level);
+                level += 1;
+                for (UUID idd : players.keySet()) {
+                    if (Bukkit.getPlayer(idd).isOnline()) {
+                        Bukkit.getPlayer(idd).sendMessage(ChatColor.GREEN + "Klanın seviye atladı!");
+                        Bukkit.getPlayer(idd).sendMessage(ChatColor.GREEN + "Yeni Klan Seviyesi: " + ChatColor.RESET + level);
+                    }
+                }
+            }
+            if (level == 10) {
+                level_block = 0.9;
+            }
+            if (level == 20) {
+                level_block = 0.8;
+            }
+            if (level == 30) {
+                level_block = 0.7;
+            }
         }
     }
 

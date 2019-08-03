@@ -166,7 +166,7 @@ public class Main extends JavaPlugin {
                     p.sendMessage(ChatColor.GREEN + " Diğer Üyeler: -");
                 }
                 p.sendMessage(ChatColor.GREEN + " Seviye: " + fac.getLevel());
-                p.sendMessage(ChatColor.GREEN + " Deneyim: " + fac.getXP());
+                p.sendMessage(ChatColor.GREEN + " Deneyim: " + fac.getXP() + "/" + fac.getNXP());
                 p.sendMessage(ChatColor.GREEN + " Prestij: " + fac.getPrestige());
                 p.sendMessage(ChatColor.GREEN + " Banka: " + fac.getBank());
                 return true;
