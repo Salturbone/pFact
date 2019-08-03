@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+
 import snc.pFact.obj.cl.B_Player.Rank;
 
 public class B_Faction implements Serializable {
@@ -21,7 +23,6 @@ public class B_Faction implements Serializable {
     private double prestige;
     public HashMap<UUID, B_Player> players;
     public int timer = 0;
-    public int on = 0;
     UUID founder;
 
     /*
@@ -82,7 +83,7 @@ public class B_Faction implements Serializable {
         xp += a;
     }
 
-    public double getPrst() {
+    public double getPrestige() {
         return prestige;
     }
 
@@ -105,6 +106,23 @@ public class B_Faction implements Serializable {
                 list.add(bp);
         }
         return list;
+    }
+
+    public void update() {
+        timer++;
+        // klanların xp kazanma mekaniği
+        if (timer == 60 * 5) {
+            // sabit 10 üzerinden her aktif üye başına %1 artar
+            // sabit 10 üzerinden her seviye başına %2 azalır
+            int on = 0;
+            for (UUID idd : players.keySet()) {
+                if (Bukkit.getPlayer(idd).isOnline()) {
+                    on += 1;
+                }
+            }
+            addXP(10.0 * ((100 + (on)) / 100) * ((100 - (2 * getLevel())) / 100));
+            timer = 0;
+        }
     }
 
 }

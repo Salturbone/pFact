@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
@@ -42,36 +43,15 @@ public class Main extends JavaPlugin {
             @Override
             public void run() {
                 for (B_Faction fct : B_Faction.factions.values()) {
-                    fct.timer++;
-                    //klanların xp kazanma mekaniği
-                    if (fct.timer == 60*5) {
-                        //sabit 10 üzerinden her aktif üye başına %1 artar
-                        //sabit 10 üzerinden her seviye başına %2 azalır
-                        for (UUID idd : fct.players.keySet()) {
-                            if(Bukkit.getPlayer(idd).isOnline()) {
-                                fct.on += 1;
-                            }
-                        }
-                        fct.addXP(10.0 
-                        * ((100 + (fct.on))/100)
-                        * ((100 - (2*fct.getLevel()))/100)
-                        );
-                        fct.on = 0;
-                        fct.timer = 0;
-                    }
+                    fct.update();
                 }
-                for (UUID idd : B_Player.players.keySet()) {
-                    if(Bukkit.getPlayer(idd).isOnline()) {
-                        B_Player.players.get(idd).timer++;
-                        if (B_Player.players.get(idd).timer == 60) {
-                            B_Player.players.get(idd).addCoin(1);
-                        }
-                    }
+                for (Entry<UUID, B_Player> entry : B_Player.players.entrySet()) {
+                    if (Bukkit.getPlayer(entry.getKey()).isOnline())
+                        entry.getValue().update();
                 }
 
             }
         }, 0L, 20L);
-
 
     }
 
@@ -106,6 +86,7 @@ public class Main extends JavaPlugin {
             DataIssues.saveObject(plyr, pFile);
         }
     }
+
     @SuppressWarnings("deprecation")
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] arg) {
         // ./klan kur <isim>
@@ -121,7 +102,6 @@ public class Main extends JavaPlugin {
 
         // ./param
 
-
         Player p = null;
         if (sender instanceof Player) {
             p = (Player) sender;
@@ -129,12 +109,12 @@ public class Main extends JavaPlugin {
         B_Player bp = B_Player.players.get(p.getUniqueId());
         if (label.equalsIgnoreCase("param")) {
             p.sendMessage(ChatColor.GREEN + "Mevcut Paranız: " + ChatColor.RESET + bp.getCoin());
+            return true;
         }
         if (!label.equalsIgnoreCase("klan"))
             return false;
         if (arg.length == 0)
             return false;
-        
 
         if (arg[0].equalsIgnoreCase("bilgi")) {
             if (bp.getF() != null) {
