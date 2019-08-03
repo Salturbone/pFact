@@ -98,6 +98,7 @@ public class B_Player implements Serializable {
         timer++;
         if (timer == 60) {
             addCoin(1);
+            timer = 0;
         }
     }
 

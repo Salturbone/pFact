@@ -114,13 +114,16 @@ public class B_Faction implements Serializable {
         if (timer == 60 * 5) {
             // sabit 10 üzerinden her aktif üye başına %1 artar
             // sabit 10 üzerinden her seviye başına %2 azalır
+            // aktif oyuncu yoksa deneyim kazanılmaz.
             int on = 0;
             for (UUID idd : players.keySet()) {
                 if (Bukkit.getPlayer(idd).isOnline()) {
                     on += 1;
                 }
             }
-            addXP(10.0 * ((100 + (on)) / 100) * ((100 - (2 * getLevel())) / 100));
+            if (on != 0) {
+                addXP(10.0 * ((100 + (on)) / 100) * ((100 - (2 * getLevel())) / 100));
+            }
             timer = 0;
         }
     }
