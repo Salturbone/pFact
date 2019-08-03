@@ -90,30 +90,30 @@ public class Main extends JavaPlugin {
             return false;
         B_Player bp = B_Player.players.get(p.getUniqueId());
 
-
         if (arg[0].equalsIgnoreCase("bilgi")) {
             if (bp.getF() != null) {
                 B_Faction fac = B_Faction.factions.get(bp.getF().getName());
                 p.sendMessage(ChatColor.GREEN + fac.getName());
-                p.sendMessage(ChatColor.GREEN + " Kurucu: " + ChatColor.RESET + Bukkit.getPlayer(fac.getFounder()));
+                p.sendMessage(ChatColor.GREEN + " Kurucu: " + ChatColor.RESET
+                        + Bukkit.getPlayer(fac.getFounder()).getDisplayName());
                 List<B_Player> list = fac.getByRank(Rank.Moderator);
-                String yetkililer = null;
-                if (list.size() != 0) {
+                String yetkililer = "";
+                if (!list.isEmpty()) {
                     for (B_Player l : list) {
                         yetkililer += Bukkit.getPlayer(l.uuid()).getDisplayName() + ",";
                     }
-                    yetkililer.substring(0, yetkililer.length() - 2);
+                    yetkililer = yetkililer.substring(0, yetkililer.length() - 1);
                     p.sendMessage(ChatColor.GREEN + " Yetkililer: " + ChatColor.RESET + yetkililer);
                 } else {
                     p.sendMessage(ChatColor.GREEN + " Yetkililer: -");
                 }
-                String oyuncular = null;
+                String oyuncular = "";
                 List<B_Player> list0 = fac.getByRank(Rank.Player);
-                if (list0.size() != 0) {
+                if (!list0.isEmpty()) {
                     for (B_Player l : list0) {
                         oyuncular += Bukkit.getPlayer(l.uuid()).getDisplayName() + ",";
                     }
-                    oyuncular.substring(0, yetkililer.length() - 2);
+                    oyuncular = oyuncular.substring(0, oyuncular.length() - 1);
                     p.sendMessage(ChatColor.GREEN + " Diğer Üyeler: " + ChatColor.RESET + oyuncular);
                 } else {
                     p.sendMessage(ChatColor.GREEN + " Diğer Üyeler: -");
@@ -148,7 +148,8 @@ public class Main extends JavaPlugin {
                     bp.setF(arg[1]);
                     B_Faction.factions.put(bf.getName(), bf);
 
-                    sender.sendMessage(ChatColor.GREEN + "Klanın başarıyla oluşturuldu!! ::: " + ChatColor.RESET + bf.getName());
+                    sender.sendMessage(
+                            ChatColor.GREEN + "Klanın başarıyla oluşturuldu!! ::: " + ChatColor.RESET + bf.getName());
                     return true;
                 } else {
                     p.sendMessage(ChatColor.DARK_RED + "Bir klana mensup olduğun için klan oluşturamazsın!");
@@ -213,8 +214,7 @@ public class Main extends JavaPlugin {
                             return true;
                         } else {
                             bp.setRank(Rank.Single);
-                            File aaf = new File(DataIssues.factionFile,
-                                    fcc.getName() + ".df");
+                            File aaf = new File(DataIssues.factionFile, fcc.getName() + ".df");
                             aaf.delete();
                             B_Faction.factions.remove(fcc.getName());
                             bp.setF(null);
@@ -231,8 +231,7 @@ public class Main extends JavaPlugin {
         }
 
         if (arg[0].equalsIgnoreCase("oyuncu")) {
-            if (bp.rank() != Rank.Moderator
-                    && bp.rank() != Rank.Founder) {
+            if (bp.rank() != Rank.Moderator && bp.rank() != Rank.Founder) {
                 sender.sendMessage(ChatColor.DARK_RED + "Bu komutu girmek için "
                         + "gerekli yetkiye sahip değilsin ya da bir klana dahil değil.");
                 return true;
@@ -279,8 +278,8 @@ public class Main extends JavaPlugin {
                         if (Bukkit.getPlayer(arg[2]).isOnline()) {
                             Player gp = Bukkit.getPlayer(arg[2]);
                             B_Player ggp = B_Player.players.get(gp.getUniqueId());
-                            if (ggp.rank() == Rank.Founder || B_Player.players
-                                    .get(gp.getUniqueId()).getF() != bp.getF()) {
+                            if (ggp.rank() == Rank.Founder
+                                    || B_Player.players.get(gp.getUniqueId()).getF() != bp.getF()) {
                                 sender.sendMessage(
                                         ChatColor.RED + "Bu oyuncu klanına dahil değil ya da klanında yönetici!");
                                 return true;
@@ -311,9 +310,7 @@ public class Main extends JavaPlugin {
                         if (Bukkit.getPlayer(arg[2]).isOnline()) {
                             Player gp = Bukkit.getPlayer(arg[2]);
                             B_Player ggp = B_Player.players.get(gp.getUniqueId());
-                            if (ggp.rank() == Rank.Moderator
-                                    || ggp.rank() == Rank.Founder
-                                    || ggp.getF() != bp.getF()) {
+                            if (ggp.rank() == Rank.Moderator || ggp.rank() == Rank.Founder || ggp.getF() != bp.getF()) {
                                 sender.sendMessage(
                                         ChatColor.RED + "Bu oyuncu klanına dahil değil ya da klanında yönetici!");
                                 return true;
@@ -328,9 +325,7 @@ public class Main extends JavaPlugin {
                             @SuppressWarnings("deprecation")
                             Player gp = (Player) Bukkit.getOfflinePlayer(arg[2]);
                             B_Player ggp = B_Player.players.get(gp.getUniqueId());
-                            if (ggp.rank() == Rank.Moderator
-                                    || ggp.rank() == Rank.Founder
-                                    || ggp.getF() != bp.getF()) {
+                            if (ggp.rank() == Rank.Moderator || ggp.rank() == Rank.Founder || ggp.getF() != bp.getF()) {
                                 sender.sendMessage(
                                         ChatColor.RED + "Bu oyuncu klanına dahil değil ya da klanında kurucu!");
                                 return true;
@@ -352,13 +347,11 @@ public class Main extends JavaPlugin {
                 sender.sendMessage(ChatColor.RED + "Bir davet almadın ya da halihazırda bir klana mensupsun!");
             }
             bp.setF(bp.getEF().getName());
-            B_Faction.factions.get(bp.getEF().getName()).addMember(p.getUniqueId(),
-                    bp);
+            B_Faction.factions.get(bp.getEF().getName()).addMember(p.getUniqueId(), bp);
             bp.setEF(null);
             bp.setES(false);
             bp.setRank(Rank.Player);
-            sender.sendMessage(ChatColor.GREEN + bp.getF().getName()
-                    + ChatColor.RESET + " Klanına katıldın!");
+            sender.sendMessage(ChatColor.GREEN + bp.getF().getName() + ChatColor.RESET + " Klanına katıldın!");
             for (HashMap.Entry<UUID, B_Player> entry : bp.getF().players.entrySet()) {
                 Bukkit.getPlayer(entry.getKey()).sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + p.getDisplayName()
                         + ChatColor.RESET + " Adlı oyuncu klana katıldı!");
@@ -369,8 +362,8 @@ public class Main extends JavaPlugin {
             if (!bp.getES()) {
                 sender.sendMessage(ChatColor.RED + "Bir davet almadın ya da halihazırda bir klana mensupsun!");
             }
-            sender.sendMessage(ChatColor.GREEN + bp.getEF().getName()
-                    + ChatColor.RESET + " Klanının daveti reddedildi!");
+            sender.sendMessage(
+                    ChatColor.GREEN + bp.getEF().getName() + ChatColor.RESET + " Klanının daveti reddedildi!");
             bp.setEF(null);
             bp.setES(false);
             return true;
@@ -421,7 +414,7 @@ public class Main extends JavaPlugin {
                         }
                     }
                 }
-                
+
             } else {
                 sender.sendMessage(ChatColor.RED + "Bir Klana mensup değilsin ya da kurucusu değilsin!");
                 return true;
