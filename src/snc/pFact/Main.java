@@ -169,6 +169,8 @@ public class Main extends JavaPlugin {
 
                     sender.sendMessage(
                             ChatColor.GREEN + "Klanın başarıyla oluşturuldu!! ::: " + ChatColor.RESET + bf.getName());
+                    bf.GetClaim().CreateClaimItem();
+                    bf.GetClaim().GiveClaimItem(p);
                     return true;
                 } else {
                     p.sendMessage(ChatColor.DARK_RED + "Bir klana mensup olduğun için klan oluşturamazsın!");

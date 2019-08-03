@@ -10,6 +10,8 @@ import java.lang.Math;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
+import snc.pFact.Claim.Claim;
+import snc.pFact.Claim.ClaimFactory;
 import snc.pFact.obj.cl.B_Player.Rank;
 
 public class B_Faction implements Serializable {
@@ -26,6 +28,7 @@ public class B_Faction implements Serializable {
     private double level_block = 1;
     private double bank = 0;
     private transient B_FactionMember founder;
+    private Claim c = ClaimFactory.getClaim("main");
 
     /*
      * public b_Faction(String name, int level, int member_count, double xp, double
@@ -129,6 +132,10 @@ public class B_Faction implements Serializable {
                 list.add(bp);
         }
         return list;
+    }
+
+    public Claim GetClaim() {
+        return c;
     }
 
     public void update() {
