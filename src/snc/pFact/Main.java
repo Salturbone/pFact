@@ -394,6 +394,7 @@ public class Main extends JavaPlugin {
                         }
                     }
                 } else {
+                    @SuppressWarnings("deprecation")
                     Player gp = (Player) Bukkit.getOfflinePlayer(arg[2]);
                     B_Player ggp = B_Player.players.get(gp.getUniqueId());
                     if (ggp.getF() != bp.getF()) {
