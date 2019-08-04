@@ -36,8 +36,7 @@ public class Main extends JavaPlugin {
         DataIssues.load();
         System.out.println("pFact başlatıldı!");
         PluginManager pm = getServer().getPluginManager();
-        ListenerClass lc = new ListenerClass();
-        pm.registerEvents(lc, this);
+        pm.registerEvents(new ListenerClass(), this);
 
         BukkitScheduler scheduler = getServer().getScheduler();
         task = scheduler.scheduleSyncRepeatingTask(this, new Runnable() {

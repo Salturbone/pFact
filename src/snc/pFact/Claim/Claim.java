@@ -78,7 +78,6 @@ public abstract class Claim implements Cloneable, Serializable {
             cl.centerBlock = centerBlock.clone();
             return cl;
         } catch (CloneNotSupportedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;

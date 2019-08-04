@@ -25,7 +25,7 @@ public class ClaimFactory {
         Bukkit.getPluginManager().registerEvents(new ClaimListener(), Main.ekl);
         Location defLoc = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
         addStandartClaim(new MainClaim(defLoc, 4, null));
-        addStandartClaim(new XPClaim(defLoc, 4, null, 30));
+        addStandartClaim(new XPClaim(defLoc, 4, null, 30, 1.5));
         task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.ekl, new Runnable() {
 
             @Override

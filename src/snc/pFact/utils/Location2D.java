@@ -69,7 +69,6 @@ public class Location2D implements Serializable, Cloneable {
         try {
             return (Location2D) super.clone();
         } catch (CloneNotSupportedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;

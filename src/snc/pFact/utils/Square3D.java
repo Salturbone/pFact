@@ -59,21 +59,17 @@ public class Square3D implements Serializable, Cloneable {
 
         return false;
     }
-    public boolean IsInsideof(Square3D large) {
-        if(center.x() - length >= large.center.x() &&
-            center.x() - length <= large.center.x() + large.length &&
-            center.z() - length >= large.center.z() &&
-            center.z() - length <= large.center.z() + large.length &&
-            center.x() + length >= large.center.x() &&
-            center.x() + length <= large.center.x() + large.length &&
-            center.z() + length >= large.center.z() &&
-            center.z() + length <= large.center.z() + large.length) {
-                return true;
-            } 
-        return false;
-    } 
 
-<<<<<<< HEAD
+    public boolean IsInsideof(Square3D large) {
+        if (center.x() - length >= large.center.x() && center.x() - length <= large.center.x() + large.length
+                && center.z() - length >= large.center.z() && center.z() - length <= large.center.z() + large.length
+                && center.x() + length >= large.center.x() && center.x() + length <= large.center.x() + large.length
+                && center.z() + length >= large.center.z() && center.z() + length <= large.center.z() + large.length) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public Square3D clone() {
         Square3D cl;
@@ -82,13 +78,9 @@ public class Square3D implements Serializable, Cloneable {
             cl.center = center.clone();
             return cl;
         } catch (CloneNotSupportedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         return null;
     }
 }
-=======
-}
->>>>>>> ff7778c6b4a56442491949f2843f9011e2f236bd

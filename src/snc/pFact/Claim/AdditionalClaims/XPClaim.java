@@ -11,13 +11,15 @@ import snc.pFact.obj.cl.B_Faction;
 /**
  * XPClaim
  */
-public class XPClaim extends AdditionalClaim {
+public class XPClaim extends AdditionalClaim implements MultiplierClaim {
 
     private static final long serialVersionUID = 1L;
 
-    public XPClaim(Location center, int length, String faction, int health) {
+    private double multiplier;
+
+    public XPClaim(Location center, int length, String faction, int health, double multiplier) {
         super(center, length, faction, health);
-        // TODO Auto-generated constructor stub
+        this.multiplier = multiplier;
     }
 
     @Override
@@ -53,5 +55,15 @@ public class XPClaim extends AdditionalClaim {
     @Override
     protected ItemStack doGetClaimItem(B_Faction fact) {
         return null;
+    }
+
+    @Override
+    public void setMultiplier(double multiplier) {
+        this.multiplier = multiplier;
+    }
+
+    @Override
+    public double getMultiplier() {
+        return multiplier;
     }
 }
