@@ -41,5 +41,18 @@ public class Square3D implements Serializable {
         
         return false;
     }
+    public boolean IsInsideof(Square3D large) {
+        if(center.x() - length >= large.center.x() &&
+            center.x() - length <= large.center.x() + large.length &&
+            center.z() - length >= large.center.z() &&
+            center.z() - length <= large.center.z() + large.length &&
+            center.x() + length >= large.center.x() &&
+            center.x() + length <= large.center.x() + large.length &&
+            center.z() + length >= large.center.z() &&
+            center.z() + length <= large.center.z() + large.length) {
+                return true;
+            } 
+        return false;
+    } 
 
 }
