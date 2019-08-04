@@ -4,12 +4,11 @@ import java.io.Serializable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 
 /**
  * Location2D
  */
-public class Location2D implements Serializable {
+public class Location2D implements Serializable, Cloneable {
     private static final long serialVersionUID = 1L;
     private double x, z;
     private String world;
@@ -61,4 +60,14 @@ public class Location2D implements Serializable {
         return new Location2D(loc.getX(), loc.getZ(), loc.getWorld().getName());
     }
 
+    @Override
+    public Location2D clone() {
+        try {
+            return (Location2D) super.clone();
+        } catch (CloneNotSupportedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
