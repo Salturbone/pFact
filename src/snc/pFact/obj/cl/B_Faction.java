@@ -119,7 +119,7 @@ public class B_Faction implements Serializable {
     }
 
     public double getNXP() {
-        return (1 / level_block) * (25 + 25 * level * level);
+        return (1 / level_block) * (35 + 35 * level * level);
     }
 
     public double getBank() {
@@ -184,14 +184,13 @@ public class B_Faction implements Serializable {
             }
             timer = 0;
             // seviye atlama
-            if (xp >= (1 / level_block) * (25 + 25 * level * level)) {
-                xp -= (1 / level_block) * (25 + 25 * level * level);
+            if (xp >= (1 / level_block) * (35 + 35 * level * level)) {
+                xp -= (1 / level_block) * (35 + 35 * level * level);
                 level += 1;
                 for (B_FactionMember bfm : players.values()) {
                     if (bfm.isOnline()) {
-                        Bukkit.getPlayer(bfm.uuid()).sendMessage(ChatColor.GREEN + "Klanın seviye atladı!");
-                        Bukkit.getPlayer(bfm.uuid())
-                                .sendMessage(ChatColor.GREEN + "Yeni Klan Seviyesi: " + ChatColor.RESET + level);
+                        Bukkit.getPlayer(bfm.uuid()).sendTitle(ChatColor.GREEN + "Yeni Klan Seviyesi: " + ChatColor.DARK_PURPLE + level,
+                        ChatColor.DARK_GREEN + "Klanın seviye atladı!", -1, -1, -1);
                     }
                 }
             }
