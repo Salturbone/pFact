@@ -11,10 +11,12 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import snc.pFact.Claim.ClaimFactory;
 import snc.pFact.DM.DataIssues;
 import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.obj.cl.B_FactionMember;
@@ -169,8 +171,8 @@ public class Main extends JavaPlugin {
 
                     sender.sendMessage(
                             ChatColor.GREEN + "Klanın başarıyla oluşturuldu!! ::: " + ChatColor.RESET + bf.getName());
-                    bf.GetClaim().CreateClaimItem();
-                    bf.GetClaim().GiveClaimItem(p);
+                    ItemStack is = ClaimFactory.getStandartMainClaim().getClaimItem(bf);
+                    p.getInventory().addItem(is);
                     return true;
                 } else {
                     p.sendMessage(ChatColor.DARK_RED + "Bir klana mensup olduğun için klan oluşturamazsın!");
@@ -242,6 +244,7 @@ public class Main extends JavaPlugin {
                             + " /klan kurucuyap <oyuncu_ismi>");
                     return true;
                 } else {
+                    bf.disband();
                     DataIssues.factions.remove(bf.getName());
                     bp.setF(null);
                     p.sendMessage(ChatColor.GREEN + "Artık bir klana mensup değilsin!");

@@ -5,18 +5,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.lang.Math;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 
+import snc.pFact.Claim.AdditionalClaim;
 import snc.pFact.Claim.Claim;
-import snc.pFact.Claim.ClaimFactory;
+import snc.pFact.Claim.MainClaim;
 import snc.pFact.obj.cl.B_Player.Rank;
+import snc.pFact.utils.Square3D;
 
 public class B_Faction implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    public static int maxMaxClaimLength = 81;
 
     private String name;
     private int level;
@@ -28,7 +32,8 @@ public class B_Faction implements Serializable {
     private double level_block = 1;
     private double bank = 0;
     private transient B_FactionMember founder;
-    private Claim c = ClaimFactory.getClaim("main");
+    private MainClaim mainClaim;
+    private List<AdditionalClaim> addClaims = new ArrayList<AdditionalClaim>();
 
     /*
      * public b_Faction(String name, int level, int member_count, double xp, double
@@ -134,8 +139,31 @@ public class B_Faction implements Serializable {
         return list;
     }
 
-    public Claim GetClaim() {
-        return c;
+    public MainClaim GetMainClaim() {
+        return mainClaim;
+    }
+
+    public List<AdditionalClaim> getAdditionalClaims() {
+        return addClaims;
+    }
+
+    public Square3D getMaxClaimArea() {
+        if (mainClaim == null)
+            return null;
+        return new Square3D(mainClaim.getSquare().center(), getMaxClaimLength());
+    }
+
+    public int getMaxClaimLength() {
+        return 22 + (int) Math.min(Math.floor((double) level / 10) * 12, 12);
+    }
+
+    public void disband() {
+        List<Claim> cls = new ArrayList<Claim>(getAdditionalClaims());
+        cls.add(mainClaim);
+        for (Claim cl : cls) {
+            Block bl = cl.getCenterBlock().getBlock();
+            bl.setType(Material.AIR);
+        }
     }
 
     public void update() {
@@ -152,7 +180,7 @@ public class B_Faction implements Serializable {
                 }
             }
             if (on != 0) {
-                addXP(1.0 * (100 +  (2* Math.sqrt(on*on*on))) / 100 * level_block);
+                addXP(1.0 * (100 + (2 * Math.sqrt(on * on * on))) / 100 * level_block);
             }
             timer = 0;
             // seviye atlama
@@ -178,6 +206,7 @@ public class B_Faction implements Serializable {
                 level_block = 0.7;
             }
         }
+
     }
 
 }

@@ -9,6 +9,12 @@ public class B_Player implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final B_Faction getFactionOfPlayer(UUID id) {
+        B_Player bp = DataIssues.players.get(id);
+        B_Faction bf = bp.getF();
+        return bf;
+    }
+
     public enum Rank {
         Single, Player, Moderator, Founder;
     }

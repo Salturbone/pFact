@@ -60,6 +60,10 @@ public class Location2D implements Serializable, Cloneable {
         return new Location2D(loc.getX(), loc.getZ(), loc.getWorld().getName());
     }
 
+    public static Location2D defaultLocation2D() {
+        return new Location2D(0, 0, Bukkit.getWorlds().get(0).getName());
+    }
+
     @Override
     public Location2D clone() {
         try {
