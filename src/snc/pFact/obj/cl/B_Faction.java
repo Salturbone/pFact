@@ -97,8 +97,9 @@ public class B_Faction implements Serializable {
             level += 1;
             for (B_FactionMember bfm : players.values()) {
                 if (bfm.isOnline()) {
-                    Bukkit.getPlayer(bfm.uuid()).sendTitle(ChatColor.GREEN + "Yeni Klan Seviyesi: " + ChatColor.DARK_PURPLE + level,
-                    ChatColor.DARK_GREEN + "Klanın seviye atladı!", -1, -1, -1);
+                    Bukkit.getPlayer(bfm.uuid()).sendTitle(
+                            ChatColor.GREEN + "Yeni Klan Seviyesi: " + ChatColor.DARK_PURPLE + level,
+                            ChatColor.DARK_GREEN + "Klanın seviye atladı!", -1, -1, -1);
                 }
             }
         }
@@ -188,7 +189,7 @@ public class B_Faction implements Serializable {
     public void update() {
         timer++;
         // klanların xp kazanma mekaniği
-        if (timer == 60) {
+        if (timer >= 60) {
             // sabit 10 üzerinden her aktif üye başına %2 artar
             // sabit 10 üzerinden her 5 seviye başına level_blocker kadar sağlar
             // aktif oyuncu yoksa deneyim kazanılmaz.
@@ -203,7 +204,7 @@ public class B_Faction implements Serializable {
             }
             timer = 0;
             // seviye atlama
-            
+
             xp = Math.floor(xp * 1000) / 1000;
         }
 
