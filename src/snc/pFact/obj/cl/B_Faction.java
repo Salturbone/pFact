@@ -92,6 +92,25 @@ public class B_Faction implements Serializable {
 
     public void addXP(double a) {
         xp += a;
+        if (xp >= (1 / level_block) * (35 + 35 * level * level)) {
+            xp -= (1 / level_block) * (35 + 35 * level * level);
+            level += 1;
+            for (B_FactionMember bfm : players.values()) {
+                if (bfm.isOnline()) {
+                    Bukkit.getPlayer(bfm.uuid()).sendTitle(ChatColor.GREEN + "Yeni Klan Seviyesi: " + ChatColor.DARK_PURPLE + level,
+                    ChatColor.DARK_GREEN + "Klanın seviye atladı!", -1, -1, -1);
+                }
+            }
+        }
+        if (level == 10) {
+            level_block = 0.9;
+        }
+        if (level == 20) {
+            level_block = 0.8;
+        }
+        if (level == 30) {
+            level_block = 0.7;
+        }
     }
 
     public double getPrestige() {
@@ -184,26 +203,8 @@ public class B_Faction implements Serializable {
             }
             timer = 0;
             // seviye atlama
-            if (xp >= (1 / level_block) * (35 + 35 * level * level)) {
-                xp -= (1 / level_block) * (35 + 35 * level * level);
-                level += 1;
-                for (B_FactionMember bfm : players.values()) {
-                    if (bfm.isOnline()) {
-                        Bukkit.getPlayer(bfm.uuid()).sendTitle(ChatColor.GREEN + "Yeni Klan Seviyesi: " + ChatColor.DARK_PURPLE + level,
-                        ChatColor.DARK_GREEN + "Klanın seviye atladı!", -1, -1, -1);
-                    }
-                }
-            }
+            
             xp = Math.floor(xp * 1000) / 1000;
-            if (level == 10) {
-                level_block = 0.9;
-            }
-            if (level == 20) {
-                level_block = 0.8;
-            }
-            if (level == 30) {
-                level_block = 0.7;
-            }
         }
 
     }
