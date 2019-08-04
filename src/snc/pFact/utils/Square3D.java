@@ -46,8 +46,15 @@ public class Square3D implements Serializable, Cloneable {
 
     private boolean doCollide(Square3D square) {
         Location2D sCenter = square.center;
-        if (!sCenter.world().equals(center.world()))
-            return false;
+        if (!sCenter.world().equals(center.world())) return false;
+
+        if (center.x() - length < sCenter.x() - square.length + ((sCenter.x() + square.length) - (sCenter.x() - square.length)) &&
+            center.x() + ((center.x() + length) - (center.x() - length)) > sCenter.x() &&
+            center.z() < sCenter.z() + ((sCenter.z() + square.length) - (sCenter.z() - square.length)) &&
+            center.z() + ((center.z() + length) - (center.z() - length)) > sCenter.z()) {
+                return true;
+        }
+        
         return false;
     }
 
