@@ -89,11 +89,14 @@ public class B_Faction implements Serializable {
     public double getXP() {
         return xp;
     }
+    public double getLevelBlock() {
+        return 1 - Math.floor((double)level/10)/10;
+    }
 
     public void addXP(double a) {
         xp += a;
-        if (xp >= (1 / level_block) * (35 + 35 * level * level)) {
-            xp -= (1 / level_block) * (35 + 35 * level * level);
+        if (xp >= (1 / getLevelBlock()) * (35 + 35 * level * level)) {
+            xp -= (1 / getLevelBlock()) * (35 + 35 * level * level);
             level += 1;
             for (B_FactionMember bfm : players.values()) {
                 if (bfm.isOnline()) {
@@ -102,15 +105,6 @@ public class B_Faction implements Serializable {
                             ChatColor.DARK_GREEN + "Klanın seviye atladı!", -1, -1, -1);
                 }
             }
-        }
-        if (level == 10) {
-            level_block = 0.9;
-        }
-        if (level == 20) {
-            level_block = 0.8;
-        }
-        if (level == 30) {
-            level_block = 0.7;
         }
     }
 
@@ -139,7 +133,7 @@ public class B_Faction implements Serializable {
     }
 
     public double getNXP() {
-        return (1 / level_block) * (35 + 35 * level * level);
+        return (1 / getLevelBlock()) * (35 + 35 * level * level);
     }
 
     public double getBank() {
@@ -200,7 +194,7 @@ public class B_Faction implements Serializable {
                 }
             }
             if (on != 0) {
-                addXP(1.0 * (100 + (2 * Math.sqrt(on * on * on))) / 100 * level_block);
+                addXP(1.0 * (100 + (2 * Math.sqrt(on * on * on))) / 100 * getLevelBlock());
             }
             timer = 0;
             // seviye atlama
