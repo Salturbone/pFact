@@ -1,11 +1,11 @@
 package snc.pFact.Claim;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 
 import snc.pFact.DM.DataIssues;
 import snc.pFact.obj.cl.B_Faction;
@@ -17,18 +17,19 @@ import snc.pFact.utils.ZSIGN;
 public abstract class Claim implements Cloneable, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Square3D square;
     private String faction;
     private SerLocation centerBlock;
 
-    public Claim(Location center, int length, String faction) {
-        this.centerBlock = new SerLocation(center);
-        this.square = new Square3D(Location2D.fromLocation(center), length);
+    public Claim(int length, ItemStack claimBlock, ItemStack shard) {
+        ClaimData cd = new ClaimData();
+        cd.setObject("length", length);
+        cd.setItemStack("claimBlock", claimBlock);
+        cd.setItemStack("shard", shard);
     }
 
     public void setup(String faction, Location center) {
         this.faction = faction;
-        square.setCenter(Location2D.fromLocation(center));
+        this.centerBlock = new SerLocation(center);
     }
 
     public Location getCenterBlock() {
@@ -40,11 +41,7 @@ public abstract class Claim implements Cloneable, Serializable {
     }
 
     public Square3D getSquare() {
-        return square;
-    }
-
-    public void setSquare(Square3D square) {
-        this.square = square;
+        return new Square3D(Location2D.fromLocation(centerBlock.getLocation()), claimData().getInt("length"));
     }
 
     public B_Faction getFaction() {
@@ -52,10 +49,9 @@ public abstract class Claim implements Cloneable, Serializable {
     }
 
     public final ItemStack getClaimItem(B_Faction fact) {
-        return ZSIGN.imzalaZ("claim", getName(), ZSIGN.imzalaZ("claimFact", fact.getName(), doGetClaimItem(fact)));
+        return ZSIGN.imzalaZ("claim", getName(),
+                ZSIGN.imzalaZ("claimFact", fact.getName(), claimData().getItemStack("claimBlock")));
     }
-
-    protected abstract ItemStack doGetClaimItem(B_Faction fact);
 
     public abstract boolean canBreak(Player p, Location loc);
 
@@ -67,20 +63,30 @@ public abstract class Claim implements Cloneable, Serializable {
 
     public abstract String getName();
 
-    public abstract Recipe getRecipe();
+    public ItemStack getShard() {
+        return ZSIGN.imzalaZ("shard", getName(), claimData().getItemStack("shard"));
+    }
+
+    public abstract int getLevel();
+
+    public void canCraft(HashMap<Integer, ItemStack> recipe) {
+
+    }
 
     @Override
     protected Claim clone() {
         Claim cl;
         try {
             cl = (Claim) super.clone();
-            cl.square = square.clone();
-            cl.centerBlock = centerBlock.clone();
             return cl;
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
         return null;
 
+    }
+
+    public ClaimData claimData() {
+        return ClaimFactory.claimDatas.get(getName());
     }
 }

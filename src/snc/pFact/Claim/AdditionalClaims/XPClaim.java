@@ -3,28 +3,34 @@ package snc.pFact.Claim.AdditionalClaims;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 
 import snc.pFact.Claim.AdditionalClaim;
-import snc.pFact.obj.cl.B_Faction;
+import snc.pFact.Claim.Upgrade.GainMultiplierUpgrade;
+import snc.pFact.utils.Gerekli;
 
 /**
  * XPClaim
  */
-public class XPClaim extends AdditionalClaim implements MultiplierClaim {
+public class XPClaim extends AdditionalClaim {
 
     private static final long serialVersionUID = 1L;
 
-    private double multiplier;
+    private transient int timer, random;
 
-    public XPClaim(Location center, int length, String faction, int health, double multiplier) {
-        super(center, length, faction, health);
-        this.multiplier = multiplier;
+    public XPClaim(int length, ItemStack claimBlock, ItemStack shard, int health, double multiplier) {
+        super(length, claimBlock, shard, health);
+        claimData().setObject("multiplier", multiplier);
     }
 
     @Override
     public void update() {
-
+        if (random == 0) {
+            random = 1 + Gerekli.random.nextInt(30);
+        }
+        if (timer >= random) {
+            getFaction().addXP(getFaction().toGainXP(false) * getXPMultiplier());
+            timer = 0;
+        }
     }
 
     @Override
@@ -47,23 +53,16 @@ public class XPClaim extends AdditionalClaim implements MultiplierClaim {
         return false;
     }
 
-    @Override
-    public Recipe getRecipe() {
-        return null;
-    }
-
-    @Override
-    protected ItemStack doGetClaimItem(B_Faction fact) {
-        return null;
-    }
-
-    @Override
-    public void setMultiplier(double multiplier) {
-        this.multiplier = multiplier;
-    }
-
-    @Override
-    public double getMultiplier() {
+    public double getXPMultiplier() {
+        double multiplier = claimData().getDouble("multiplier");
+        for (GainMultiplierUpgrade upg : getUpgradesByType(GainMultiplierUpgrade.class)) {
+            multiplier *= upg.getMultiplier();
+        }
         return multiplier;
+    }
+
+    @Override
+    public int getLevel() {
+        return 1;
     }
 }

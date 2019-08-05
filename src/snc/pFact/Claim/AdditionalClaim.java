@@ -2,51 +2,64 @@ package snc.pFact.Claim;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
+
+import snc.pFact.Claim.Upgrade.ClaimUpgrade;
+import snc.pFact.Claim.Upgrade.GainMultiplierUpgrade;
 
 public abstract class AdditionalClaim extends Claim {
 
     private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
         in.defaultReadObject();
-        curHealth = health;
+        curHealth = claimData().getInt("health");
     }
 
     private static final long serialVersionUID = 1L;
-    private int t = 0;
-    public static final int FMC_R = 4;
+    private transient int curHealth;
+    private List<ClaimUpgrade> upgrades;
 
-    public int health;
-    public transient int curHealth;
-
-    public AdditionalClaim(Location center, int length, String faction, int health) {
-        super(center, length, faction);
-        this.health = health;
-        this.curHealth = health;
+    public AdditionalClaim(int length, ItemStack claimBlock, ItemStack shard, int health) {
+        super(length, claimBlock, shard);
+        claimData().setObject("health", health);
     }
 
-    public void SetItemType(int a) {
-        t = a;
+    @Override
+    public void setup(String faction, Location center) {
+        super.setup(faction, center);
+        upgrades = new ArrayList<ClaimUpgrade>();
     }
 
-    public int health() {
-        return health;
+    public int getMaxHealth() {
+        return (int) Math.floor(getHealthMultiplier()) * claimData().getInt("health");
     }
 
     public int curHealth() {
         return curHealth;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
-        this.curHealth = health;
-    }
-
     public void setCurHealth(int curHealth) {
         this.curHealth = curHealth;
     }
 
-    public int GetType() {
-        return t;
+    public double getHealthMultiplier() {
+        double multiplier = 1;
+        for (GainMultiplierUpgrade upg : getUpgradesByType(GainMultiplierUpgrade.class)) {
+            multiplier *= upg.getMultiplier();
+        }
+        return multiplier;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends ClaimUpgrade> List<T> getUpgradesByType(Class<T> clazz) {
+        List<T> list = new ArrayList<T>();
+        for (ClaimUpgrade cu : upgrades) {
+            if (clazz.isAssignableFrom(cu.getClass()))
+                list.add((T) cu);
+        }
+        return list;
     }
 }

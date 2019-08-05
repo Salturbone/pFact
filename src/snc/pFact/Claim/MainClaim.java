@@ -1,15 +1,8 @@
 package snc.pFact.Claim;
 
-import java.util.ArrayList;
-
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.obj.cl.B_FactionMember;
@@ -20,8 +13,8 @@ public class MainClaim extends Claim {
 
     private static final long serialVersionUID = 1L;
 
-    public MainClaim(Location center, int length, String faction) {
-        super(center, length, faction);
+    public MainClaim(int length, ItemStack claimBlock, ItemStack shard) {
+        super(length, claimBlock, shard);
     }
 
     @Override
@@ -60,29 +53,30 @@ public class MainClaim extends Claim {
         return true;
     }
 
+    /*
+     * @Override protected ItemStack doGetClaimItem(B_Faction fact) { ItemStack item
+     * = new ItemStack(Material.FEATHER, 1); ItemMeta im = item.getItemMeta();
+     * 
+     * im.setDisplayName(ChatColor.GREEN + "Klan Ana Alanı Seçme Aracı");
+     * 
+     * ArrayList<String> lore = new ArrayList<String>(); lore.add(ChatColor.YELLOW +
+     * "Bu eşya ile sağ tıkladığınızda"); lore.add(ChatColor.YELLOW +
+     * "Klan evinizi kuracağınız alanı"); lore.add(ChatColor.YELLOW +
+     * "belirlersiniz. Bu alan 41x41 olarak"); lore.add(ChatColor.YELLOW +
+     * "tanımlanmıştır ve bir defa yapıldığında"); lore.add(ChatColor.YELLOW +
+     * "geri alınamaz! Dikkatli seç!"); im.setLore(lore);
+     * im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+     * 
+     * item.setItemMeta(im); return item; }
+     */
+
     @Override
-    public Recipe getRecipe() {
-        return null;
+    public int getLevel() {
+        return 0;
     }
 
     @Override
-    protected ItemStack doGetClaimItem(B_Faction fact) {
-        ItemStack item = new ItemStack(Material.FEATHER, 1);
-        ItemMeta im = item.getItemMeta();
-
-        im.setDisplayName(ChatColor.GREEN + "Klan Ana Alanı Seçme Aracı");
-
-        ArrayList<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.YELLOW + "Bu eşya ile sağ tıkladığınızda");
-        lore.add(ChatColor.YELLOW + "Klan evinizi kuracağınız alanı");
-        lore.add(ChatColor.YELLOW + "belirlersiniz. Bu alan 41x41 olarak");
-        lore.add(ChatColor.YELLOW + "tanımlanmıştır ve bir defa yapıldığında");
-        lore.add(ChatColor.YELLOW + "geri alınamaz! Dikkatli seç!");
-        im.setLore(lore);
-        im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-
-        item.setItemMeta(im);
-        return item;
+    protected MainClaim clone() {
+        return (MainClaim) super.clone();
     }
-
 }

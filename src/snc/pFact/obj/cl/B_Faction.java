@@ -24,12 +24,10 @@ public class B_Faction implements Serializable {
 
     private String name;
     private int level;
-    private int member_count;
     private double xp;
     private double prestige;
     public HashMap<UUID, B_FactionMember> players;
-    public int timer = 0;
-    private double level_block = 1;
+    public transient int timer = 0;
     private double bank = 0;
     private transient B_FactionMember founder;
     private MainClaim mainClaim;
@@ -44,8 +42,7 @@ public class B_Faction implements Serializable {
 
     public B_Faction(String name, UUID founder) {
         this.name = name;
-        this.level = 0;
-        this.member_count = 0;
+        this.level = 1;
         this.xp = 0;
         this.prestige = 0;
         players = new HashMap<UUID, B_FactionMember>();
@@ -74,29 +71,38 @@ public class B_Faction implements Serializable {
 
     // MemberCount
     public int getMemberCount() {
-        return member_count;
-    }
-
-    public void setMemberCount(int mc) {
-        member_count = mc;
+        return players.size();
     }
 
     public void addMember(UUID idd) {
         players.put(idd, new B_FactionMember(idd));
-        member_count += 1;
     }
 
     public double getXP() {
         return xp;
     }
+
     public double getLevelBlock() {
-        return 1 - Math.floor((double)level/10)/10;
+        return 1 - Math.floor((double) level / 10) / 10;
+    }
+
+    public double toGainXP(boolean careOnline) {
+        int on = 0;
+        for (UUID idd : players.keySet()) {
+            if (Bukkit.getPlayer(idd) != null && Bukkit.getPlayer(idd).isOnline()) {
+                on++;
+            }
+        }
+        if (on != 0 || !careOnline) {
+            return getLevelBlock() * (100 + (2 * Math.sqrt(on * on * on))) / 100;
+        }
+        return 0;
     }
 
     public void addXP(double a) {
         xp += a;
-        if (xp >= (1 / getLevelBlock()) * (35 + 35 * level * level)) {
-            xp -= (1 / getLevelBlock()) * (35 + 35 * level * level);
+        if (xp >= getLevelUpXp()) {
+            xp -= getLevelUpXp();
             level += 1;
             for (B_FactionMember bfm : players.values()) {
                 if (bfm.isOnline()) {
@@ -106,6 +112,11 @@ public class B_Faction implements Serializable {
                 }
             }
         }
+        xp = Math.floor(xp * 100) / 100;
+    }
+
+    public double getLevelUpXp() {
+        return (1 / getLevelBlock()) * (35 + 35 * level * level);
     }
 
     public double getPrestige() {
@@ -157,6 +168,10 @@ public class B_Faction implements Serializable {
         return mainClaim;
     }
 
+    public void setMainClaim(MainClaim claim) {
+        this.mainClaim = claim;
+    }
+
     public List<AdditionalClaim> getAdditionalClaims() {
         return addClaims;
     }
@@ -177,6 +192,7 @@ public class B_Faction implements Serializable {
         for (Claim cl : cls) {
             Block bl = cl.getCenterBlock().getBlock();
             bl.setType(Material.AIR);
+
         }
     }
 
@@ -187,19 +203,11 @@ public class B_Faction implements Serializable {
             // sabit 10 üzerinden her aktif üye başına %2 artar
             // sabit 10 üzerinden her 5 seviye başına level_blocker kadar sağlar
             // aktif oyuncu yoksa deneyim kazanılmaz.
-            int on = 0;
-            for (UUID idd : players.keySet()) {
-                if (Bukkit.getPlayer(idd) != null && Bukkit.getPlayer(idd).isOnline()) {
-                    on++;
-                }
-            }
-            if (on != 0) {
-                addXP(1.0 * (100 + (2 * Math.sqrt(on * on * on))) / 100 * getLevelBlock());
-            }
+
             timer = 0;
             // seviye atlama
+            addXP(toGainXP(true));
 
-            xp = Math.floor(xp * 1000) / 1000;
         }
 
     }
