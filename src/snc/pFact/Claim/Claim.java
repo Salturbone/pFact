@@ -25,8 +25,9 @@ public abstract class Claim implements Cloneable, Serializable {
 
     public Claim(int length, ItemStack claimBlock, ItemStack shard) {
         ClaimData cd = new ClaimData();
+        ClaimFactory.claimDatas.put(getName(), cd);
         cd.setObject("length", length);
-        cd.setItemStack("claimBlock", claimBlock);
+        cd.setItemStack("block", claimBlock);
         cd.setItemStack("shard", shard);
     }
 
@@ -51,9 +52,9 @@ public abstract class Claim implements Cloneable, Serializable {
         return DataIssues.factions.get(faction);
     }
 
-    public final ItemStack getClaimItem(B_Faction fact) {
+    public final ItemStack getClaimItem(String fact) {
         return ZSIGN.imzalaZ("claim", getName(),
-                ZSIGN.imzalaZ("claimFact", fact.getName(), claimData().getItemStack("claimBlock")));
+                ZSIGN.imzalaZ("claimFaction", fact, claimData().getItemStack("block")));
     }
 
     public boolean canBreak(Player p, Location loc) {

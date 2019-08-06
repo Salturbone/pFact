@@ -37,7 +37,7 @@ public class Main extends JavaPlugin {
         System.out.println("pFact başlatıldı!");
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new ListenerClass(), this);
-
+        ClaimFactory.initialize();
         BukkitScheduler scheduler = getServer().getScheduler();
         task = scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
@@ -170,7 +170,7 @@ public class Main extends JavaPlugin {
 
                     sender.sendMessage(
                             ChatColor.GREEN + "Klanın başarıyla oluşturuldu!! ::: " + ChatColor.RESET + bf.getName());
-                    ItemStack is = ClaimFactory.getStandartMainClaim().getClaimItem(bf);
+                    ItemStack is = ClaimFactory.getStandartMainClaim().getClaimItem(bf.getName());
                     p.getInventory().addItem(is);
                     return true;
                 } else {

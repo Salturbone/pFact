@@ -240,7 +240,8 @@ public class B_Faction implements Serializable {
 
     public List<Claim> getAllClaims() {
         List<Claim> cls = new ArrayList<Claim>(getAdditionalClaims());
-        cls.add(mainClaim);
+        if (mainClaim != null)
+            cls.add(mainClaim);
         return cls;
     }
 

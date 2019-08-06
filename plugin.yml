@@ -3,6 +3,7 @@ author: biri
 main: snc.pFact.Main
 version: 0.1
 api-version: 1.13
+depend: [ProtocolLib]
 commands:
   klan:
     description: use command
@@ -10,3 +11,6 @@ commands:
   param:
     description: use command
     usage: /<command>
+  claim:
+    description: use command
+    usage: /<command> <claim name/list> <configure/shard/item> <get/set> <value>

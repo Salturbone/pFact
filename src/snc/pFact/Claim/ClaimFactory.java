@@ -27,9 +27,14 @@ public class ClaimFactory {
     public static int task;
 
     public static void initialize() {
+        Main.ekl.getCommand("claim").setExecutor(new ClaimCommand());
+        Main.ekl.getCommand("claim").setTabCompleter(new ClaimTabCompleter());
+
+        loadObjects();
         Bukkit.getPluginManager().registerEvents(new ClaimListener(), Main.ekl);
-        addStandartClaim(new MainClaim(4, null, null));
-        addStandartClaim(new XPClaim(4, null, null, 30, 2));
+        addStandartClaim(new MainClaim(4, new ItemStack(Material.DRAGON_EGG), new ItemStack(Material.ANVIL)));
+        addStandartClaim(
+                new XPClaim(4, new ItemStack(Material.DRAGON_EGG), new ItemStack(Material.PRISMARINE_SHARD), 30, 2));
         for (int i = 1; i <= 3; i++) {
             craftLevelIS.put(i, getItemByLevel(i));
         }
@@ -63,6 +68,7 @@ public class ClaimFactory {
     }
 
     public static void deInitialize() {
+        saveObjects();
         standartClaims.clear();
         Bukkit.getScheduler().cancelTask(task);
     }
@@ -112,8 +118,8 @@ public class ClaimFactory {
     public static List<Claim> getAllClaims() {
         List<Claim> claims = new ArrayList<Claim>();
         for (B_Faction bf : DataIssues.factions.values()) {
-            claims.add(bf.GetMainClaim());
-            claims.addAll(bf.getAdditionalClaims());
+            Bukkit.broadcastMessage(bf.getAllClaims().size() + "");
+            claims.addAll(bf.getAllClaims());
         }
         return claims;
     }

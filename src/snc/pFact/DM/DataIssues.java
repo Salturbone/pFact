@@ -47,8 +47,6 @@ public class DataIssues {
         });
     }
 
-    // onEnable'da ilk �al��an metod, factionFile'� fln tan�ml�yor, gerekirse
-    // olu�turuyor
     public static void create() {
 
         factionFile = new File(Main.ekl.getDataFolder(), "Factions/");
@@ -59,7 +57,6 @@ public class DataIssues {
             playerFile.mkdirs();
     }
 
-    // onEnable'da �al��an 2. metod, y�klemen gereken filelar� okumak i�in
     public static void load() {
         factions.loadAllData(true);
         for (Player p : Bukkit.getOnlinePlayers()) {

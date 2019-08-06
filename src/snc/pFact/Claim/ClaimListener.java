@@ -49,8 +49,8 @@ public class ClaimListener implements Listener {
             }
 
             B_FactionMember bfm = bf.getPlayer(p.getUniqueId());
-
-            if (!bf.getName().equals(ClaimFactory.getClaimStackFaction(is))) {
+            String isFact = ClaimFactory.getClaimStackFaction(is);
+            if (isFact.equalsIgnoreCase("null") && !bf.getName().equals(isFact)) {
                 p.sendMessage("this claim item is not created in your faction");
                 ev.setCancelled(true);
                 return;
@@ -67,7 +67,7 @@ public class ClaimListener implements Listener {
                     ev.setCancelled(true);
                     return;
                 }
-                if (!ClaimFactory.canPlaceMainClaim(loc)) {
+                if (!ClaimFactory.canPlaceMainClaim(loc) && !p.isOp()) {
                     p.sendMessage("too close or too far away from other factions");
                     ev.setCancelled(true);
                     return;
@@ -113,6 +113,8 @@ public class ClaimListener implements Listener {
                     for (int y = -2; y < 2; y++) {
                         for (int z = -2; z < 2; z++) {
                             Location loc2 = loc.clone().add(x, y, z);
+                            if (loc2.equals(loc))
+                                continue;
                             if (!loc2.getBlock().breakNaturally())
                                 loc2.getBlock().setType(Material.AIR);
                         }
