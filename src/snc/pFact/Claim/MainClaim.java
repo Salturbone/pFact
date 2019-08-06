@@ -1,13 +1,6 @@
 package snc.pFact.Claim;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import snc.pFact.obj.cl.B_Faction;
-import snc.pFact.obj.cl.B_FactionMember;
-import snc.pFact.obj.cl.B_Player;
-import snc.pFact.obj.cl.B_Player.Rank;
 
 public class MainClaim extends Claim {
 
@@ -18,24 +11,6 @@ public class MainClaim extends Claim {
     }
 
     @Override
-    public boolean canBreak(Player p, Location loc) {
-        return canPlace(p, loc);
-    }
-
-    @Override
-    public boolean canPlace(Player p, Location loc) {
-        B_Faction bf = B_Player.getFactionOfPlayer(p.getUniqueId());
-        if (bf == null || bf != getFaction())
-            return false;
-        B_FactionMember bfm = bf.getPlayer(p.getUniqueId());
-        if (bfm == null)
-            return false;
-        if (bfm.rank() != Rank.Player)
-            return true;
-        return false;
-    }
-
-    @Override
     public void update() {
 
     }
@@ -43,14 +18,6 @@ public class MainClaim extends Claim {
     @Override
     public String getName() {
         return "mainClaim";
-    }
-
-    @Override
-    public boolean canInteract(Player p, Location loc) {
-        B_Faction bf = B_Player.getFactionOfPlayer(p.getUniqueId());
-        if (bf == null || bf != getFaction())
-            return false;
-        return true;
     }
 
     /*

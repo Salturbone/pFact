@@ -1,7 +1,10 @@
 package snc.pFact.Claim;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -29,7 +32,7 @@ public abstract class Claim implements Cloneable, Serializable {
 
     public void setup(String faction, Location center) {
         this.faction = faction;
-        this.centerBlock = new SerLocation(center);
+        this.centerBlock = new SerLocation(center.getBlock().getLocation());
     }
 
     public Location getCenterBlock() {
@@ -53,11 +56,24 @@ public abstract class Claim implements Cloneable, Serializable {
                 ZSIGN.imzalaZ("claimFact", fact.getName(), claimData().getItemStack("claimBlock")));
     }
 
-    public abstract boolean canBreak(Player p, Location loc);
+    public boolean canBreak(Player p, Location loc) {
+        return canPlace(p, loc);
+    }
 
-    public abstract boolean canPlace(Player p, Location loc);
+    public boolean canPlace(Player p, Location loc) {
+        Location center = getCenterBlock();
+        double xDiff = Math.abs(loc.getX() - center.getX());
+        double yDiff = Math.abs(loc.getY() - center.getY());
+        double zDiff = Math.abs(loc.getZ() - center.getZ());
+        if (xDiff < 2 && yDiff < 2 && zDiff < 2) {
+            return false;
+        }
+        return true;
+    }
 
-    public abstract boolean canInteract(Player p, Location loc);
+    public boolean canInteract(Player p, Location loc) {
+        return true;
+    }
 
     public abstract void update();
 
@@ -68,6 +84,34 @@ public abstract class Claim implements Cloneable, Serializable {
     }
 
     public abstract int getLevel();
+
+    public boolean canCreate() {
+        int has = getFaction().getClaimsByType(this).size();
+        int hasTotal = getFaction().getAllClaims().size();
+        if (has >= getMaxToHave())
+            return false;
+        if (hasTotal >= getFaction().getMaxClaimCount()) {
+            return false;
+        }
+        return true;
+    }
+
+    public int getMaxToHave() {
+        int fctLevel = getFaction().getLevel();
+        List<Integer> ints = new ArrayList<Integer>();
+        if (getLevel() == 1) {
+            ints.addAll(Arrays.asList(3, 8, 14, 19, 23, 27, 30));
+        } else if (getLevel() == 2) {
+            ints.addAll(Arrays.asList(5, 11, 18, 24, 30));
+        }
+        int max = 0;
+        for (int i = 0; i < ints.size(); i++) {
+            if (fctLevel < ints.get(i)) {
+                max = i;
+            }
+        }
+        return max;
+    }
 
     public void canCraft(HashMap<Integer, ItemStack> recipe) {
 

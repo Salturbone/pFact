@@ -183,17 +183,65 @@ public class B_Faction implements Serializable {
     }
 
     public int getMaxClaimLength() {
-        return 22 + (int) Math.min(Math.floor((double) level / 10) * 12, 12);
+        return 22 + (int) Math.min(Math.floor((double) level / 10) * 6, 18);
     }
 
     public void disband() {
-        List<Claim> cls = new ArrayList<Claim>(getAdditionalClaims());
-        cls.add(mainClaim);
-        for (Claim cl : cls) {
+        for (Claim cl : getAllClaims()) {
             Block bl = cl.getCenterBlock().getBlock();
             bl.setType(Material.AIR);
 
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Claim> List<T> getClaimsByType(T claim) {
+        List<T> claims = new ArrayList<>();
+        for (Claim ac : getAllClaims()) {
+            if (ac.getName().equals(claim.getName()))
+                claims.add((T) ac);
+        }
+        return claims;
+    }
+
+    public int getMaxClaimCount() {
+        HashMap<Integer, Integer> ints = new HashMap<>();
+        ints.put(0, 1);
+        ints.put(3, 2);
+        ints.put(5, 4);
+        ints.put(7, 6);
+        ints.put(9, 8);
+        ints.put(10, 10);
+        ints.put(12, 13);
+        ints.put(14, 16);
+        ints.put(16, 19);
+        ints.put(18, 22);
+        ints.put(20, 25);
+        ints.put(21, 29);
+        ints.put(22, 33);
+        ints.put(23, 37);
+        ints.put(24, 41);
+        ints.put(25, 45);
+        ints.put(26, 49);
+        ints.put(27, 53);
+        ints.put(28, 57);
+        ints.put(29, 60);
+        ints.put(30, 63);
+        int max = 0;
+        for (Integer i : ints.keySet()) {
+
+            if (i > level) {
+                break;
+            }
+            max = ints.get(i);
+        }
+        return max;
+    }
+
+    public List<Claim> getAllClaims() {
+        List<Claim> cls = new ArrayList<Claim>(getAdditionalClaims());
+        cls.add(mainClaim);
+        return cls;
     }
 
     public void update() {

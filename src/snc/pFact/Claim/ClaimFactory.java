@@ -71,6 +71,10 @@ public class ClaimFactory {
         standartClaims.put(claim.getName(), claim);
     }
 
+    public static String getClaimStackFaction(ItemStack is) {
+        return is == null ? null : ZSIGN.alImzaZ(is, "claimFaction");
+    }
+
     public static boolean isClaimStack(ItemStack is) {
         return is == null || is.getType() == Material.AIR || ZSIGN.sorImzaZ(is, "claim");
     }
@@ -136,6 +140,7 @@ public class ClaimFactory {
     }
 
     public static boolean canPlaceMainClaim(Location center) {
+        boolean suits = false;
         for (B_Faction fct : DataIssues.factions.values()) {
             Claim mc = fct.GetMainClaim();
             if (mc == null)
@@ -147,8 +152,10 @@ public class ClaimFactory {
             double zdiff = Math.abs(center.getZ() - mcloc.getZ());
             if (xdiff < B_Faction.maxMaxClaimLength * 3 || zdiff < B_Faction.maxMaxClaimLength * 3)
                 return false;
+            if (xdiff > B_Faction.maxMaxClaimLength * 6 || zdiff < B_Faction.maxMaxClaimLength * 6)
+                suits = true;
         }
-        return true;
+        return suits;
     }
 
 }

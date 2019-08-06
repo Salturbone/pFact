@@ -1,7 +1,5 @@
 package snc.pFact.Claim.AdditionalClaims;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import snc.pFact.Claim.AdditionalClaim;
@@ -36,21 +34,6 @@ public class XPClaim extends AdditionalClaim {
     @Override
     public String getName() {
         return "xpClaim";
-    }
-
-    @Override
-    public boolean canBreak(Player p, Location loc) {
-        return false;
-    }
-
-    @Override
-    public boolean canPlace(Player p, Location loc) {
-        return false;
-    }
-
-    @Override
-    public boolean canInteract(Player p, Location loc) {
-        return false;
     }
 
     public double getXPMultiplier() {
