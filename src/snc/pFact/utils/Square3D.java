@@ -39,7 +39,7 @@ public class Square3D implements Serializable, Cloneable {
         double z = loc.z();
         double xdiff = Math.abs(x - center.x());
         double zdiff = Math.abs(z - center.z());
-        if (xdiff < length && zdiff < length)
+        if (xdiff <= length && zdiff <= length)
             return true;
         return false;
     }

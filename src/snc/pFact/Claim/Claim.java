@@ -66,7 +66,7 @@ public abstract class Claim implements Cloneable, Serializable {
         double xDiff = Math.abs(loc.getX() - center.getX());
         double yDiff = Math.abs(loc.getY() - center.getY());
         double zDiff = Math.abs(loc.getZ() - center.getZ());
-        if (xDiff < 2 && yDiff < 2 && zDiff < 2) {
+        if (xDiff <= 2 && yDiff <= 2 && zDiff <= 2) {
             return false;
         }
         return true;

@@ -37,100 +37,107 @@ public class ClaimListener implements Listener {
         ItemStack is = ev.getItemInHand();
         Claim cl = ClaimFactory.getClaim(ev.getBlock().getLocation());
         // placing claim
-        if (cl == null) {
-            Claim isCl = ClaimFactory.getClaimFromStack(is);
-            if (isCl == null)
-                return;
-            B_Faction bf = DataIssues.players.getLoaded(p.getUniqueId()).getF();
-            if (bf == null) {
-                p.sendMessage("you need a faction to claim a area");
-                ev.setCancelled(true);
-                return;
-            }
+        Claim isCl = ClaimFactory.getClaimFromStack(is);
+        if (isCl != null) {
+            if (cl == null) {
+                B_Faction bf = DataIssues.players.getLoaded(p.getUniqueId()).getF();
+                if (bf == null) {
+                    p.sendMessage("you need a faction to claim a area");
+                    ev.setCancelled(true);
+                    return;
+                }
 
-            B_FactionMember bfm = bf.getPlayer(p.getUniqueId());
-            String isFact = ClaimFactory.getClaimStackFaction(is);
-            if (isFact.equalsIgnoreCase("null") && !bf.getName().equals(isFact)) {
-                p.sendMessage("this claim item is not created in your faction");
-                ev.setCancelled(true);
-                return;
-            }
-            Claim createdClaim;
-            if (isCl instanceof MainClaim) {
-                if (bfm.rank() != Rank.Founder) {
-                    p.sendMessage("you need to be founder");
+                B_FactionMember bfm = bf.getPlayer(p.getUniqueId());
+                String isFact = ClaimFactory.getClaimStackFaction(is);
+                if (isFact.equalsIgnoreCase("null") && !bf.getName().equals(isFact)) {
+                    p.sendMessage("this claim item is not created in your faction");
                     ev.setCancelled(true);
                     return;
                 }
-                if (bf.GetMainClaim() != null) {
-                    p.sendMessage("your faction already has main claim");
-                    ev.setCancelled(true);
-                    return;
-                }
-                if (!ClaimFactory.canPlaceMainClaim(loc) && !p.isOp()) {
-                    p.sendMessage("too close or too far away from other factions");
-                    ev.setCancelled(true);
-                    return;
-                }
-                createdClaim = ClaimFactory.createClaim(isCl, bf.getName(), loc);
-            }
-            // PLacing other claims
-            else {
-                if (bfm.rank() == Rank.Player) {
-                    p.sendMessage("you don't have enough permission");
-                    ev.setCancelled(true);
-                    return;
-                }
-                createdClaim = ClaimFactory.createClaim(isCl, bf.getName(), loc);
-                Square3D sq = bf.getMaxClaimArea();
-                if (!createdClaim.canCreate()) {
-                    p.sendMessage("already has too many claims");
-                    ev.setCancelled(true);
-                    return;
-                }
-                if (!createdClaim.getSquare().IsInsideof(sq)) {
-                    p.sendMessage("not inside max claim area");
-                    ev.setCancelled(true);
-                    return;
-                }
-                for (Claim cla : bf.getAllClaims()) {
-                    if (cla.getSquare().doCollide(createdClaim.getSquare())) {
-                        p.sendMessage("too close to another claim");
+                Claim createdClaim;
+                if (isCl instanceof MainClaim) {
+                    if (bfm.rank() != Rank.Founder) {
+                        p.sendMessage("you need to be founder");
                         ev.setCancelled(true);
                         return;
                     }
+                    if (bf.GetMainClaim() != null) {
+                        p.sendMessage("your faction already has main claim");
+                        ev.setCancelled(true);
+                        return;
+                    }
+                    if (!ClaimFactory.canPlaceMainClaim(loc) && !p.isOp()) {
+                        p.sendMessage("too close or too far away from other factions");
+                        ev.setCancelled(true);
+                        return;
+                    }
+                    createdClaim = ClaimFactory.createClaim(isCl, bf.getName(), loc);
                 }
-            }
-            if (createdClaim == null) {
-                ev.setCancelled(true);
-                return;
-            }
-            PlaceClaimEvent pce = new PlaceClaimEvent(isCl, p, loc, bf, bfm, ev);
-            Bukkit.getPluginManager().callEvent(pce);
-            ev.setCancelled(pce.isCancelled());
-            if (!pce.isCancelled()) {
-                for (double x = -2; x <= 2; x++) {
-                    for (int y = -2; y < 2; y++) {
-                        for (int z = -2; z < 2; z++) {
-                            Location loc2 = loc.clone().add(x, y, z);
-                            if (loc2.equals(loc))
-                                continue;
-                            if (!loc2.getBlock().breakNaturally())
-                                loc2.getBlock().setType(Material.AIR);
+                // PLacing other claims
+                else {
+                    if (bfm.rank() == Rank.Player) {
+                        p.sendMessage("you don't have enough permission");
+                        ev.setCancelled(true);
+                        return;
+                    }
+                    createdClaim = ClaimFactory.createClaim(isCl, bf.getName(), loc);
+                    Square3D sq = bf.getMaxClaimArea();
+                    if (!createdClaim.canCreate()) {
+                        p.sendMessage("already has too many claims");
+                        ev.setCancelled(true);
+                        return;
+                    }
+                    if (!createdClaim.getSquare().IsInsideof(sq)) {
+                        p.sendMessage("not inside max claim area");
+                        ev.setCancelled(true);
+                        return;
+                    }
+                    for (Claim cla : bf.getAllClaims()) {
+                        if (cla.getSquare().doCollide(createdClaim.getSquare())) {
+                            p.sendMessage("too close to another claim");
+                            ev.setCancelled(true);
+                            return;
                         }
                     }
                 }
-                if (createdClaim instanceof MainClaim) {
-                    bf.setMainClaim((MainClaim) createdClaim);
-                    p.sendMessage("placed main claim " + createdClaim.getName());
-                } else {
-                    bf.getAdditionalClaims().add((AdditionalClaim) createdClaim);
-                    p.sendMessage("placed add claim " + createdClaim.getName());
+                if (createdClaim == null) {
+                    ev.setCancelled(true);
+                    return;
                 }
+                PlaceClaimEvent pce = new PlaceClaimEvent(isCl, p, loc, bf, bfm, ev);
+                Bukkit.getPluginManager().callEvent(pce);
+                ev.setCancelled(pce.isCancelled());
+                if (!pce.isCancelled()) {
+                    for (double x = -2; x <= 2; x++) {
+                        for (int z = -2; z <= 2; z++) {
 
+                            for (int y = -2; y <= 2; y++) {
+                                if (x == 0 && z == 0 && y <= 0)
+                                    continue;
+                                Location loc2 = loc.clone().add(x, y, z);
+                                if (!loc2.getBlock().breakNaturally())
+                                    loc2.getBlock().setType(Material.AIR);
+                            }
+                        }
+                    }
+                    if (createdClaim instanceof MainClaim) {
+                        bf.setMainClaim((MainClaim) createdClaim);
+                        p.sendMessage("placed main claim " + createdClaim.getName());
+                    } else {
+                        bf.getAdditionalClaims().add((AdditionalClaim) createdClaim);
+                        p.sendMessage("placed add claim " + createdClaim.getName());
+                    }
+
+                }
+                return;
+            } else {
+                p.sendMessage("can't put another claim too close to another");
+                ev.setCancelled(true);
+                return;
             }
-            return;
         }
+        if (cl == null)
+            return;
         PlaceInsideClaimEvent pice = new PlaceInsideClaimEvent(cl, p, loc, ev);
         Bukkit.getPluginManager().callEvent(pice);
         ev.setCancelled(pice.isCancelled());
@@ -144,10 +151,13 @@ public class ClaimListener implements Listener {
         Claim cl = ev.getClaim();
         if (bf != null && cl.getFaction().equals(bf)) {
             B_FactionMember bfm = bf.getPlayer(bp.uuid());
-            if (bfm.rank() != Rank.Player) {
-                p.sendMessage("you don't have enough permission");
-                ev.setCancelled(true);
-                return;
+            if (cl instanceof MainClaim) {
+                if (bfm.rank() == Rank.Player) {
+                    p.sendMessage("you don't have enough permission");
+                    ev.setCancelled(true);
+                    return;
+                }
+
             }
             if (!cl.canPlace(p, ev.getLocation())) {
                 p.sendMessage("can't place block too close to a claim block");
@@ -218,11 +228,13 @@ public class ClaimListener implements Listener {
         if (cl == null)
             return;
         if (cl.getCenterBlock().equals(loc)) {
+            Bukkit.broadcastMessage("interact claim");
             InteractClaimEvent ice = new InteractClaimEvent(cl, p, loc, ev);
             ev.setCancelled(true);
             Bukkit.getPluginManager().callEvent(ice);
             return;
         }
+        Bukkit.broadcastMessage("interact inside claim");
         InteractInsideClaimEvent iice = new InteractInsideClaimEvent(cl, p, loc, ev);
         Bukkit.getPluginManager().callEvent(iice);
         ev.setCancelled(iice.isCancelled());

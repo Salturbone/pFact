@@ -26,7 +26,7 @@ public class B_Faction implements Serializable {
     private int level;
     private double xp;
     private double prestige;
-    public HashMap<UUID, B_FactionMember> players;
+    private HashMap<UUID, B_FactionMember> players;
     public transient int timer = 0;
     private double bank = 0;
     private transient B_FactionMember founder;
@@ -62,6 +62,10 @@ public class B_Faction implements Serializable {
 
     public void addLevel(int a) {
         level += a;
+    }
+
+    public HashMap<UUID, B_FactionMember> getFactionMembers() {
+        return players;
     }
 
     // Name
@@ -137,7 +141,7 @@ public class B_Faction implements Serializable {
         B_FactionMember nfounder = players.get(id);
         if (nfounder == null)
             return;
-        this.founder.setRank(Rank.Moderator);
+        getFounder().setRank(Rank.Moderator);
         this.founder = nfounder;
 
         this.founder.setRank(Rank.Founder);

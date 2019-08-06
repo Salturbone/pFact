@@ -118,7 +118,6 @@ public class ClaimFactory {
     public static List<Claim> getAllClaims() {
         List<Claim> claims = new ArrayList<Claim>();
         for (B_Faction bf : DataIssues.factions.values()) {
-            Bukkit.broadcastMessage(bf.getAllClaims().size() + "");
             claims.addAll(bf.getAllClaims());
         }
         return claims;
