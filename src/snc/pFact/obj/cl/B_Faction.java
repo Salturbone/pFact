@@ -33,6 +33,9 @@ public class B_Faction implements Serializable {
     private transient B_FactionMember founder;
     private MainClaim mainClaim;
     private List<AdditionalClaim> addClaims = new ArrayList<AdditionalClaim>();
+	private transient boolean isRaid = false;
+	private transient boolean raidPos; // 0 = defend // 1 = attack
+	private transient String enemyRaid;
 
     /*
      * public b_Faction(String name, int level, int member_count, double xp, double
@@ -59,6 +62,30 @@ public class B_Faction implements Serializable {
 
     public void setLevel(int lvl) {
         level = lvl;
+    }
+	
+	
+	public boolean getRaidState() {
+        return isRaid;
+    }
+
+    public void setRaidState(boolean s) {
+        isRaid = s;
+    }
+	
+	public String getEnemyRaid() {
+        return enemyRaid;
+    }
+
+    public void setEnemyRaid(String s) {
+        enemyRaid = s;
+    }
+	public boolean getRaidPos() {
+        return raidPos;
+    }
+
+    public void setRaidPos(boolean s) {
+        raidPos = s;
     }
 
     public void addLevel(int a) {
