@@ -53,7 +53,7 @@ public class ClaimCommand implements CommandExecutor {
             Player p = (Player) sender;
             ItemStack is = cl.getClaimItem(fact);
             p.getInventory().addItem(is);
-            p.sendMessage("Given shard of " + args[0]);
+            p.sendMessage("Given block of " + args[0]);
             return true;
         }
         if (args.length >= 2 && args[1].equalsIgnoreCase("configure") && hasPermission(sender)) {

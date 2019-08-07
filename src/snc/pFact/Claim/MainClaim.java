@@ -1,6 +1,21 @@
 package snc.pFact.Claim;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
+
+import me.Zindev.utils.ZChestLibV6.ButtonNode;
+import me.Zindev.utils.ZChestLibV6.ChestGUI;
+import me.Zindev.utils.ZChestLibV6.ChestNode;
+import me.Zindev.utils.ZChestLibV6.ItemNode;
+import me.Zindev.utils.data.SoundData;
+import snc.pFact.GUIs.ClaimMenuGUI;
+import snc.pFact.GUIs.CraftClaimGUI;
+import snc.pFact.GUIs.ShowBordersButton;
+import snc.pFact.obj.cl.B_Faction;
 
 public class MainClaim extends Claim {
 
@@ -45,5 +60,53 @@ public class MainClaim extends Claim {
     @Override
     protected MainClaim clone() {
         return (MainClaim) super.clone();
+    }
+
+    @Override
+    public List<ChestNode> getConfigurableList(ChestGUI arg0) {
+        List<ChestNode> nodes = new ArrayList<>();
+        // egg
+        nodes.add(getSingularItem());
+        // break
+        nodes.add(new ButtonNode(null) {
+
+            @Override
+            public void onClick(ChestGUI arg0, ChestGUIClickEvent arg1) {
+                MainClaim cl = (MainClaim) ((ClaimMenuGUI) arg0).getClaim();
+                if (cl == null)
+                    return;
+                B_Faction fact = cl.getFaction();
+                if (fact.getAdditionalClaims().size() != 0) {
+                    return;
+                }
+                arg0.getUser().getInventory().addItem(cl.getClaimItem(fact.getName()));
+                cl.getCenterBlock().getBlock().setType(Material.AIR);
+                fact.setMainClaim(null);
+                new SoundData(1f, 1f, Sound.BLOCK_GLASS_BREAK).play(arg0.getUser());
+                arg0.close(true);
+            }
+        });
+        // goto crafting gui
+        nodes.add(new ButtonNode(null) {
+
+            @Override
+            public void onClick(ChestGUI arg0, ChestGUIClickEvent arg1) {
+                arg0.switchTo(new CraftClaimGUI(arg0.getUser(), ((ClaimMenuGUI) arg0).getClaim()));
+            }
+
+            @Override
+            public ItemStack getStack(ChestGUI gui) {
+
+                return super.getStack(gui);
+            }
+        });
+        // show
+        nodes.add(new ShowBordersButton(null));
+        return nodes;
+    }
+
+    @Override
+    public SingularItem getSingularItem() {
+        return new ItemNode(claimData().getItemStack("displayItem"));
     }
 }

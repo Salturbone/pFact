@@ -16,6 +16,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import me.Zindev.utils.ZChestLibV6.ChestManager;
 import snc.pFact.Claim.ClaimFactory;
 import snc.pFact.DM.DataIssues;
 import snc.pFact.obj.cl.B_Faction;
@@ -26,12 +27,14 @@ import snc.pFact.obj.cl.B_Player.Rank;
 public class Main extends JavaPlugin {
 
     public static JavaPlugin ekl;
+    public static ChestManager cm;
     public static int task;
 
     @Override
     public void onEnable() {
         ekl = this;
-
+        cm = new ChestManager();
+        cm.initialize(this);
         DataIssues.initalize();
         DataIssues.load();
         System.out.println("pFact başlatıldı!");
@@ -57,6 +60,8 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         DataIssues.save();
+        ClaimFactory.deInitialize();
+        cm.uninitialize();
         Bukkit.getScheduler().cancelTask(task);
         System.out.println("pFact kapatıldı!");
     }

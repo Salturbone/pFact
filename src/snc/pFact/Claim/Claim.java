@@ -10,6 +10,10 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import me.Zindev.utils.ZChestLibV6.ChestGUI;
+import me.Zindev.utils.ZChestLibV6.ChestNode;
+import me.Zindev.utils.ZChestLibV6.ChestNode.ProcessItem;
+import me.Zindev.utils.ZChestLibV6.GUIReadLine.GUIConfigurable;
 import snc.pFact.DM.DataIssues;
 import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.utils.Location2D;
@@ -17,7 +21,7 @@ import snc.pFact.utils.SerLocation;
 import snc.pFact.utils.Square3D;
 import snc.pFact.utils.ZSIGN;
 
-public abstract class Claim implements Cloneable, Serializable {
+public abstract class Claim implements Cloneable, Serializable, GUIConfigurable, ProcessItem {
     private static final long serialVersionUID = 1L;
 
     private String faction;
@@ -29,6 +33,8 @@ public abstract class Claim implements Cloneable, Serializable {
         cd.setObject("length", length);
         cd.setItemStack("block", claimBlock);
         cd.setItemStack("shard", shard);
+        cd.setObject("displayName", getName());
+        cd.setItemStack("displayItem", getClaimItem("null"));
     }
 
     public void setup(String faction, Location center) {
@@ -134,4 +140,7 @@ public abstract class Claim implements Cloneable, Serializable {
     public ClaimData claimData() {
         return ClaimFactory.claimDatas.get(getName());
     }
+
+    @Override
+    public abstract List<ChestNode> getConfigurableList(ChestGUI arg0);
 }

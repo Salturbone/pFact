@@ -19,6 +19,7 @@ import snc.pFact.Claim.Events.InteractInsideClaimEvent;
 import snc.pFact.Claim.Events.PlaceClaimEvent;
 import snc.pFact.Claim.Events.PlaceInsideClaimEvent;
 import snc.pFact.DM.DataIssues;
+import snc.pFact.GUIs.ClaimMenuGUI;
 import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.obj.cl.B_FactionMember;
 import snc.pFact.obj.cl.B_Player;
@@ -49,7 +50,7 @@ public class ClaimListener implements Listener {
 
                 B_FactionMember bfm = bf.getPlayer(p.getUniqueId());
                 String isFact = ClaimFactory.getClaimStackFaction(is);
-                if (isFact.equalsIgnoreCase("null") && !bf.getName().equals(isFact)) {
+                if (!isFact.equals("null") && !bf.getName().equals(isFact)) {
                     p.sendMessage("this claim item is not created in your faction");
                     ev.setCancelled(true);
                     return;
@@ -256,6 +257,7 @@ public class ClaimListener implements Listener {
                 p.sendMessage("can't interact");
                 return;
             }
+            new ClaimMenuGUI(p, cl).open();
             return;
         }
         p.sendMessage("can't interact with others claim blocks outside raids");

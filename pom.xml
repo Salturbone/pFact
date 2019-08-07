@@ -48,6 +48,11 @@
             <id>dmulloy2-repo</id>
             <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
         </repository>
+        <repository>
+            <id>inventive-repo</id>
+            <url>https://repo.inventivetalent.org/content/groups/public/</url>
+        </repository>
+
     </repositories>
     <dependencies>
         <dependency>
@@ -68,6 +73,18 @@
             <version>4.4.0</version>
             <type>jar</type>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.Zindev.utils</groupId>
+            <artifactId>ZinUtils</artifactId>
+            <version>0.1</version>
+            <scope>system</scope>
+            <systemPath>D:\Plugins\ZinUtils.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.inventivetalent</groupId>
+            <artifactId>glowapi</artifactId>
+            <version>1.4.8-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

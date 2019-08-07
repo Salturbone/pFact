@@ -1,6 +1,12 @@
 package snc.pFact.DM;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -71,26 +77,49 @@ public class DataIssues {
         }
     }
 
-    /*
-     * / objeyi file'a yazd�rma metodu public static void saveObject(Object a, File
-     * f) { try { FileOutputStream d = new FileOutputStream(f); ObjectOutputStream
-     * out = new ObjectOutputStream(d); out.writeObject(a); out.close(); d.close();
-     * } catch (FileNotFoundException e) { e.printStackTrace(); } catch (IOException
-     * e) { e.printStackTrace(); } }
-     * 
-     * // objeyi file'dan okuma metodu public static Object loadObject(File f) {
-     * 
-     * if (!f.exists()) { return null; } FileInputStream fileIn; try { fileIn = new
-     * FileInputStream(f);
-     * 
-     * ObjectInputStream in = new ObjectInputStream(fileIn); Object o =
-     * in.readObject(); in.close(); fileIn.close(); return o; } catch
-     * (FileNotFoundException e1) { e1.printStackTrace();
-     * 
-     * } catch (ClassNotFoundException e1) { e1.printStackTrace();
-     * 
-     * } catch (IOException e1) { e1.printStackTrace();
-     * 
-     * } return null; }
-     */
+    // objeyi file'a yazd�rma metodu
+    public static void saveObject(Object a, File f) {
+        try {
+            FileOutputStream d = new FileOutputStream(f);
+            ObjectOutputStream out = new ObjectOutputStream(d);
+            out.writeObject(a);
+            out.close();
+            d.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // objeyi file'dan okuma metodu
+    public static Object loadObject(File f) {
+
+        if (!f.exists())
+
+        {
+            return null;
+        }
+        FileInputStream fileIn;
+        try {
+            fileIn = new FileInputStream(f);
+
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            Object o = in.readObject();
+            in.close();
+            fileIn.close();
+            return o;
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+
+        } catch (ClassNotFoundException e1) {
+            e1.printStackTrace();
+
+        } catch (IOException e1) {
+            e1.printStackTrace();
+
+        }
+        return null;
+    }
+
 }

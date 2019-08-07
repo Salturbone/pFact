@@ -1,5 +1,7 @@
 package snc.pFact.Claim.Upgrade;
 
+import java.io.Serializable;
+
 import org.bukkit.inventory.ItemStack;
 
 import snc.pFact.utils.SerItem;
@@ -8,8 +10,9 @@ import snc.pFact.utils.ZSIGN;
 /**
  * ClaimUpgrade
  */
-public abstract class ClaimUpgrade {
+public abstract class ClaimUpgrade implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private SerItem item;
 
     public abstract String getName();

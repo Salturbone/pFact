@@ -5,6 +5,7 @@ package snc.pFact.Claim.Upgrade;
  */
 public class HealthMultiplierUpgrade extends ClaimUpgrade {
 
+    private static final long serialVersionUID = 1L;
     public double multiplier;
 
     @Override

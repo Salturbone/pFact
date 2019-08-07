@@ -1,5 +1,6 @@
 package snc.pFact.Claim;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,34 +11,87 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import me.Zindev.utils.Itemizer.Itemizer;
+import me.Zindev.utils.text.Cutty;
+import me.Zindev.utils.text.SoShorten;
 import snc.pFact.Main;
 import snc.pFact.Claim.AdditionalClaims.XPClaim;
 import snc.pFact.Claim.Upgrade.ClaimUpgrade;
 import snc.pFact.DM.DataIssues;
+import snc.pFact.DM.HashMapManager;
 import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.utils.Location2D;
+import snc.pFact.utils.SerItem;
 import snc.pFact.utils.ZSIGN;
 
 public class ClaimFactory {
 
-    public static HashMap<String, Claim> standartClaims = new HashMap<String, Claim>();
-    public static HashMap<String, ClaimData> claimDatas = new HashMap<String, ClaimData>();
-    public static HashMap<Integer, ItemStack> craftLevelIS = new HashMap<Integer, ItemStack>();
-    public static HashMap<String, ClaimUpgrade> upgrades = new HashMap<String, ClaimUpgrade>();
+    public static File claimFolder;
+    public static File noUpgradeItemFile, breakClaimFile;
+
+    public static HashMap<String, Claim> standartClaims;
+    public static HashMapManager<String, ClaimData> claimDatas;
+    public static HashMapManager<Integer, SerItem> craftLevelIS;
+    public static HashMapManager<String, ClaimUpgrade> upgrades;
+    public static SerItem noUpgradeItem, breakClaim;
     public static int task;
 
     public static void initialize() {
+        claimFolder = new File(Main.ekl.getDataFolder(), "claim");
+        if (!claimFolder.exists())
+            claimFolder.mkdirs();
+        standartClaims = new HashMap<String, Claim>();
+        claimDatas = new HashMapManager<>(claimFolder, new HashMapManager.KeyConverter<String>() {
+            @Override
+            protected String toFileName(String key) {
+                return key + ".cd";
+            }
+
+            @Override
+            protected String toKey(String filename) {
+                return filename.replaceAll(".cd", "");
+            }
+        });
+        upgrades = new HashMapManager<>(claimFolder, new HashMapManager.KeyConverter<String>() {
+            @Override
+            protected String toFileName(String key) {
+                return key + ".up";
+            }
+
+            @Override
+            protected String toKey(String filename) {
+                return filename.replaceAll(".up", "");
+            }
+        });
+        craftLevelIS = new HashMapManager<>(claimFolder, new HashMapManager.KeyConverter<Integer>() {
+
+            @Override
+            protected String toFileName(Integer key) {
+                return "level" + key + ".si";
+            }
+
+            @Override
+            protected Integer toKey(String filename) {
+                return Integer.parseInt(filename.replaceAll("level", "").replaceAll(".si", ""));
+            }
+
+        });
         Main.ekl.getCommand("claim").setExecutor(new ClaimCommand());
         Main.ekl.getCommand("claim").setTabCompleter(new ClaimTabCompleter());
 
-        loadObjects();
+        ItemStack is = Itemizer.wrap(new ItemStack(Material.ANVIL)).setDisplayName("No Upgrades")
+                .setLore(Cutty.wrap(SoShorten.colorize("Put an upgrade in this slot."), 16).asLines()).build();
+        noUpgradeItem = new SerItem(is);
+        breakClaim = new SerItem(Itemizer.wrap(new ItemStack(Material.BARRIER)).setDisplayName("Break Claim")
+                .setLore(Cutty.wrap(SoShorten.colorize("Breaks claim & gives its block."), 16).asLines()).build());
         Bukkit.getPluginManager().registerEvents(new ClaimListener(), Main.ekl);
         addStandartClaim(new MainClaim(4, new ItemStack(Material.DRAGON_EGG), new ItemStack(Material.ANVIL)));
         addStandartClaim(
                 new XPClaim(4, new ItemStack(Material.DRAGON_EGG), new ItemStack(Material.PRISMARINE_SHARD), 30, 2));
         for (int i = 1; i <= 3; i++) {
-            craftLevelIS.put(i, getItemByLevel(i));
+            craftLevelIS.put(i, new SerItem(getItemByLevel(i)));
         }
+        loadObjects();
         task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.ekl, new Runnable() {
 
             @Override
@@ -60,11 +114,28 @@ public class ClaimFactory {
     }
 
     public static void loadObjects() {
-
+        claimDatas.loadAllData(true);
+        craftLevelIS.loadAllData(true);
+        upgrades.loadAllData(true);
+        noUpgradeItemFile = new File(claimFolder, "noUpgradeItem.si");
+        if (noUpgradeItemFile.exists()) {
+            noUpgradeItem = (SerItem) DataIssues.loadObject(noUpgradeItemFile);
+        }
+        breakClaimFile = new File(claimFolder, "breakClaim.si");
+        if (breakClaimFile.exists()) {
+            breakClaim = (SerItem) DataIssues.loadObject(breakClaimFile);
+        }
     }
 
     public static void saveObjects() {
+        claimDatas.saveAndUnloadAllDatas();
 
+        craftLevelIS.saveAndUnloadAllDatas();
+
+        upgrades.saveAndUnloadAllDatas();
+
+        DataIssues.saveObject(noUpgradeItem, noUpgradeItemFile);
+        DataIssues.saveObject(breakClaim, breakClaimFile);
     }
 
     public static void deInitialize() {

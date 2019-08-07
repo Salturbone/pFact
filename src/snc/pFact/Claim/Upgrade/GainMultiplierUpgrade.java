@@ -5,6 +5,7 @@ package snc.pFact.Claim.Upgrade;
  */
 public class GainMultiplierUpgrade extends ClaimUpgrade {
 
+    private static final long serialVersionUID = 1L;
     private double multiplier;
 
     public GainMultiplierUpgrade(double multiplier) {
