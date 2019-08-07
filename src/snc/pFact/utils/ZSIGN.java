@@ -2,10 +2,9 @@ package snc.pFact.utils;
 
 import java.util.HashMap;
 
-import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
+
+
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.comphenix.protocol.ProtocolLibrary;
@@ -93,7 +92,7 @@ public class ZSIGN implements Listener {
         return is2.clone();
     }
 
-    @EventHandler
+    /*@EventHandler
     public void onItem(InventoryClickEvent e) {
         ItemStack it = e.getCurrentItem();
         if (it == null) {
@@ -143,9 +142,10 @@ public class ZSIGN implements Listener {
                 ItemStack ret = gecir(is, lit.clone());
                 ret.setAmount(is.getAmount());
                 e.getClickedInventory().setItem(e.getSlot(), ret);
+                e.
             }
         }
 
-    }
+    }*/
 
 }
