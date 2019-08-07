@@ -35,7 +35,8 @@ public class B_Faction implements Serializable {
     private List<AdditionalClaim> addClaims = new ArrayList<AdditionalClaim>();
 	private transient boolean isRaid = false;
 	private transient boolean raidPos; // 0 = defend // 1 = attack
-	private transient String enemyRaid;
+    private transient String enemyRaid;
+    private transient List<String> allies = new ArrayList<String>();
 
     /*
      * public b_Faction(String name, int level, int member_count, double xp, double
@@ -53,9 +54,16 @@ public class B_Faction implements Serializable {
         this.founder = new B_FactionMember(founder);
         this.founder.setRank(Rank.Founder);
         players.put(founder, this.founder);
+        this.isRaid = false;
+        raidPos = false;
     }
 
     // Level
+
+    public List<String> getAllies() {
+        return allies;
+    }
+    
     public int getLevel() {
         return level;
     }
