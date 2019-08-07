@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 
 import snc.pFact.Claim.AdditionalClaim;
 import snc.pFact.Claim.Claim;
@@ -91,12 +92,7 @@ public class B_Faction implements Serializable {
     }
 
     public double toGainXP(boolean careOnline) {
-        int on = 0;
-        for (UUID idd : players.keySet()) {
-            if (Bukkit.getPlayer(idd) != null && Bukkit.getPlayer(idd).isOnline()) {
-                on++;
-            }
-        }
+        int on = getOnlinePlayers().size();
         if (on != 0 || !careOnline) {
             return getLevelBlock() * (100 + (2 * Math.sqrt(on * on * on))) / 100;
         }
@@ -108,15 +104,22 @@ public class B_Faction implements Serializable {
         if (xp >= getLevelUpXp()) {
             xp -= getLevelUpXp();
             level += 1;
-            for (B_FactionMember bfm : players.values()) {
-                if (bfm.isOnline()) {
-                    Bukkit.getPlayer(bfm.uuid()).sendTitle(
-                            ChatColor.GREEN + "Yeni Klan Seviyesi: " + ChatColor.DARK_PURPLE + level,
-                            ChatColor.DARK_GREEN + "Klanın seviye atladı!", -1, -1, -1);
-                }
+            for (Player p : getOnlinePlayers()) {
+                p.sendTitle(ChatColor.GREEN + "Yeni Klan Seviyesi: " + ChatColor.DARK_PURPLE + level,
+                        ChatColor.DARK_GREEN + "Klanın seviye atladı!", -1, -1, -1);
             }
         }
         xp = Math.floor(xp * 100) / 100;
+    }
+
+    public List<Player> getOnlinePlayers() {
+        List<Player> list = new ArrayList<>();
+        for (B_FactionMember bfm : players.values()) {
+            if (bfm.isOnline()) {
+                list.add(Bukkit.getPlayer(bfm.uuid()));
+            }
+        }
+        return list;
     }
 
     public double getLevelUpXp() {
@@ -259,7 +262,7 @@ public class B_Faction implements Serializable {
 
             timer = 0;
             // seviye atlama
-            addXP(toGainXP(true));
+            // addXP(toGainXP(true));
 
         }
 

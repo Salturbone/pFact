@@ -23,12 +23,13 @@ public class XPClaim extends AdditionalClaim {
     @Override
     public void update() {
         if (random == 0) {
-            random = 1 + Gerekli.random.nextInt(30);
+            random = 30 + Gerekli.random.nextInt(15) * 2;
         }
         if (timer >= random) {
-            getFaction().addXP(getFaction().toGainXP(false) * getXPMultiplier());
+            getFaction().addXP(((double) timer / random) * getFaction().toGainXP(false) * getXPMultiplier());
             timer = 0;
         }
+        timer++;
     }
 
     @Override

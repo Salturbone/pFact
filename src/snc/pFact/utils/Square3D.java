@@ -48,26 +48,44 @@ public class Square3D implements Serializable, Cloneable {
         Location2D sCenter = square.center;
         if (!sCenter.world().equals(center.world()))
             return false;
-
-        if (center.x() - length < sCenter.x() - square.length
-                + ((sCenter.x() + square.length) - (sCenter.x() - square.length))
-                && center.x() + ((center.x() + length) - (center.x() - length)) > sCenter.x()
-                && center.z() < sCenter.z() + ((sCenter.z() + square.length) - (sCenter.z() - square.length))
-                && center.z() + ((center.z() + length) - (center.z() - length)) > sCenter.z()) {
-            return true;
+        for (Location2D loc2d : getCorners()) {
+            if (square.isInside(loc2d))
+                return true;
         }
 
         return false;
     }
 
     public boolean IsInsideof(Square3D large) {
-        if (center.x() - length >= large.center.x() && center.x() - length <= large.center.x() + large.length
-                && center.z() - length >= large.center.z() && center.z() - length <= large.center.z() + large.length
-                && center.x() + length >= large.center.x() && center.x() + length <= large.center.x() + large.length
-                && center.z() + length >= large.center.z() && center.z() + length <= large.center.z() + large.length) {
-            return true;
+        if (!large.center().world().equals(center.world()))
+            return false;
+
+        for (Location2D loc2d : getCorners()) {
+            if (!large.isInside(loc2d))
+                return false;
         }
-        return false;
+        /*
+         * if (center.x() - length >= large.center.x() && center.x() - length <=
+         * large.center.x() + large.length && center.z() - length >= large.center.z() &&
+         * center.z() - length <= large.center.z() + large.length && center.x() + length
+         * >= large.center.x() && center.x() + length <= large.center.x() + large.length
+         * && center.z() + length >= large.center.z() && center.z() + length <=
+         * large.center.z() + large.length) { return true; }
+         */
+        return true;
+    }
+
+    public Location2D[] getCorners() {
+        Location2D[] corners = new Location2D[4];
+        int t = 0;
+        for (int i = -1; i <= 1; i += 2) {
+            for (int a = -1; a <= 1; a += 2) {
+                Location2D nloc2d = new Location2D(center.x() + i * length, center.z() + a * length, center.world());
+                corners[t] = nloc2d;
+                t++;
+            }
+        }
+        return corners;
     }
 
     @Override
