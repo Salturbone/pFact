@@ -3,6 +3,7 @@ package snc.pFact.GUIs;
 import org.bukkit.entity.Player;
 
 import me.Zindev.utils.ZChestLibV6.ChestGUI;
+import snc.pFact.Main;
 import snc.pFact.Claim.Claim;
 
 /**
@@ -10,8 +11,11 @@ import snc.pFact.Claim.Claim;
  */
 public class CraftClaimGUI extends ChestGUI {
 
-    public CraftClaimGUI(Player p, Claim cl) {
+    private Claim cl;
 
+    public CraftClaimGUI(Player p, Claim cl) {
+        initialize(p, newChestGUIMeta().setManager(Main.cm).setRowSize(6));
+        this.cl = cl;
     }
 
     @Override

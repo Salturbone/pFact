@@ -41,18 +41,19 @@ public class ClaimFactory {
         if (!claimFolder.exists())
             claimFolder.mkdirs();
         standartClaims = new HashMap<String, Claim>();
-        claimDatas = new HashMapManager<>(claimFolder, new HashMapManager.KeyConverter<String>() {
-            @Override
-            protected String toFileName(String key) {
-                return key + ".cd";
-            }
+        claimDatas = new HashMapManager<>(new File(claimFolder, "Claim Datas"),
+                new HashMapManager.KeyConverter<String>() {
+                    @Override
+                    protected String toFileName(String key) {
+                        return key + ".cd";
+                    }
 
-            @Override
-            protected String toKey(String filename) {
-                return filename.replaceAll(".cd", "");
-            }
-        });
-        upgrades = new HashMapManager<>(claimFolder, new HashMapManager.KeyConverter<String>() {
+                    @Override
+                    protected String toKey(String filename) {
+                        return filename.replaceAll(".cd", "");
+                    }
+                });
+        upgrades = new HashMapManager<>(new File(claimFolder, "Upgrades"), new HashMapManager.KeyConverter<String>() {
             @Override
             protected String toFileName(String key) {
                 return key + ".up";
@@ -63,19 +64,20 @@ public class ClaimFactory {
                 return filename.replaceAll(".up", "");
             }
         });
-        craftLevelIS = new HashMapManager<>(claimFolder, new HashMapManager.KeyConverter<Integer>() {
+        craftLevelIS = new HashMapManager<>(new File(claimFolder, "LevelItems"),
+                new HashMapManager.KeyConverter<Integer>() {
 
-            @Override
-            protected String toFileName(Integer key) {
-                return "level" + key + ".si";
-            }
+                    @Override
+                    protected String toFileName(Integer key) {
+                        return "level" + key + ".si";
+                    }
 
-            @Override
-            protected Integer toKey(String filename) {
-                return Integer.parseInt(filename.replaceAll("level", "").replaceAll(".si", ""));
-            }
+                    @Override
+                    protected Integer toKey(String filename) {
+                        return Integer.parseInt(filename.replaceAll("level", "").replaceAll(".si", ""));
+                    }
 
-        });
+                });
         Main.ekl.getCommand("claim").setExecutor(new ClaimCommand());
         Main.ekl.getCommand("claim").setTabCompleter(new ClaimTabCompleter());
 
@@ -114,6 +116,15 @@ public class ClaimFactory {
     }
 
     public static void loadObjects() {
+        if (!claimDatas.getDataFolder().exists()) {
+            claimDatas.getDataFolder().mkdirs();
+        }
+        if (!upgrades.getDataFolder().exists()) {
+            upgrades.getDataFolder().mkdirs();
+        }
+        if (!craftLevelIS.getDataFolder().exists()) {
+            craftLevelIS.getDataFolder().mkdirs();
+        }
         claimDatas.loadAllData(true);
         craftLevelIS.loadAllData(true);
         upgrades.loadAllData(true);

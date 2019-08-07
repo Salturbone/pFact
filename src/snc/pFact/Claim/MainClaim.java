@@ -68,7 +68,7 @@ public class MainClaim extends Claim {
         // egg
         nodes.add(getSingularItem());
         // break
-        nodes.add(new ButtonNode(null) {
+        nodes.add(new ButtonNode(ClaimFactory.breakClaim.getItemStack()) {
 
             @Override
             public void onClick(ChestGUI arg0, ChestGUIClickEvent arg1) {
@@ -97,11 +97,11 @@ public class MainClaim extends Claim {
             @Override
             public ItemStack getStack(ChestGUI gui) {
 
-                return super.getStack(gui);
+                return new ItemStack(Material.WORKBENCH);
             }
         });
         // show
-        nodes.add(new ShowBordersButton(null));
+        nodes.add(new ShowBordersButton(new ItemStack(Material.PAINTING)));
         return nodes;
     }
 

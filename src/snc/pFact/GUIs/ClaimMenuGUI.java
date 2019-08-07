@@ -30,7 +30,7 @@ public class ClaimMenuGUI extends ChestGUI {
 
     public ClaimMenuGUI(Player p, Claim cl) {
         this.cl = cl;
-        initialize(p, newChestGUIMeta().setManager(Main.cm).setRowSize(6).setTitle("Claim Menu"));
+        initialize(p, newChestGUIMeta().setManager(Main.cm).setRowSize(3).setTitle("Claim Menu"));
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ClaimMenuGUI extends ChestGUI {
             slots.addAll(Arrays.asList(4, 10, 12, 14, 16));
         }
         for (int i = 0; i < getRowSize() * 9; i++) {
-            if (slots.contains(i))
+            if (!slots.contains(i))
                 content[i] = new ItemNode(black_pane);
         }
         nodes = new GUIArray<ChestNode>(this, slots, cnodes);

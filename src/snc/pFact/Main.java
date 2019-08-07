@@ -563,6 +563,12 @@ public class Main extends JavaPlugin {
         }
 
         if (args[0].equalsIgnoreCase("clearfiles") && p.isOp()) {
+            if (args.length >= 2 && args[1].equalsIgnoreCase("true")) {
+                DataIssues.factions.clear();
+                DataIssues.players.clear();
+                Bukkit.broadcastMessage(ChatColor.AQUA + "Cleared Faction & Player files and Factions.");
+                return true;
+            }
             HashMap<UUID, B_Player> temp = new HashMap<>();
             for (UUID idd : DataIssues.players.keySet()) {
                 B_Player ps = new B_Player(idd, null, 0);
