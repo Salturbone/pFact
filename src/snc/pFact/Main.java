@@ -389,10 +389,10 @@ public class Main extends JavaPlugin {
             bp.setEF(null);
             bp.setES(false);
             sender.sendMessage(ChatColor.GREEN + bp.getF().getName() + ChatColor.RESET + " Klanına katıldın!");
-            for (B_FactionMember bfm : bp.getF().getFactionMembers().values()) {
-                if (bfm.isOnline() && bfm.uuid() != bp.uuid())
-                    Bukkit.getPlayer(bfm.uuid()).sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + p.getDisplayName()
-                            + ChatColor.RESET + " Adlı oyuncu klana katıldı!");
+            for (Player pl : bp.getF().getOnlinePlayers()) {
+                if (!pl.getUniqueId().equals(p.getUniqueId()))
+                    p.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + p.getDisplayName() + ChatColor.RESET
+                            + " Adlı oyuncu klana katıldı!");
             }
 
             return true;
@@ -512,8 +512,16 @@ public class Main extends JavaPlugin {
                 return true;
             }
             if (args[2].equalsIgnoreCase("yık")) {
+                for (Player pl : bff.getOnlinePlayers()) {
+                    pl.sendMessage("Klanın dağıldı!");
+                    B_Player bpp = DataIssues.players.get(pl.getUniqueId());
+                    bpp.setF(null);
 
+                }
+                bff.disband();
+                DataIssues.factions.remove(bff.getName());
                 sender.sendMessage("klan yıkıldı");
+                return true;
             }
             if (args[2].equalsIgnoreCase("at")) {
                 if (args.length < 4) {
