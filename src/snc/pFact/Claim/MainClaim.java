@@ -16,13 +16,14 @@ import snc.pFact.GUIs.ClaimMenuGUI;
 import snc.pFact.GUIs.CraftClaimGUI;
 import snc.pFact.GUIs.ShowBordersButton;
 import snc.pFact.obj.cl.B_Faction;
+import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
 
 public class MainClaim extends Claim {
 
     private static final long serialVersionUID = 1L;
 
-    public MainClaim(int length, ItemStack claimBlock, ItemStack shard) {
-        super(length, claimBlock, shard);
+    public MainClaim(int length, ItemStack claimBlock, ItemStack shard, Color color) {
+        super(length, claimBlock, shard, color);
     }
 
     @Override

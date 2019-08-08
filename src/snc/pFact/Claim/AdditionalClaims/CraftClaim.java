@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import me.Zindev.utils.ZChestLibV6.ChestGUI;
 import me.Zindev.utils.ZChestLibV6.ChestNode;
 import snc.pFact.Claim.AdditionalClaim;
+import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
 
 /**
  * CraftClaim
@@ -17,8 +18,8 @@ public class CraftClaim extends AdditionalClaim {
 
     private static final long serialVersionUID = 1L;
 
-    public CraftClaim(int length, ItemStack claimBlock, ItemStack shard, int health) {
-        super(length, claimBlock, shard, health);
+    public CraftClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, int health) {
+        super(length, claimBlock, shard, color, health);
     }
 
     @Override

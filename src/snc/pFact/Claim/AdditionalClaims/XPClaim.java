@@ -5,6 +5,7 @@ import org.bukkit.inventory.ItemStack;
 import snc.pFact.Claim.AdditionalClaim;
 import snc.pFact.Claim.Upgrade.GainMultiplierUpgrade;
 import snc.pFact.utils.Gerekli;
+import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
 
 /**
  * XPClaim
@@ -15,9 +16,8 @@ public class XPClaim extends AdditionalClaim {
 
     private transient int timer, random;
 
-    public XPClaim(int length, ItemStack claimBlock, ItemStack shard, int health, double multiplier) {
-        super(length, claimBlock, shard, health);
-        claimData().setObject("multiplier", multiplier);
+    public XPClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, int health) {
+        super(length, claimBlock, shard, color, health);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class XPClaim extends AdditionalClaim {
     }
 
     public double getXPMultiplier() {
-        double multiplier = claimData().getDouble("multiplier");
+        double multiplier = 1;
         for (GainMultiplierUpgrade upg : getUpgradesByType(GainMultiplierUpgrade.class)) {
             multiplier *= upg.getMultiplier();
         }

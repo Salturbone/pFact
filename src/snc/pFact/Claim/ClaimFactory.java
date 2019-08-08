@@ -23,6 +23,7 @@ import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.utils.Location2D;
 import snc.pFact.utils.SerItem;
 import snc.pFact.utils.ZSIGN;
+import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
 
 public class ClaimFactory {
 
@@ -87,9 +88,10 @@ public class ClaimFactory {
         breakClaim = new SerItem(Itemizer.wrap(new ItemStack(Material.BARRIER)).setDisplayName("Break Claim")
                 .setLore(Cutty.wrap(SoShorten.colorize("Breaks claim & gives its block."), 16).asLines()).build());
         Bukkit.getPluginManager().registerEvents(new ClaimListener(), Main.ekl);
-        addStandartClaim(new MainClaim(4, new ItemStack(Material.DRAGON_EGG), new ItemStack(Material.ANVIL)));
         addStandartClaim(
-                new XPClaim(4, new ItemStack(Material.DRAGON_EGG), new ItemStack(Material.PRISMARINE_SHARD), 30, 2));
+                new MainClaim(4, new ItemStack(Material.DRAGON_EGG), new ItemStack(Material.ANVIL), Color.AQUA));
+        addStandartClaim(new XPClaim(4, new ItemStack(Material.DRAGON_EGG), new ItemStack(Material.PRISMARINE_SHARD),
+                Color.DARK_GREEN, 30));
         for (int i = 1; i <= 3; i++) {
             craftLevelIS.put(i, new SerItem(getItemByLevel(i)));
         }

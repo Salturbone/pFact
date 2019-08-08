@@ -23,16 +23,21 @@ import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.obj.cl.B_FactionMember;
 import snc.pFact.obj.cl.B_Player;
 import snc.pFact.obj.cl.B_Player.Rank;
+import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaFactory;
+import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols112;
 
 public class Main extends JavaPlugin {
 
     public static JavaPlugin ekl;
     public static ChestManager cm;
     public static int task;
+    public static GlowingMagmaFactory gmf;
 
     @Override
     public void onEnable() {
         ekl = this;
+        gmf = new GlowingMagmaFactory(this, new GlowingMagmaProtocols112(), 300000);
+        gmf.doInitialize();
         cm = new ChestManager();
         cm.initialize(this);
         DataIssues.initalize();
@@ -59,6 +64,7 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        gmf.doUninitialize();
         DataIssues.save();
         ClaimFactory.deInitialize();
         cm.uninitialize();

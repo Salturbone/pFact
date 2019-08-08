@@ -14,20 +14,26 @@ import me.Zindev.utils.ZChestLibV6.ChestGUI;
 import me.Zindev.utils.ZChestLibV6.ChestNode;
 import me.Zindev.utils.ZChestLibV6.ChestNode.ProcessItem;
 import me.Zindev.utils.ZChestLibV6.GUIReadLine.GUIConfigurable;
+import snc.pFact.Main;
 import snc.pFact.DM.DataIssues;
 import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.utils.Location2D;
 import snc.pFact.utils.SerLocation;
 import snc.pFact.utils.Square3D;
 import snc.pFact.utils.ZSIGN;
+import snc.pFact.utils.GlowingMagmaAPI.GlowingMagma;
+import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaFactory;
+import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
 
 public abstract class Claim implements Cloneable, Serializable, GUIConfigurable, ProcessItem {
     private static final long serialVersionUID = 1L;
 
     private String faction;
     private SerLocation centerBlock;
+    private transient List<GlowingMagma> cgms;
+    private transient GlowingMagma egm;
 
-    public Claim(int length, ItemStack claimBlock, ItemStack shard) {
+    public Claim(int length, ItemStack claimBlock, ItemStack shard, Color color) {
         ClaimData cd = new ClaimData();
         ClaimFactory.claimDatas.put(getName(), cd);
         cd.setObject("length", length);
@@ -35,6 +41,8 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
         cd.setItemStack("shard", shard);
         cd.setObject("displayName", getName());
         cd.setItemStack("displayItem", getClaimItem("null"));
+        cd.setObject("eggColor", color.name());
+        cd.setObject("cornerColor", Color.WHITE.name());
     }
 
     public void setup(String faction, Location center) {
@@ -143,4 +151,58 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
 
     @Override
     public abstract List<ChestNode> getConfigurableList(ChestGUI arg0);
+
+    public void showCorners(int time, Player... pls) {
+        createCornerGMS(false);
+        for (GlowingMagma gm : cgms) {
+            for (Player p : pls) {
+                gm.getPlayers().add(p.getUniqueId());
+                if (time != -1)
+                    gm.addTimedPlayer(p.getUniqueId(), time);
+            }
+
+        }
+    }
+
+    public void showEgg(int time, Player... pls) {
+        createEggGM(false);
+        for (Player p : pls) {
+            egm.getPlayers().add(p.getUniqueId());
+            if (time != -1)
+                egm.addTimedPlayer(p.getUniqueId(), time);
+        }
+    }
+
+    private void createCornerGMS(boolean recreate) {
+
+        if (cgms == null || cgms.isEmpty() || recreate) {
+            GlowingMagmaFactory gmf = Main.gmf;
+            cgms = new ArrayList<>();
+            for (Location2D loc2d : getSquare().getCorners()) {
+                Location loc = loc2d.toLocation(getCenterBlock().getY());
+                GlowingMagma gm = gmf.requestGlowingMagma(loc, getCornerColor(), 2, true);
+                gm.spawn();
+
+            }
+        }
+
+    }
+
+    private void createEggGM(boolean recreate) {
+
+        if (egm == null || egm.isGarbage() || recreate) {
+            GlowingMagmaFactory gmf = Main.gmf;
+            egm = gmf.requestGlowingMagma(getCenterBlock(), getEggColor(), 1, true);
+            egm.spawn();
+        }
+    }
+
+    public Color getCornerColor() {
+        return Color.valueOf(claimData().getString("cornerColor"));
+    }
+
+    public Color getEggColor() {
+        return Color.valueOf(claimData().getString("eggColor"));
+    }
+
 }

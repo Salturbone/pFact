@@ -109,6 +109,11 @@ public class ClaimCommand implements CommandExecutor {
             sender.sendMessage(st);
             return true;
         }
+        if (args[0].equalsIgnoreCase("clearfiles") && hasPermission(sender)) {
+            ClaimFactory.claimDatas.clear();
+            ClaimFactory.craftLevelIS.clear();
+            ClaimFactory.upgrades.clear();
+        }
         return false;
     }
 

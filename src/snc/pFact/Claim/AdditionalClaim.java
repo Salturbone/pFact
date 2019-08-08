@@ -22,6 +22,7 @@ import snc.pFact.Claim.Upgrade.GainMultiplierUpgrade;
 import snc.pFact.GUIs.ClaimMenuGUI;
 import snc.pFact.GUIs.ShowBordersButton;
 import snc.pFact.obj.cl.B_Faction;
+import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
 
 public abstract class AdditionalClaim extends Claim {
 
@@ -34,8 +35,8 @@ public abstract class AdditionalClaim extends Claim {
     private transient int curHealth;
     private List<ClaimUpgrade> upgrades;
 
-    public AdditionalClaim(int length, ItemStack claimBlock, ItemStack shard, int health) {
-        super(length, claimBlock, shard);
+    public AdditionalClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, int health) {
+        super(length, claimBlock, shard, color);
         claimData().setObject("health", health);
     }
 

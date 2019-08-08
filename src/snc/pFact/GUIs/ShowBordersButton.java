@@ -18,7 +18,11 @@ public class ShowBordersButton extends ButtonNode {
     @Override
     public void onClick(ChestGUI arg0, ChestGUIClickEvent arg1) {
         Claim cl = ((ClaimMenuGUI) arg0).getClaim();
-
+        if (arg1.isShiftClick()) {
+            cl.showCorners(10 * 20, arg0.getUser());
+        } else {
+            cl.showEgg(10 * 20, arg0.getUser());
+        }
     }
 
 }
