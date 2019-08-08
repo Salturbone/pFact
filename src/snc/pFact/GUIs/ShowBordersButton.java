@@ -23,6 +23,7 @@ public class ShowBordersButton extends ButtonNode {
         } else {
             cl.showEgg(10 * 20, arg0.getUser());
         }
+        arg0.close(true);
     }
 
 }

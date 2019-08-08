@@ -402,7 +402,7 @@ public class Main extends JavaPlugin {
             sender.sendMessage(ChatColor.GREEN + bp.getF().getName() + ChatColor.RESET + " Klanına katıldın!");
             for (Player pl : bp.getF().getOnlinePlayers()) {
                 if (!pl.getUniqueId().equals(p.getUniqueId()))
-                    p.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + p.getDisplayName() + ChatColor.RESET
+                    pl.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + p.getDisplayName() + ChatColor.RESET
                             + " Adlı oyuncu klana katıldı!");
             }
 

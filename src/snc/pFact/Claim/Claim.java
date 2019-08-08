@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -156,6 +157,7 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
         createCornerGMS(false);
         for (GlowingMagma gm : cgms) {
             for (Player p : pls) {
+                Bukkit.broadcastMessage("aaaa");
                 gm.getPlayers().add(p.getUniqueId());
                 if (time != -1)
                     gm.addTimedPlayer(p.getUniqueId(), time);
@@ -174,27 +176,36 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
     }
 
     private void createCornerGMS(boolean recreate) {
-
         if (cgms == null || cgms.isEmpty() || recreate) {
             GlowingMagmaFactory gmf = Main.gmf;
             cgms = new ArrayList<>();
             for (Location2D loc2d : getSquare().getCorners()) {
-                Location loc = loc2d.toLocation(getCenterBlock().getY());
+
+                Location loc = loc2d.toLocation(getCenterBlock().getY()).add(0.5, -1, 0.5);
                 GlowingMagma gm = gmf.requestGlowingMagma(loc, getCornerColor(), 2, true);
                 gm.spawn();
-
+                cgms.add(gm);
             }
         }
 
     }
 
     private void createEggGM(boolean recreate) {
-
         if (egm == null || egm.isGarbage() || recreate) {
             GlowingMagmaFactory gmf = Main.gmf;
-            egm = gmf.requestGlowingMagma(getCenterBlock(), getEggColor(), 1, true);
+            egm = gmf.requestGlowingMagma(getCenterBlock().add(0.5, -1, 0.5), getEggColor(), 2, true);
             egm.spawn();
         }
+    }
+
+    public GlowingMagma getEggGM() {
+        createEggGM(false);
+        return egm;
+    }
+
+    public List<GlowingMagma> getCornerGMS() {
+        createCornerGMS(false);
+        return cgms;
     }
 
     public Color getCornerColor() {

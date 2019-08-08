@@ -137,7 +137,7 @@ public abstract class AdditionalClaim extends Claim {
             }
         });
         // show
-        nodes.add(new ShowBordersButton(null));
+        nodes.add(new ShowBordersButton(new ItemStack(Material.PAINTING)));
         return nodes;
     }
 

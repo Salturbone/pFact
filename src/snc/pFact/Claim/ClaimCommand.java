@@ -1,5 +1,6 @@
 package snc.pFact.Claim;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -113,6 +114,8 @@ public class ClaimCommand implements CommandExecutor {
             ClaimFactory.claimDatas.clear();
             ClaimFactory.craftLevelIS.clear();
             ClaimFactory.upgrades.clear();
+            Bukkit.broadcastMessage(ChatColor.AQUA + "Cleared claim & upgrade datas");
+            return true;
         }
         return false;
     }

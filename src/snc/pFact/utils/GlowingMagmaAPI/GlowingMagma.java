@@ -40,7 +40,6 @@ public class GlowingMagma {
         this.size = size;
         this.isWhiteListed = isWhiteListed;
         playerTimers = new HashMap<>();
-        Bukkit.broadcastMessage(uid.toString());
     }
 
     public GlowingMagma spawn() {
@@ -162,7 +161,7 @@ public class GlowingMagma {
     }
 
     public void addTimedPlayer(UUID p, int time) {
-        getPlayers().add(p);
+        Bukkit.broadcastMessage("faaaaaaaaaaaaaaafafafa");
         getTimedPlayers().put(p, time);
     }
 
