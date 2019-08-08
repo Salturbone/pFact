@@ -37,6 +37,8 @@ public class B_Faction implements Serializable {
 	private transient boolean raidPos; // 0 = defend // 1 = attack
     private transient String enemyRaid;
     private transient List<String> allies = new ArrayList<String>();
+    private transient int raid_timer;
+    private List<RaidHistory> rh = new ArrayList<RaidHistory>();
 
     /*
      * public b_Faction(String name, int level, int member_count, double xp, double
@@ -58,7 +60,22 @@ public class B_Faction implements Serializable {
         raidPos = false;
     }
 
-    // Level
+
+    
+
+    
+
+    public void addRaidHistory(RaidHistory h) {
+        rh.add(h);
+    }
+
+    public void addAlly(String s) {
+        allies.add(s);
+    }
+
+    public void resetAllies() {
+        allies.clear();
+    }
 
     public List<String> getAllies() {
         return allies;
@@ -158,7 +175,7 @@ public class B_Faction implements Serializable {
     }
 
     public double getLevelUpXp() {
-        return (1 / getLevelBlock()) * (35 + 35 * level * level);
+        return (1 / getLevelBlock()) * (5 * level * level * level + 15 * level * level + 20 * level + 55);
     }
 
     public double getPrestige() {
@@ -186,7 +203,7 @@ public class B_Faction implements Serializable {
     }
 
     public double getNXP() {
-        return (1 / getLevelBlock()) * (35 + 35 * level * level);
+        return (1 / getLevelBlock()) * (5 * level * level * level + 15 * level * level + 20 * level + 55);
     }
 
     public double getBank() {
@@ -288,6 +305,7 @@ public class B_Faction implements Serializable {
     }
 
     public void update() {
+        raid_timer++;
         timer++;
         // klanların xp kazanma mekaniği
         if (timer >= 60) {
@@ -299,6 +317,9 @@ public class B_Faction implements Serializable {
             // seviye atlama
             // addXP(toGainXP(true));
 
+        }
+        if (!isRaid) {
+            raid_timer = 0;
         }
 
     }
