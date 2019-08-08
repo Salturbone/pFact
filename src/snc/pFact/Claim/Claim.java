@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -72,22 +71,22 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
                 ZSIGN.imzalaZ("claimFaction", fact, claimData().getItemStack("block")));
     }
 
-    public boolean canBreak(Player p, Location loc) {
-        return canPlace(p, loc);
+    public boolean canBreak(Location loc) {
+        return canPlace(loc);
     }
 
-    public boolean canPlace(Player p, Location loc) {
+    public boolean canPlace(Location loc) {
         Location center = getCenterBlock();
         double xDiff = Math.abs(loc.getX() - center.getX());
-        double yDiff = Math.abs(loc.getY() - center.getY());
+        double yDiff = loc.getY() - center.getY();
         double zDiff = Math.abs(loc.getZ() - center.getZ());
-        if (xDiff <= 2 && yDiff <= 2 && zDiff <= 2) {
+        if (xDiff <= 1 && yDiff >= 0 && zDiff <= 1) {
             return false;
         }
         return true;
     }
 
-    public boolean canInteract(Player p, Location loc) {
+    public boolean canInteract(Location loc) {
         return true;
     }
 
@@ -157,7 +156,6 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
         createCornerGMS(false);
         for (GlowingMagma gm : cgms) {
             for (Player p : pls) {
-                Bukkit.broadcastMessage("aaaa");
                 gm.getPlayers().add(p.getUniqueId());
                 if (time != -1)
                     gm.addTimedPlayer(p.getUniqueId(), time);
@@ -179,8 +177,7 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
         if (cgms == null || cgms.isEmpty() || recreate) {
             GlowingMagmaFactory gmf = Main.gmf;
             cgms = new ArrayList<>();
-            for (Location2D loc2d : getSquare().getCorners()) {
-
+            for (Location2D loc2d : getSquare().getHollowSquare()) {
                 Location loc = loc2d.toLocation(getCenterBlock().getY()).add(0.5, -1, 0.5);
                 GlowingMagma gm = gmf.requestGlowingMagma(loc, getCornerColor(), 2, true);
                 gm.spawn();
@@ -203,7 +200,7 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
         return egm;
     }
 
-    public List<GlowingMagma> getCornerGMS() {
+    public List<GlowingMagma> getGMS() {
         createCornerGMS(false);
         return cgms;
     }

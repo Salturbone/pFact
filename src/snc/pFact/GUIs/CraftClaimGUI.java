@@ -28,4 +28,8 @@ public class CraftClaimGUI extends ChestGUI {
 
     }
 
+    public Claim getClaim() {
+        return cl;
+    }
+
 }

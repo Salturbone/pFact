@@ -88,6 +88,22 @@ public class Square3D implements Serializable, Cloneable {
         return corners;
     }
 
+    public Location2D[] getHollowSquare() {
+        Location2D[] corners = getCorners();
+        Location2D zplus = corners[0];
+        Location2D zminus = corners[3];
+        Location2D xplus = corners[1];
+        Location2D xminus = corners[2];
+        Location2D[] hsquare = new Location2D[length * 8];
+        for (int d = 0; d < 2 * length; d++) {
+            hsquare[0 + d] = xplus.clone().add(d, 0);
+            hsquare[length * 2 + d] = zplus.clone().add(0, d);
+            hsquare[length * 4 + d] = xminus.clone().add(-d, 0);
+            hsquare[length * 6 + d] = zminus.clone().add(0, -d);
+        }
+        return hsquare;
+    }
+
     @Override
     public Square3D clone() {
         Square3D cl;

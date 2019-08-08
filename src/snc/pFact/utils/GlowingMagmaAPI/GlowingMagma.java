@@ -1,10 +1,10 @@
 package snc.pFact.utils.GlowingMagmaAPI;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
 
 public class GlowingMagma {
-    private ArrayList<UUID> players;
+    private Set<UUID> players;
     private HashMap<UUID, Integer> playerTimers;
     private Location loc;
     private HashSet<UUID> createdSet;
@@ -34,7 +34,7 @@ public class GlowingMagma {
         this.uid = uid;
         this.pr = pr;
         this.entityid = entityid;
-        this.setPlayers(new ArrayList<UUID>());
+        this.setPlayers(new HashSet<UUID>());
         this.loc = loc;
         this.color = color;
         this.size = size;
@@ -152,7 +152,7 @@ public class GlowingMagma {
         this.pr = protocols;
     }
 
-    private void setPlayers(ArrayList<UUID> players) {
+    private void setPlayers(Set<UUID> players) {
         this.players = players;
     }
 
@@ -161,8 +161,8 @@ public class GlowingMagma {
     }
 
     public void addTimedPlayer(UUID p, int time) {
-        Bukkit.broadcastMessage("faaaaaaaaaaaaaaafafafa");
         getTimedPlayers().put(p, time);
+        getPlayers().add(p);
     }
 
     public boolean isWhiteListed() {
@@ -176,7 +176,7 @@ public class GlowingMagma {
         return this;
     }
 
-    public ArrayList<UUID> getPlayers() {
+    public Set<UUID> getPlayers() {
         return this.players;
     }
 

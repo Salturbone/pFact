@@ -38,12 +38,20 @@ public abstract class AdditionalClaim extends Claim {
     public AdditionalClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, int health) {
         super(length, claimBlock, shard, color);
         claimData().setObject("health", health);
+        upgrades = new ArrayList<>();
     }
 
     @Override
     public void setup(String faction, Location center) {
         super.setup(faction, center);
         upgrades = new ArrayList<ClaimUpgrade>();
+    }
+
+    @Override
+    protected AdditionalClaim clone() {
+        AdditionalClaim ac = (AdditionalClaim) super.clone();
+        ac.upgrades = new ArrayList<ClaimUpgrade>();
+        return ac;
     }
 
     public int getMaxHealth() {

@@ -1,5 +1,7 @@
 package snc.pFact.obj.cl;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +25,27 @@ public class B_Faction implements Serializable {
     private static final long serialVersionUID = 1L;
     public static int maxMaxClaimLength = 81;
 
+    public enum RaidState {
+        NO_RAID(false), ATTACK_HELPING(false), DEFENG_HELPING(false), DEFENDING(true), ATTACKING(true);
+
+        public boolean canBreak;
+
+        RaidState(boolean canbreak) {
+            this.canBreak = canbreak;
+        }
+
+    }
+
+    private void readObject(ObjectInputStream in) {
+        try {
+            in.defaultReadObject();
+        } catch (ClassNotFoundException | IOException e) {
+            e.printStackTrace();
+        }
+        raidState = RaidState.NO_RAID;
+        allies = new ArrayList<String>();
+    }
+
     private String name;
     private int level;
     private double xp;
@@ -33,8 +56,8 @@ public class B_Faction implements Serializable {
     private transient B_FactionMember founder;
     private MainClaim mainClaim;
     private List<AdditionalClaim> addClaims = new ArrayList<AdditionalClaim>();
-	private transient boolean isRaid = false;
-	private transient boolean raidPos; // 0 = defend // 1 = attack
+    private transient RaidState raidState = RaidState.NO_RAID;
+    private transient boolean raidPos; // 0 = defend // 1 = attack
     private transient String enemyRaid;
     private transient List<String> allies = new ArrayList<String>();
     private transient int raid_timer;
@@ -56,14 +79,9 @@ public class B_Faction implements Serializable {
         this.founder = new B_FactionMember(founder);
         this.founder.setRank(Rank.Founder);
         players.put(founder, this.founder);
-        this.isRaid = false;
+        this.raidState = RaidState.NO_RAID;
         raidPos = false;
     }
-
-
-    
-
-    
 
     public void addRaidHistory(RaidHistory h) {
         rh.add(h);
@@ -80,7 +98,7 @@ public class B_Faction implements Serializable {
     public List<String> getAllies() {
         return allies;
     }
-    
+
     public int getLevel() {
         return level;
     }
@@ -88,24 +106,32 @@ public class B_Faction implements Serializable {
     public void setLevel(int lvl) {
         level = lvl;
     }
-	
-	
-	public boolean getRaidState() {
-        return isRaid;
+
+    public int getRaidTimer() {
+        return raid_timer;
     }
 
-    public void setRaidState(boolean s) {
-        isRaid = s;
+    public void setRaidTimer(int timer) {
+        this.raid_timer = timer;
     }
-	
-	public String getEnemyRaid() {
+
+    public RaidState getRaidState() {
+        return raidState;
+    }
+
+    public void setRaidState(RaidState state) {
+        raidState = state;
+    }
+
+    public String getEnemyRaid() {
         return enemyRaid;
     }
 
     public void setEnemyRaid(String s) {
         enemyRaid = s;
     }
-	public boolean getRaidPos() {
+
+    public boolean getRaidPos() {
         return raidPos;
     }
 
@@ -200,10 +226,6 @@ public class B_Faction implements Serializable {
         this.founder = nfounder;
 
         this.founder.setRank(Rank.Founder);
-    }
-
-    public double getNXP() {
-        return (1 / getLevelBlock()) * (5 * level * level * level + 15 * level * level + 20 * level + 55);
     }
 
     public double getBank() {
@@ -318,7 +340,7 @@ public class B_Faction implements Serializable {
             // addXP(toGainXP(true));
 
         }
-        if (!isRaid) {
+        if (raidState == RaidState.NO_RAID) {
             raid_timer = 0;
         }
 

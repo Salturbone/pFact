@@ -71,10 +71,11 @@ public class DataIssues {
     }
 
     public static void save() {
-        factions.saveAndUnloadAllDatas();
+
         for (Player p : Bukkit.getOnlinePlayers()) {
             ListenerClass.onQuit(p);
         }
+        factions.saveAndUnloadAllDatas();
     }
 
     // objeyi file'a yazd�rma metodu

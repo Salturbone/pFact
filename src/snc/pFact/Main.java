@@ -40,12 +40,13 @@ public class Main extends JavaPlugin {
         gmf.doInitialize();
         cm = new ChestManager();
         cm.initialize(this);
+        ClaimFactory.initialize();
         DataIssues.initalize();
         DataIssues.load();
         System.out.println("pFact başlatıldı!");
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new ListenerClass(), this);
-        ClaimFactory.initialize();
+
         BukkitScheduler scheduler = getServer().getScheduler();
         task = scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
@@ -150,7 +151,7 @@ public class Main extends JavaPlugin {
                     p.sendMessage(ChatColor.GREEN + " Diğer Üyeler: -");
                 }
                 p.sendMessage(ChatColor.GREEN + " Seviye: " + fac.getLevel());
-                p.sendMessage(ChatColor.GREEN + " Deneyim: " + fac.getXP() + "/" + fac.getNXP());
+                p.sendMessage(ChatColor.GREEN + " Deneyim: " + fac.getXP() + "/" + fac.getLevelUpXp());
                 p.sendMessage(ChatColor.GREEN + " Prestij: " + fac.getPrestige());
                 p.sendMessage(ChatColor.GREEN + " Banka: " + fac.getBank());
                 return true;

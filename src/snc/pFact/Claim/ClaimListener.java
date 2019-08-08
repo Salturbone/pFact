@@ -1,19 +1,26 @@
 package snc.pFact.Claim;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import snc.pFact.Claim.Events.BreakInsideClaimEvent;
+import snc.pFact.Claim.Events.ExplodeInsideClaimEvent;
 import snc.pFact.Claim.Events.InteractClaimEvent;
 import snc.pFact.Claim.Events.InteractInsideClaimEvent;
 import snc.pFact.Claim.Events.PlaceClaimEvent;
@@ -24,6 +31,7 @@ import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.obj.cl.B_FactionMember;
 import snc.pFact.obj.cl.B_Player;
 import snc.pFact.obj.cl.B_Player.Rank;
+import snc.pFact.utils.Location2D;
 import snc.pFact.utils.Square3D;
 
 /**
@@ -109,10 +117,9 @@ public class ClaimListener implements Listener {
                 Bukkit.getPluginManager().callEvent(pce);
                 ev.setCancelled(pce.isCancelled());
                 if (!pce.isCancelled()) {
-                    for (double x = -2; x <= 2; x++) {
-                        for (int z = -2; z <= 2; z++) {
-
-                            for (int y = -2; y <= 2; y++) {
+                    for (double x = -1; x <= 1; x++) {
+                        for (int z = -1; z <= 1; z++) {
+                            for (int y = 0; y <= 1; y++) {
                                 if (x == 0 && z == 0 && y <= 0)
                                     continue;
                                 Location loc2 = loc.clone().add(x, y, z);
@@ -149,6 +156,8 @@ public class ClaimListener implements Listener {
         Player p = ev.getPlayer();
         B_Player bp = DataIssues.players.get(p.getUniqueId());
         B_Faction bf = bp.getF();
+        if (bf.getRaidState().canBreak)
+            return;
         Claim cl = ev.getClaim();
         if (bf != null && cl.getFaction().equals(bf)) {
             B_FactionMember bfm = bf.getPlayer(bp.uuid());
@@ -160,7 +169,7 @@ public class ClaimListener implements Listener {
                 }
 
             }
-            if (!cl.canPlace(p, ev.getLocation())) {
+            if (!cl.canPlace(ev.getLocation())) {
                 p.sendMessage("can't place block too close to a claim block");
                 ev.setCancelled(true);
                 return;
@@ -196,6 +205,8 @@ public class ClaimListener implements Listener {
         Player p = ev.getPlayer();
         B_Player bp = DataIssues.players.get(p.getUniqueId());
         B_Faction bf = bp.getF();
+        if (bf.getRaidState().canBreak)
+            return;
         Claim cl = ev.getClaim();
         if (bf != null && bf.equals(cl.getFaction())) {
             if (cl instanceof MainClaim) {
@@ -207,7 +218,7 @@ public class ClaimListener implements Listener {
                 }
 
             }
-            if (!cl.canBreak(p, ev.getLocation())) {
+            if (!cl.canBreak(ev.getLocation())) {
                 p.sendMessage("trying to break too close to claim block");
                 ev.setCancelled(true);
                 return;
@@ -246,6 +257,8 @@ public class ClaimListener implements Listener {
         Player p = ev.getPlayer();
         B_Player bp = DataIssues.players.get(p.getUniqueId());
         B_Faction bf = bp.getF();
+        if (bf.getRaidState().canBreak)
+            return;
         Claim cl = ev.getClaim();
         if (bf != null && cl.getFaction().equals(bf)) {
             B_FactionMember bfm = bf.getPlayer(bp.uuid());
@@ -253,7 +266,7 @@ public class ClaimListener implements Listener {
                 p.sendMessage("you don't have enough permission");
                 return;
             }
-            if (!cl.canInteract(p, ev.getLocation())) {
+            if (!cl.canInteract(ev.getLocation())) {
                 p.sendMessage("can't interact");
                 return;
             }
@@ -265,9 +278,12 @@ public class ClaimListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onInteractInsideClaim(InteractInsideClaimEvent ev) {
+
         Player p = ev.getPlayer();
         B_Player bp = DataIssues.players.get(p.getUniqueId());
         B_Faction bf = bp.getF();
+        if (bf.getRaidState().canBreak)
+            return;
         Claim cl = ev.getClaim();
         if (bf != null && cl.getFaction().equals(bf)) {
             return;
@@ -278,4 +294,46 @@ public class ClaimListener implements Listener {
         ev.setCancelled(true);
     }
 
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    private void onEggFall(EntityChangeBlockEvent event) {
+        if (event.getEntityType() == EntityType.FALLING_BLOCK && event.getTo() == Material.AIR) {
+            if (event.getBlock().getType() == Material.DRAGON_EGG) {
+                Location loc = event.getBlock().getLocation();
+                Claim cl = ClaimFactory.getClaim(loc);
+                if (cl == null || !cl.getCenterBlock().equals(loc))
+                    return;
+                event.setCancelled(true);
+                // Update the block to fix a visual client bug, but don't apply physics
+                event.getBlock().getState().update(false, false);
+            }
+        }
+    }
+
+    @EventHandler
+    private void onEntityExplode(EntityExplodeEvent ev) {
+        List<Block> blocks = ev.blockList();
+        List<Block> remove = new ArrayList<Block>();
+        Claim bcl = null;
+        for (Block b : blocks) {
+            Location loc = b.getLocation();
+            if (bcl == null || !bcl.getSquare().isInside(Location2D.fromLocation(loc))) {
+                bcl = ClaimFactory.getClaim(loc);
+            }
+            if (bcl == null)
+                continue;
+            ExplodeInsideClaimEvent eice = new ExplodeInsideClaimEvent(bcl, loc);
+            Bukkit.getPluginManager().callEvent(eice);
+            if (eice.isCancelled()) {
+                remove.add(b);
+            }
+        }
+        blocks.removeAll(remove);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onExplodeInsideClaim(ExplodeInsideClaimEvent eice) {
+        Claim cl = eice.getClaim();
+        B_Faction bf = cl.getFaction();
+        eice.setCancelled(!bf.getRaidState().canBreak);
+    }
 }

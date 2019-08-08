@@ -39,6 +39,16 @@ public class Location2D implements Serializable, Cloneable {
         return world;
     }
 
+    public Location2D add(Location2D loc2d) {
+        return add(loc2d.x, loc2d.z);
+    }
+
+    public Location2D add(double x, double z) {
+        this.x += x;
+        this.z += z;
+        return this;
+    }
+
     public void setX(double x) {
         this.x = x;
     }

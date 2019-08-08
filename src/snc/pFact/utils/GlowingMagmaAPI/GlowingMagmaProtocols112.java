@@ -118,8 +118,8 @@ public class GlowingMagmaProtocols112 implements GlowingMagmaProtocols {
         pk.getStrings().write(1, "");// display name
         pk.getStrings().write(2, "§" + color.pre);// prefix determines color
         pk.getStrings().write(3, "");// suffix
-        pk.getStrings().write(4, "always");// name tag visibility
-        pk.getStrings().write(5, "always");// collision rule
+        pk.getStrings().write(4, "never");// name tag visibility
+        pk.getStrings().write(5, "never");// collision rule
 
         pk.getIntegers().write(0, color.i);
         pk.getIntegers().write(1, 0); // mode 0=create 1= remove team 2= update 3= add players 4=remove players
@@ -140,8 +140,8 @@ public class GlowingMagmaProtocols112 implements GlowingMagmaProtocols {
         pk.getStrings().write(1, "");
         pk.getStrings().write(2, "§" + color.pre);
         pk.getStrings().write(3, "");
-        pk.getStrings().write(4, "always");
-        pk.getStrings().write(5, "always");
+        pk.getStrings().write(4, "never");
+        pk.getStrings().write(5, "never");
 
         pk.getIntegers().write(0, color.i);
         pk.getIntegers().write(1, 3); // mode 0=create 1= remove team 2= update 3= add players 4=remove players
@@ -162,8 +162,8 @@ public class GlowingMagmaProtocols112 implements GlowingMagmaProtocols {
         pk.getStrings().write(1, "");// display name
         pk.getStrings().write(2, "§" + color.pre);// prefix
         pk.getStrings().write(3, "");// suffix
-        pk.getStrings().write(4, "always");// name tag visibility
-        pk.getStrings().write(5, "always");// collision
+        pk.getStrings().write(4, "never");// name tag visibility
+        pk.getStrings().write(5, "never");// collision
 
         pk.getIntegers().write(0, color.i);// color
         pk.getIntegers().write(1, 4); // mode 0=create 1= remove team 2= update 3= add players 4=remove players
