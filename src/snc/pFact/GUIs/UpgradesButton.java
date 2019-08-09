@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Result;
+//import org.bukkit.event.Event.Result;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -67,7 +67,6 @@ public class UpgradesButton extends ButtonNode {
                 ev.setCursor(is);
 
             } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
 

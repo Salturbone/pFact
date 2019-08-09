@@ -43,7 +43,6 @@ public class B_Faction implements Serializable {
             e.printStackTrace();
         }
         raidState = RaidState.NO_RAID;
-        allies = new ArrayList<String>();
     }
 
     private String name;
@@ -57,10 +56,6 @@ public class B_Faction implements Serializable {
     private MainClaim mainClaim;
     private List<AdditionalClaim> addClaims = new ArrayList<AdditionalClaim>();
     private transient RaidState raidState = RaidState.NO_RAID;
-    private transient boolean raidPos; // 0 = defend // 1 = attack
-    private transient String enemyRaid;
-    private transient List<String> allies = new ArrayList<String>();
-    private transient int raid_timer;
     private List<RaidHistory> rh = new ArrayList<RaidHistory>();
 
     /*
@@ -81,23 +76,10 @@ public class B_Faction implements Serializable {
         players.put(founder, this.founder);
         this.raidState = RaidState.NO_RAID;
         rh = new ArrayList<RaidHistory>();
-        raidPos = false;
     }
 
     public void addRaidHistory(RaidHistory h) {
         rh.add(h);
-    }
-
-    public void addAlly(String s) {
-        allies.add(s);
-    }
-
-    public void resetAllies() {
-        allies.clear();
-    }
-
-    public List<String> getAllies() {
-        return allies;
     }
 
     public int getLevel() {
@@ -108,36 +90,12 @@ public class B_Faction implements Serializable {
         level = lvl;
     }
 
-    public int getRaidTimer() {
-        return raid_timer;
-    }
-
-    public void setRaidTimer(int timer) {
-        this.raid_timer = timer;
-    }
-
     public RaidState getRaidState() {
         return raidState;
     }
 
     public void setRaidState(RaidState state) {
         raidState = state;
-    }
-
-    public String getEnemyRaid() {
-        return enemyRaid;
-    }
-
-    public void setEnemyRaid(String s) {
-        enemyRaid = s;
-    }
-
-    public boolean getRaidPos() {
-        return raidPos;
-    }
-
-    public void setRaidPos(boolean s) {
-        raidPos = s;
     }
 
     public void addLevel(int a) {
@@ -328,7 +286,6 @@ public class B_Faction implements Serializable {
     }
 
     public void update() {
-        raid_timer++;
         timer++;
         // klanların xp kazanma mekaniği
         if (timer >= 60) {
@@ -341,10 +298,5 @@ public class B_Faction implements Serializable {
             // addXP(toGainXP(true));
 
         }
-        if (raidState == RaidState.NO_RAID) {
-            raid_timer = 0;
-        }
-
     }
-
 }
