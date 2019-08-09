@@ -113,7 +113,7 @@ public class ClaimCommand implements CommandExecutor {
         if (args[0].equalsIgnoreCase("clearfiles") && hasPermission(sender)) {
             ClaimFactory.claimDatas.clear();
             ClaimFactory.craftLevelIS.clear();
-            ClaimFactory.upgrades.clear();
+            ClaimFactory.upgradeDatas.clear();
             Bukkit.broadcastMessage(ChatColor.AQUA + "Cleared claim & upgrade datas");
             return true;
         }

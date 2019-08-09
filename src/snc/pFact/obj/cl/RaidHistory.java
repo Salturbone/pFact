@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 public class RaidHistory implements Serializable {
 
     private static final long serialVersionUID = 7700834292704341001L;
-
     String attacker, defender;
     int d_lost_claim, a_lost_claim;
     private List<String> d_allies = new ArrayList<String>();
@@ -52,7 +51,7 @@ public class RaidHistory implements Serializable {
             p.sendMessage(ChatColor.BLUE + "Savunanın Müttefikleri: " + ChatColor.RESET + allies);
         }
         p.sendMessage(ChatColor.BLUE + "Kaybedilen Claim: " + ChatColor.RESET + d_lost_claim);
-        
+
         p.sendMessage("");
         p.sendMessage(ChatColor.GREEN + "Kazanan: " + ChatColor.RESET + winner);
         p.sendMessage("");

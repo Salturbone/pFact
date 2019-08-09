@@ -2,7 +2,6 @@ package snc.pFact.Claim.AdditionalClaims;
 
 import org.bukkit.inventory.ItemStack;
 
-import snc.pFact.Claim.AdditionalClaim;
 import snc.pFact.Claim.Upgrade.GainMultiplierUpgrade;
 import snc.pFact.utils.Gerekli;
 import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
@@ -10,7 +9,7 @@ import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
 /**
  * XPClaim
  */
-public class XPClaim extends AdditionalClaim {
+public class XPClaim extends UpgAddClaim {
 
     private static final long serialVersionUID = 1L;
 

@@ -10,4 +10,7 @@ commands:
     usage: /<command> <event> <arg2> <arg3>
   claim:
     description: use command
-    usage: /<command> <claim name/list> <configure/shard/item> <get/set> <value>
+    usage: /<command> <claim name/list> <configure/shard/block> <get/set> <value>
+  upgrade:
+    description: use command
+    usage: /<command> <upgrade name/list> <configure/item> <get/set> <value>
