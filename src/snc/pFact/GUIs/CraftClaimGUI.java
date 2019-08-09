@@ -11,7 +11,7 @@ import snc.pFact.Claim.Claim;
  */
 public class CraftClaimGUI extends ChestGUI {
 
-    private Claim cl;
+    private ICraftClaim cl;
 
     public CraftClaimGUI(Player p, Claim cl) {
         initialize(p, newChestGUIMeta().setManager(Main.cm).setRowSize(6));

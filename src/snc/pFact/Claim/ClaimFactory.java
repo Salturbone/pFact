@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import me.Zindev.utils.Itemizer.Itemizer;
 import me.Zindev.utils.text.Cutty;
@@ -42,13 +41,14 @@ public class ClaimFactory {
     public static HashMapManager<String, UpgradeData> upgradeDatas;
     public static SerItem noUpgradeItem, breakClaim;
     public static int task;
+    public static int interval;
 
-    public static void initialize() {
+    public static void initialize(int interval) {
         claimFolder = new File(Main.ekl.getDataFolder(), "claim");
         if (!claimFolder.exists())
             claimFolder.mkdirs();
         Bukkit.getPluginManager().registerEvents(new ClaimListener(), Main.ekl);
-
+        this.interval = interval;
         initMaps();
         Main.ekl.getCommand("claim").setExecutor(new ClaimCommand());
         Main.ekl.getCommand("claim").setTabCompleter(new ClaimTabCompleter());
@@ -64,7 +64,7 @@ public class ClaimFactory {
             public void run() {
                 getAllClaims().forEach(c -> c.update());
             }
-        }, 1L, 20L);
+        }, 1L, (long) interval);
     }
 
     public static void initStandartUpgrades() {
@@ -114,7 +114,12 @@ public class ClaimFactory {
                     }
 
                 });
+        for (int i = 1; i <= 3; i++) {
+            craftLevelIS.put(i, new SerItem(
+                    Itemizer.wrap(new ItemStack(Material.NETHER_STAR)).setDisplayName("Craft Level " + i).build()));
 
+        }
+        craftLevelIS.loadAllData(true);
         standartUpgrades = new HashMap<>();
 
     }
@@ -134,15 +139,7 @@ public class ClaimFactory {
     }
 
     public static ItemStack getItemByLevel(int level) {
-        ItemStack is = new ItemStack(Material.NETHER_STAR);
-        ItemMeta meta = is.getItemMeta();
-        meta.setDisplayName("Claim Craft Item LV 1");
-        List<String> lore = new ArrayList<String>();
-        lore.add("Used in crafting");
-        lore.add("Level " + level + " claim blocks");
-        meta.setLore(lore);
-        is.setItemMeta(meta);
-        return is;
+        return ZSIGN.imzalaZ("levelItem", level + "", craftLevelIS.get(level).getItemStack());
     }
 
     public static void loadObjects() {
@@ -183,6 +180,14 @@ public class ClaimFactory {
         saveObjects();
         standartClaims.clear();
         Bukkit.getScheduler().cancelTask(task);
+    }
+
+    public static int getLevelFromItem(ItemStack is) {
+        return Integer.parseInt(ZSIGN.alImzaZ(is, "levelItem"));
+    }
+
+    public static Claim getClaimFromShard(ItemStack is) {
+        return standartClaims.get(ZSIGN.alImzaZ(is, "shard"));
     }
 
     public static void addStandartClaim(Claim claim) {

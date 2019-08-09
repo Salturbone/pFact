@@ -24,11 +24,20 @@ public class XPClaim extends UpgAddClaim {
         if (random == 0) {
             random = 30 + Gerekli.random.nextInt(15) * 2;
         }
-        if (timer >= random) {
-            getFaction().addXP(((double) timer / random) * getFaction().toGainXP(false) * getXPMultiplier());
+        if (timer >= random * 4) {
+            getFaction().addXP(((double) (random) / 60) * toGainXP());
             timer = 0;
         }
         timer++;
+    }
+
+    public double toGainXP() {
+        int on = getFaction().getOnlinePlayers().size();
+        if (on >= 1) {
+            return 3 * getFaction().getLevelBlock() * ((100 + (2 * (double) on)) / 100) * getXPMultiplier();
+        } else {
+            return getFaction().getLevelBlock() * getXPMultiplier() / 2;
+        }
     }
 
     @Override

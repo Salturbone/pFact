@@ -1,6 +1,7 @@
 package snc.pFact.Claim;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.bukkit.Material;
@@ -12,15 +13,22 @@ import me.Zindev.utils.ZChestLibV6.ChestGUI;
 import me.Zindev.utils.ZChestLibV6.ChestNode;
 import me.Zindev.utils.ZChestLibV6.ItemNode;
 import me.Zindev.utils.data.SoundData;
+import snc.pFact.Claim.AdditionalClaims.ICraftingClaim;
 import snc.pFact.GUIs.ClaimMenuGUI;
 import snc.pFact.GUIs.CraftClaimGUI;
 import snc.pFact.GUIs.ShowBordersButton;
 import snc.pFact.obj.cl.B_Faction;
+import snc.pFact.utils.SerItem;
 import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
 
-public class MainClaim extends Claim {
+public class MainClaim extends Claim implements ICraftingClaim {
 
     private static final long serialVersionUID = 1L;
+
+    private List<SerItem> shards;
+    private SerItem levelItem;
+    private Date end;
+    private long untilEnd;
 
     public MainClaim(int length, ItemStack claimBlock, ItemStack shard, Color color) {
         super(length, claimBlock, shard, color);
@@ -28,7 +36,18 @@ public class MainClaim extends Claim {
 
     @Override
     public void update() {
+        if (untilEnd >= 0) {
+            untilEnd -= ((double) ClaimFactory.interval / 20) * 1000L * getTimeMultiplier();
+        }
+    }
 
+    @Override
+    public void setup(String faction, Location center) {
+        super.setup(faction, center);
+        this.shards = new ArrayList<SerItem>();
+        this.end = null;
+        this.untilEnd = 0L;
+        this.levelItem = null;
     }
 
     @Override
@@ -60,7 +79,11 @@ public class MainClaim extends Claim {
 
     @Override
     protected MainClaim clone() {
-        return (MainClaim) super.clone();
+        MainClaim mc = (MainClaim) super.clone();
+        mc.shards = new ArrayList<SerItem>();
+        mc.levelItem = null;
+        mc.end = null;
+        return mc;
     }
 
     @Override
@@ -109,5 +132,30 @@ public class MainClaim extends Claim {
     @Override
     public SingularItem getSingularItem() {
         return new ItemNode(claimData().getItemStack("displayItem"));
+    }
+
+    @Override
+    public List<SerItem> getShards() {
+        return shards;
+    }
+
+    @Override
+    public SerItem getLevelItem() {
+        return levelItem;
+    }
+
+    @Override
+    public long untilEnd() {
+        return untilEnd;
+    }
+
+    @Override
+    public Date getEndDate() {
+        return end == null ? new Date(System.currentTimeMillis() + untilEnd) : end;
+    }
+
+    @Override
+    public void startCrafting() {
+        untilEnd = getEndLongForClaim(getCrafting());
     }
 }
