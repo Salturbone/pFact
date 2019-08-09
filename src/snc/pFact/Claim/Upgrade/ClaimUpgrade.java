@@ -4,25 +4,47 @@ import java.io.Serializable;
 
 import org.bukkit.inventory.ItemStack;
 
-import snc.pFact.utils.SerItem;
+import snc.pFact.Claim.Claim;
+import snc.pFact.Claim.ClaimFactory;
 import snc.pFact.utils.ZSIGN;
 
 /**
  * ClaimUpgrade
  */
-public abstract class ClaimUpgrade implements Serializable {
+public abstract class ClaimUpgrade implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1L;
-    private SerItem item;
 
     public abstract String getName();
 
-    public void setItem(ItemStack is) {
-        this.item = new SerItem(is);
+    public ClaimUpgrade(ItemStack item) {
+        UpgradeData upData = new UpgradeData();
+        ClaimFactory.upgradeDatas.put(getName(), upData);
+        upgradeData().setItemStack("upgradeItem", item);
     }
 
+    public void setup(Claim cl) {
+
+    }
+
+    public abstract void refresh();
+
     public ItemStack getUpgradeItem() {
-        return ZSIGN.imzalaZ("claimUpgrade", getName(), item.getItemStack());
+        return ZSIGN.imzalaZ("claimUpgrade", getName(), upgradeData().getItemStack("upgradeItem"));
+    }
+
+    public UpgradeData upgradeData() {
+        return ClaimFactory.upgradeDatas.get(getName());
+    }
+
+    @Override
+    public ClaimUpgrade clone() {
+        try {
+            return (ClaimUpgrade) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

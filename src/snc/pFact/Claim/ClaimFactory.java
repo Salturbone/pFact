@@ -17,6 +17,9 @@ import me.Zindev.utils.text.SoShorten;
 import snc.pFact.Main;
 import snc.pFact.Claim.AdditionalClaims.XPClaim;
 import snc.pFact.Claim.Upgrade.ClaimUpgrade;
+import snc.pFact.Claim.Upgrade.GainMultiplierUpgrade;
+import snc.pFact.Claim.Upgrade.HealthMultiplierUpgrade;
+import snc.pFact.Claim.Upgrade.UpgradeData;
 import snc.pFact.DM.DataIssues;
 import snc.pFact.DM.HashMapManager;
 import snc.pFact.obj.cl.B_Faction;
@@ -33,7 +36,8 @@ public class ClaimFactory {
     public static HashMap<String, Claim> standartClaims;
     public static HashMapManager<String, ClaimData> claimDatas;
     public static HashMapManager<Integer, SerItem> craftLevelIS;
-    public static HashMapManager<String, ClaimUpgrade> upgrades;
+    public static HashMap<String, ClaimUpgrade> standartUpgrades;
+    public static HashMapManager<String, UpgradeData> upgradeDatas;
     public static SerItem noUpgradeItem, breakClaim;
     public static int task;
 
@@ -41,6 +45,31 @@ public class ClaimFactory {
         claimFolder = new File(Main.ekl.getDataFolder(), "claim");
         if (!claimFolder.exists())
             claimFolder.mkdirs();
+        Bukkit.getPluginManager().registerEvents(new ClaimListener(), Main.ekl);
+
+        initMaps();
+        Main.ekl.getCommand("claim").setExecutor(new ClaimCommand());
+        Main.ekl.getCommand("claim").setTabCompleter(new ClaimTabCompleter());
+        initStandartClaims();
+        initStandartUpgrades();
+        loadObjects();
+        task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.ekl, new Runnable() {
+
+            @Override
+            public void run() {
+                getAllClaims().forEach(c -> c.update());
+            }
+        }, 1L, 20L);
+    }
+
+    public static void initStandartUpgrades() {
+        noUpgradeItem = new SerItem(Itemizer.wrap(new ItemStack(Material.ANVIL)).setDisplayName("No Upgrades")
+                .setLore(Cutty.wrap(SoShorten.colorize("Put an upgrade in this slot."), 16).asLines()).build());
+        addStandartUpgrade(new GainMultiplierUpgrade(new ItemStack(Material.GOLD_INGOT), 2));
+        addStandartUpgrade(new HealthMultiplierUpgrade(new ItemStack(Material.GOLDEN_APPLE), 2));
+    }
+
+    private static void initMaps() {
         standartClaims = new HashMap<String, Claim>();
         claimDatas = new HashMapManager<>(new File(claimFolder, "Claim Datas"),
                 new HashMapManager.KeyConverter<String>() {
@@ -54,17 +83,18 @@ public class ClaimFactory {
                         return filename.replaceAll(".cd", "");
                     }
                 });
-        upgrades = new HashMapManager<>(new File(claimFolder, "Upgrades"), new HashMapManager.KeyConverter<String>() {
-            @Override
-            protected String toFileName(String key) {
-                return key + ".up";
-            }
+        upgradeDatas = new HashMapManager<>(new File(claimFolder, "Upgrade Datas"),
+                new HashMapManager.KeyConverter<String>() {
+                    @Override
+                    protected String toFileName(String key) {
+                        return key + ".up";
+                    }
 
-            @Override
-            protected String toKey(String filename) {
-                return filename.replaceAll(".up", "");
-            }
-        });
+                    @Override
+                    protected String toKey(String filename) {
+                        return filename.replaceAll(".up", "");
+                    }
+                });
         craftLevelIS = new HashMapManager<>(new File(claimFolder, "LevelItems"),
                 new HashMapManager.KeyConverter<Integer>() {
 
@@ -79,15 +109,15 @@ public class ClaimFactory {
                     }
 
                 });
-        Main.ekl.getCommand("claim").setExecutor(new ClaimCommand());
-        Main.ekl.getCommand("claim").setTabCompleter(new ClaimTabCompleter());
 
-        ItemStack is = Itemizer.wrap(new ItemStack(Material.ANVIL)).setDisplayName("No Upgrades")
-                .setLore(Cutty.wrap(SoShorten.colorize("Put an upgrade in this slot."), 16).asLines()).build();
-        noUpgradeItem = new SerItem(is);
+        standartUpgrades = new HashMap<>();
+
+    }
+
+    private static void initStandartClaims() {
+
         breakClaim = new SerItem(Itemizer.wrap(new ItemStack(Material.BARRIER)).setDisplayName("Break Claim")
                 .setLore(Cutty.wrap(SoShorten.colorize("Breaks claim & gives its block."), 16).asLines()).build());
-        Bukkit.getPluginManager().registerEvents(new ClaimListener(), Main.ekl);
         addStandartClaim(
                 new MainClaim(4, new ItemStack(Material.DRAGON_EGG), new ItemStack(Material.ANVIL), Color.AQUA));
         addStandartClaim(new XPClaim(4, new ItemStack(Material.DRAGON_EGG), new ItemStack(Material.PRISMARINE_SHARD),
@@ -95,14 +125,7 @@ public class ClaimFactory {
         for (int i = 1; i <= 3; i++) {
             craftLevelIS.put(i, new SerItem(getItemByLevel(i)));
         }
-        loadObjects();
-        task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.ekl, new Runnable() {
 
-            @Override
-            public void run() {
-                getAllClaims().forEach(c -> c.update());
-            }
-        }, 1L, 20L);
     }
 
     public static ItemStack getItemByLevel(int level) {
@@ -121,15 +144,15 @@ public class ClaimFactory {
         if (!claimDatas.getDataFolder().exists()) {
             claimDatas.getDataFolder().mkdirs();
         }
-        if (!upgrades.getDataFolder().exists()) {
-            upgrades.getDataFolder().mkdirs();
+        if (!upgradeDatas.getDataFolder().exists()) {
+            upgradeDatas.getDataFolder().mkdirs();
         }
         if (!craftLevelIS.getDataFolder().exists()) {
             craftLevelIS.getDataFolder().mkdirs();
         }
         claimDatas.loadAllData(true);
         craftLevelIS.loadAllData(true);
-        upgrades.loadAllData(true);
+        upgradeDatas.loadAllData(true);
         noUpgradeItemFile = new File(claimFolder, "noUpgradeItem.si");
         if (noUpgradeItemFile.exists()) {
             noUpgradeItem = (SerItem) DataIssues.loadObject(noUpgradeItemFile);
@@ -145,7 +168,7 @@ public class ClaimFactory {
 
         craftLevelIS.saveAndUnloadAllDatas();
 
-        upgrades.saveAndUnloadAllDatas();
+        upgradeDatas.saveAndUnloadAllDatas();
 
         DataIssues.saveObject(noUpgradeItem, noUpgradeItemFile);
         DataIssues.saveObject(breakClaim, breakClaimFile);
@@ -159,6 +182,10 @@ public class ClaimFactory {
 
     public static void addStandartClaim(Claim claim) {
         standartClaims.put(claim.getName(), claim);
+    }
+
+    public static void addStandartUpgrade(ClaimUpgrade upg) {
+        standartUpgrades.put(upg.getName(), upg);
     }
 
     public static String getClaimStackFaction(ItemStack is) {
@@ -178,7 +205,14 @@ public class ClaimFactory {
     }
 
     public static ClaimUpgrade getUpgradeFromItemStack(ItemStack is) {
-        return is == null ? null : upgrades.get(ZSIGN.alImzaZ(is, "claimUpgrade"));
+        return is == null ? null : standartUpgrades.get(ZSIGN.alImzaZ(is, "claimUpgrade"));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends ClaimUpgrade> T createUpgrade(T upgrade, Claim cl) {
+        ClaimUpgrade cu = upgrade.clone();
+        cu.setup(cl);
+        return (T) cu;
     }
 
     // use getShape method to get object of type shape

@@ -14,6 +14,7 @@ import me.Zindev.utils.ZChestLibV6.ChestNode;
 import me.Zindev.utils.ZChestLibV6.ChestNode.ChestGUIClickEvent;
 import me.Zindev.utils.ZChestLibV6.GUIArray;
 import me.Zindev.utils.ZChestLibV6.ItemNode;
+import me.Zindev.utils.data.ZSIGN;
 import snc.pFact.Main;
 import snc.pFact.Claim.Claim;
 
@@ -39,7 +40,10 @@ public class ClaimMenuGUI extends ChestGUI {
 
     @Override
     protected boolean selfClick(ChestGUIClickEvent e) {
-        return true;
+        ItemStack is = e.getCurrentItem();
+        if (is == null || is.getType() == Material.AIR)
+            return true;
+        return !ZSIGN.sorImzaZ(is, "claimUpgrade");
     }
 
     @Override

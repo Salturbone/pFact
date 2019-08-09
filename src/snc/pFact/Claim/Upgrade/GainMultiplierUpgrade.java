@@ -1,22 +1,21 @@
 package snc.pFact.Claim.Upgrade;
 
+import org.bukkit.inventory.ItemStack;
+
 /**
  * GainMultiplierUpgrade
  */
 public class GainMultiplierUpgrade extends ClaimUpgrade {
 
     private static final long serialVersionUID = 1L;
-    private double multiplier;
 
-    public GainMultiplierUpgrade(double multiplier) {
-        this.multiplier = multiplier;
+    public GainMultiplierUpgrade(ItemStack item, double multiplier) {
+        super(item);
+        upgradeData().setObject("multiplier", multiplier);
     }
 
-    /**
-     * @param multiplier the multiplier to set
-     */
-    public void setMultiplier(double multiplier) {
-        this.multiplier = multiplier;
+    public double getMultiplier() {
+        return upgradeData().getDouble("multiplier");
     }
 
     @Override
@@ -24,8 +23,9 @@ public class GainMultiplierUpgrade extends ClaimUpgrade {
         return "gainMultiplierUpgrade";
     }
 
-    public double getMultiplier() {
-        return multiplier;
+    @Override
+    public void refresh() {
+
     }
 
 }

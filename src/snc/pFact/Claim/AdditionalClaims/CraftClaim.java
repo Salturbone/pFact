@@ -6,13 +6,12 @@ import java.util.List;
 
 import org.bukkit.inventory.ItemStack;
 
-import snc.pFact.Claim.AdditionalClaim;
 import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
 
 /**
  * CraftClaim
  */
-public class CraftClaim extends AdditionalClaim {
+public class CraftClaim extends UpgAddClaim {
 
     private static final long serialVersionUID = 1L;
 
