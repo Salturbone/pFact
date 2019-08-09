@@ -1,8 +1,12 @@
 package snc.pFact.GUIs;
 
+import java.lang.reflect.Field;
+
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event.Result;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import me.Zindev.utils.ZChestLibV6.ButtonNode;
@@ -31,8 +35,9 @@ public class UpgradesButton extends ButtonNode {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public void onClick(ChestGUI gui, ChestGUIClickEvent arg1) {
+    public void onClick(ChestGUI gui, ChestGUIClickEvent e) {
         UpgradeableClaim cl = (UpgradeableClaim) ((ClaimMenuGUI) gui).getClaim();
         Player p = gui.getUser();
         if (cl.getUpgrades().size() == 1) {
@@ -44,7 +49,7 @@ public class UpgradesButton extends ButtonNode {
             new SoundData(1f, 1f, Sound.ENTITY_EXPERIENCE_ORB_PICKUP).play(p);
             return;
         }
-        ItemStack is = arg1.getCurrentItem();
+        ItemStack is = e.getCursor();
         if (is != null && is.getType() != Material.AIR) {
             ClaimUpgrade cu = ClaimFactory.getUpgradeFromItemStack(is);
             if (cu == null) {
@@ -53,7 +58,22 @@ public class UpgradesButton extends ButtonNode {
             }
             cl.getUpgrades().add(cu);
             new SoundData(1f, 1f, Sound.ENTITY_EXPERIENCE_ORB_PICKUP).play(p);
+            try {
+
+                Field evField = e.getClass().getDeclaredField("e");
+                evField.setAccessible(true);
+                InventoryClickEvent ev = (InventoryClickEvent) evField.get(e);
+                is.setAmount(is.getAmount() - 1);
+                ev.setCursor(is);
+
+            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+
+            return;
         }
+
         new SoundData(1f, 1f, Sound.BLOCK_ANVIL_LAND).play(p);
         return;
     }

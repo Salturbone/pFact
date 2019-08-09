@@ -20,7 +20,7 @@ public class HealthMultiplierUpgrade extends ClaimUpgrade {
 
     @Override
     public String getName() {
-        return "gainMultiplierUpgrade";
+        return "healthMultiplierUpgrade";
     }
 
     @Override

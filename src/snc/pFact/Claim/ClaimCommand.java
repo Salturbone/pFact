@@ -23,9 +23,6 @@ public class ClaimCommand implements CommandExecutor {
         if (args.length == 0) {
             return false;
         }
-        if (args[0].equalsIgnoreCase("upgrade")) {
-
-        }
         if (args.length >= 2 && args[1].equalsIgnoreCase("shard") && hasPermission(sender)) {
             Claim cl = null;
             cl = ClaimFactory.standartClaims.get(args[0]);

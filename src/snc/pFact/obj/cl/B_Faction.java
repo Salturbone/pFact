@@ -80,6 +80,7 @@ public class B_Faction implements Serializable {
         this.founder.setRank(Rank.Founder);
         players.put(founder, this.founder);
         this.raidState = RaidState.NO_RAID;
+        rh = new ArrayList<RaidHistory>();
         raidPos = false;
     }
 

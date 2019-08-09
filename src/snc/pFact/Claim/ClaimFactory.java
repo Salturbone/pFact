@@ -19,6 +19,8 @@ import snc.pFact.Claim.AdditionalClaims.XPClaim;
 import snc.pFact.Claim.Upgrade.ClaimUpgrade;
 import snc.pFact.Claim.Upgrade.GainMultiplierUpgrade;
 import snc.pFact.Claim.Upgrade.HealthMultiplierUpgrade;
+import snc.pFact.Claim.Upgrade.UpgradeCommand;
+import snc.pFact.Claim.Upgrade.UpgradeCompleter;
 import snc.pFact.Claim.Upgrade.UpgradeData;
 import snc.pFact.DM.DataIssues;
 import snc.pFact.DM.HashMapManager;
@@ -50,6 +52,9 @@ public class ClaimFactory {
         initMaps();
         Main.ekl.getCommand("claim").setExecutor(new ClaimCommand());
         Main.ekl.getCommand("claim").setTabCompleter(new ClaimTabCompleter());
+        Main.ekl.getCommand("upgrade").setExecutor(new UpgradeCommand());
+        Main.ekl.getCommand("upgrade").setTabCompleter(new UpgradeCompleter());
+
         initStandartClaims();
         initStandartUpgrades();
         loadObjects();
