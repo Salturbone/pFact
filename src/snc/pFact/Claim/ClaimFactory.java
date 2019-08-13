@@ -48,7 +48,7 @@ public class ClaimFactory {
         if (!claimFolder.exists())
             claimFolder.mkdirs();
         Bukkit.getPluginManager().registerEvents(new ClaimListener(), Main.ekl);
-        this.interval = interval;
+        ClaimFactory.interval = interval;
         initMaps();
         Main.ekl.getCommand("claim").setExecutor(new ClaimCommand());
         Main.ekl.getCommand("claim").setTabCompleter(new ClaimTabCompleter());
@@ -57,7 +57,7 @@ public class ClaimFactory {
 
         initStandartClaims();
         initStandartUpgrades();
-        loadObjects();
+        // loadObjects();
         task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.ekl, new Runnable() {
 
             @Override
@@ -119,7 +119,7 @@ public class ClaimFactory {
                     Itemizer.wrap(new ItemStack(Material.NETHER_STAR)).setDisplayName("Craft Level " + i).build()));
 
         }
-        craftLevelIS.loadAllData(true);
+
         standartUpgrades = new HashMap<>();
 
     }
@@ -177,12 +177,14 @@ public class ClaimFactory {
     }
 
     public static void deInitialize() {
-        saveObjects();
+        // saveObjects();
         standartClaims.clear();
         Bukkit.getScheduler().cancelTask(task);
     }
 
     public static int getLevelFromItem(ItemStack is) {
+        if (!ZSIGN.sorImzaZ(is, "levelItem"))
+            return -1;
         return Integer.parseInt(ZSIGN.alImzaZ(is, "levelItem"));
     }
 

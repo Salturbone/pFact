@@ -22,7 +22,7 @@ import snc.pFact.DM.DataIssues;
 import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.obj.cl.B_FactionMember;
 import snc.pFact.obj.cl.B_Player;
-import snc.pFact.obj.cl.B_Player.Rank;
+import snc.pFact.obj.cl.Rank;
 import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaFactory;
 import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols112;
 
@@ -40,7 +40,7 @@ public class Main extends JavaPlugin {
         gmf.doInitialize();
         cm = new ChestManager();
         cm.initialize(this);
-        ClaimFactory.initialize();
+        ClaimFactory.initialize(5);
         DataIssues.initalize();
         DataIssues.load();
         System.out.println("pFact başlatıldı!");

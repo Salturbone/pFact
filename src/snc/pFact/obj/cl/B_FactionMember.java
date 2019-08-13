@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import snc.pFact.obj.cl.B_Player.Rank;
+import snc.pFact.DM.DataIssues;
 
 /**
  * B_FactionMember
@@ -47,4 +47,9 @@ public class B_FactionMember implements Serializable {
                 return true;
         return false;
     }
+
+    public boolean isVIP() {
+        return DataIssues.vips.containsKey(uuid());
+    }
+
 }

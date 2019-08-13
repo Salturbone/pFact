@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import snc.pFact.ListenerClass;
 import snc.pFact.Main;
 import snc.pFact.DM.HashMapManager.KeyConverter;
+import snc.pFact.obj.VIPPlayer;
 import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.obj.cl.B_Player;
 
@@ -22,8 +23,10 @@ public class DataIssues {
 
     public static File factionFile;
     public static File playerFile;
+    public static File vipsFile;
     public static HashMapManager<UUID, B_Player> players;
     public static HashMapManager<String, B_Faction> factions;
+    public static HashMapManager<UUID, VIPPlayer> vips;
 
     public static void initalize() {
         create();
@@ -51,16 +54,31 @@ public class DataIssues {
                 return filename.replaceAll(".df", "");
             }
         });
+        vips = new HashMapManager<UUID, VIPPlayer>(vipsFile, new KeyConverter<UUID>() {
+
+            @Override
+            protected String toFileName(UUID key) {
+                return key.toString() + ".dp";
+            }
+
+            @Override
+            protected UUID toKey(String filename) {
+                return UUID.fromString(filename.replaceAll(".dp", ""));
+            }
+        });
     }
 
     public static void create() {
 
-        factionFile = new File(Main.ekl.getDataFolder(), "Factions/");
-        playerFile = new File(Main.ekl.getDataFolder(), "Players/");
+        factionFile = new File(Main.ekl.getDataFolder(), "Factions");
+        playerFile = new File(Main.ekl.getDataFolder(), "Players");
+        vipsFile = new File(Main.ekl.getDataFolder(), "VIPS");
         if (!factionFile.exists())
             factionFile.mkdirs();
         if (!playerFile.exists())
             playerFile.mkdirs();
+        if (!vipsFile.exists())
+            vipsFile.mkdirs();
     }
 
     public static void load() {

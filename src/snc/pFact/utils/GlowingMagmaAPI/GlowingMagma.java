@@ -1,5 +1,6 @@
 package snc.pFact.utils.GlowingMagmaAPI;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -121,10 +122,18 @@ public class GlowingMagma {
     }
 
     public void checkTimers() {
-        List<Player> pls = this.playerTimers.keySet().stream().map(o -> Bukkit.getPlayer(o))
-                .filter(o -> o == null || !o.isOnline() || o.isDead() || !players.contains(o.getUniqueId()))
-                .collect(Collectors.toList());
-        pls.forEach(o -> playerTimers.remove(o.getUniqueId()));
+        List<UUID> toRemove = new ArrayList<UUID>();
+        for (UUID uid : this.playerTimers.keySet()) {
+            Player p = Bukkit.getPlayer(uid);
+            if (p == null || !p.isOnline() || p.isDead() || !players.contains(uid))
+                toRemove.add(uid);
+        }
+        for (UUID uid : toRemove) {
+            Player p = Bukkit.getPlayer(uid);
+            playerTimers.remove(uid);
+            remove(p);
+            getPlayers().remove(uid);
+        }
         HashMap<UUID, Integer> nmap = new HashMap<>();
         for (Entry<UUID, Integer> en : playerTimers.entrySet()) {
             nmap.put(en.getKey(), en.getValue() - 1);

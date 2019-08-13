@@ -3,7 +3,6 @@ package snc.pFact.Claim;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -45,6 +44,14 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
         cd.setObject("cornerColor", Color.WHITE.name());
     }
 
+    public String getDisplayName() {
+        return claimData().getString("displayName");
+    }
+
+    public ItemStack getDisplayItem() {
+        return claimData().getItemStack("displayItem");
+    }
+
     public void setup(String faction, Location center) {
         this.faction = faction;
         this.centerBlock = new SerLocation(center.getBlock().getLocation());
@@ -80,7 +87,7 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
         double xDiff = Math.abs(loc.getX() - center.getX());
         double yDiff = loc.getY() - center.getY();
         double zDiff = Math.abs(loc.getZ() - center.getZ());
-        if (xDiff <= 1 && yDiff >= 0 && zDiff <= 1) {
+        if (xDiff <= 1 && (yDiff >= 0 && yDiff <= 1) && zDiff <= 1) {
             return false;
         }
         return true;
@@ -126,10 +133,6 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
             }
         }
         return max;
-    }
-
-    public void canCraft(HashMap<Integer, ItemStack> recipe) {
-
     }
 
     @Override

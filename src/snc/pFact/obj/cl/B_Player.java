@@ -15,10 +15,6 @@ public class B_Player implements Serializable {
         return bf;
     }
 
-    public enum Rank {
-        Single, Player, Moderator, Founder;
-    }
-
     private UUID id;
     private String fct = null;
     private String e_fct = null;
@@ -84,6 +80,10 @@ public class B_Player implements Serializable {
             addCoin(1);
             timer = 0;
         }
+    }
+
+    public boolean isVIP() {
+        return DataIssues.vips.containsKey(uuid());
     }
 
 }

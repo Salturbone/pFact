@@ -1,9 +1,9 @@
 package snc.pFact.Claim;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
@@ -15,7 +15,7 @@ import me.Zindev.utils.ZChestLibV6.ItemNode;
 import me.Zindev.utils.data.SoundData;
 import snc.pFact.Claim.AdditionalClaims.ICraftingClaim;
 import snc.pFact.GUIs.ClaimMenuGUI;
-import snc.pFact.GUIs.CraftClaimGUI;
+import snc.pFact.GUIs.GoToCraftingButton;
 import snc.pFact.GUIs.ShowBordersButton;
 import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.utils.SerItem;
@@ -25,10 +25,10 @@ public class MainClaim extends Claim implements ICraftingClaim {
 
     private static final long serialVersionUID = 1L;
 
-    private List<SerItem> shards;
+    private SerItem[] shards;
     private SerItem levelItem;
-    private Date end;
     private long untilEnd;
+    private boolean crafting, ended;
 
     public MainClaim(int length, ItemStack claimBlock, ItemStack shard, Color color) {
         super(length, claimBlock, shard, color);
@@ -37,15 +37,16 @@ public class MainClaim extends Claim implements ICraftingClaim {
     @Override
     public void update() {
         if (untilEnd >= 0) {
-            untilEnd -= ((double) ClaimFactory.interval / 20) * 1000L * getTimeMultiplier();
+            untilEnd -= ((double) ClaimFactory.interval / 20) * 1000L * getMultipliers();
         }
+        check();
     }
 
     @Override
     public void setup(String faction, Location center) {
         super.setup(faction, center);
-        this.shards = new ArrayList<SerItem>();
-        this.end = null;
+        this.shards = new SerItem[4];
+        this.ended = false;
         this.untilEnd = 0L;
         this.levelItem = null;
     }
@@ -80,9 +81,9 @@ public class MainClaim extends Claim implements ICraftingClaim {
     @Override
     protected MainClaim clone() {
         MainClaim mc = (MainClaim) super.clone();
-        mc.shards = new ArrayList<SerItem>();
+        mc.shards = new SerItem[4];
         mc.levelItem = null;
-        mc.end = null;
+        mc.ended = false;
         return mc;
     }
 
@@ -111,19 +112,7 @@ public class MainClaim extends Claim implements ICraftingClaim {
             }
         });
         // goto crafting gui
-        nodes.add(new ButtonNode(null) {
-
-            @Override
-            public void onClick(ChestGUI arg0, ChestGUIClickEvent arg1) {
-                arg0.switchTo(new CraftClaimGUI(arg0.getUser(), ((ClaimMenuGUI) arg0).getClaim()));
-            }
-
-            @Override
-            public ItemStack getStack(ChestGUI gui) {
-
-                return new ItemStack(Material.WORKBENCH);
-            }
-        });
+        nodes.add(new GoToCraftingButton(this));
         // show
         nodes.add(new ShowBordersButton(new ItemStack(Material.PAINTING)));
         return nodes;
@@ -135,13 +124,18 @@ public class MainClaim extends Claim implements ICraftingClaim {
     }
 
     @Override
-    public List<SerItem> getShards() {
+    public SerItem[] getShards() {
         return shards;
     }
 
     @Override
     public SerItem getLevelItem() {
-        return levelItem;
+        return this.levelItem;
+    }
+
+    @Override
+    public void setLevelItem(SerItem is) {
+        this.levelItem = is;
     }
 
     @Override
@@ -150,12 +144,33 @@ public class MainClaim extends Claim implements ICraftingClaim {
     }
 
     @Override
-    public Date getEndDate() {
-        return end == null ? new Date(System.currentTimeMillis() + untilEnd) : end;
+    public void setUntilEnd(long end) {
+        untilEnd = end;
     }
 
     @Override
-    public void startCrafting() {
-        untilEnd = getEndLongForClaim(getCrafting());
+    public boolean didEnd() {
+        return ended;
     }
+
+    @Override
+    public void setEnded(boolean bool) {
+        this.ended = bool;
+    }
+
+    @Override
+    public boolean isCrafting() {
+        return crafting;
+    }
+
+    @Override
+    public void setCrafting(boolean bool) {
+        crafting = bool;
+    }
+
+    @Override
+    public double getMultipliers() {
+        return Math.floor(Math.pow(1.25, Math.pow(getFaction().getVIPCount(), 3 / 4)));
+    }
+
 }

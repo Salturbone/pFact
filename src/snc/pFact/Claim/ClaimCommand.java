@@ -2,6 +2,7 @@ package snc.pFact.Claim;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -10,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.Permissible;
 
 import snc.pFact.DM.DataIssues;
+import snc.pFact.utils.SerItem;
 
 /**
  * ClaimCommand
@@ -23,6 +25,77 @@ public class ClaimCommand implements CommandExecutor {
         if (args.length == 0) {
             return false;
         }
+        if (args[0].equalsIgnoreCase("items")) {
+            if (args.length <= 2) {
+                sender.sendMessage("/claim items <noup/break/cores> <set/>");
+                return true;
+            }
+            if (args[1].equalsIgnoreCase("noup")) {
+                Player p = (Player) sender;
+                if (args.length >= 3 && args[2].equalsIgnoreCase("set")) {
+                    ItemStack is = p.getInventory().getItemInMainHand();
+                    if (is == null || is.getType() == Material.AIR) {
+                        sender.sendMessage("Hold a item");
+                        return true;
+                    }
+                    ClaimFactory.noUpgradeItem = new SerItem(is);
+                    sender.sendMessage("Changed no upgrade item.");
+                    return true;
+                }
+                p.getInventory().addItem(ClaimFactory.noUpgradeItem.getItemStack());
+                sender.sendMessage("Given no upgrade item.");
+                return true;
+            }
+            if (args[1].equalsIgnoreCase("break")) {
+                Player p = (Player) sender;
+                if (args.length >= 3 && args[2].equalsIgnoreCase("set")) {
+                    ItemStack is = p.getInventory().getItemInMainHand();
+                    if (is == null || is.getType() == Material.AIR) {
+                        sender.sendMessage("Hold a item");
+                        return true;
+                    }
+                    ClaimFactory.breakClaim = new SerItem(is);
+                    sender.sendMessage("Changed no upgrade item.");
+                    return true;
+                }
+                p.getInventory().addItem(ClaimFactory.noUpgradeItem.getItemStack());
+                sender.sendMessage("Given break item.");
+                return true;
+            }
+            if (args[1].equalsIgnoreCase("cores")) {
+                if (args.length <= 2) {
+                    sender.sendMessage("Enter a number");
+                    return true;
+                }
+                Player p = (Player) sender;
+                int i;
+                try {
+                    i = Integer.parseInt(args[2]);
+                } catch (NumberFormatException e) {
+                    sender.sendMessage("Enter a number");
+                    return true;
+                }
+                if (!ClaimFactory.craftLevelIS.containsKey(i)) {
+                    sender.sendMessage("Enter a number in range 1-3");
+                    return true;
+                }
+                if (args.length >= 4 && args[2].equalsIgnoreCase("set")) {
+                    ItemStack is = p.getInventory().getItemInMainHand();
+                    if (is == null || is.getType() == Material.AIR) {
+                        sender.sendMessage("Hold a item");
+                        return true;
+                    }
+                    ClaimFactory.craftLevelIS.put(i, new SerItem(is));
+                    sender.sendMessage("Changed core item of level " + i);
+                    return true;
+                }
+                ItemStack is = ClaimFactory.craftLevelIS.get(i).getItemStack();
+                p.getInventory().addItem(is);
+                sender.sendMessage("Given core item of level " + i);
+                return true;
+            }
+        }
+
         if (args.length >= 2 && args[1].equalsIgnoreCase("shard") && hasPermission(sender)) {
             Claim cl = null;
             cl = ClaimFactory.standartClaims.get(args[0]);

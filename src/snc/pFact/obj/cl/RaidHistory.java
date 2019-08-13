@@ -9,14 +9,15 @@ import org.bukkit.entity.Player;
 
 public class RaidHistory implements Serializable {
 
-    private static final long serialVersionUID = 7700834292704341001L;
+    private static final long serialVersionUID = 1L;
     String attacker, defender;
     int d_lost_claim, a_lost_claim;
     private List<String> d_allies = new ArrayList<String>();
     private List<String> a_allies = new ArrayList<String>();
     String winner;
 
-    public RaidHistory(String att, String def, int d_lost, int a_lost, List<String> d_a, List<String> a_a, String win) {
+    private RaidHistory(String att, String def, int d_lost, int a_lost, List<String> d_a, List<String> a_a,
+            String win) {
 
         this.attacker = att;
         this.defender = def;

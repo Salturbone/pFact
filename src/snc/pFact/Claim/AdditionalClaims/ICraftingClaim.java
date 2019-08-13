@@ -1,12 +1,13 @@
 package snc.pFact.Claim.AdditionalClaims;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-
-import org.bukkit.inventory.ItemStack;
 
 import snc.pFact.Claim.Claim;
 import snc.pFact.Claim.ClaimFactory;
+import snc.pFact.GUIs.LevelItemButton;
+import snc.pFact.GUIs.PlaceableButtonNode;
+import snc.pFact.GUIs.ShardButton;
 import snc.pFact.utils.SerItem;
 
 /**
@@ -14,21 +15,63 @@ import snc.pFact.utils.SerItem;
  */
 public interface ICraftingClaim {
 
-    public List<SerItem> getShards();
+    public SerItem[] getShards();
 
     public SerItem getLevelItem();
 
-    public SerItem setLevelItem(ItemStack is);
+    public void setLevelItem(SerItem is);
 
-    public default Date getEndDateForClaim(Claim cl) {
+    public long untilEnd();
 
-        return new Date(System.currentTimeMillis() + getEndLongForClaim(cl));
+    public void setUntilEnd(long end);
+
+    public boolean didEnd();
+
+    public void setEnded(boolean bool);
+
+    public boolean isCrafting();
+
+    public void setCrafting(boolean bool);
+
+    public default void check() {
+        if (!isCrafting() || untilEnd() > 0) {
+            return;
+        }
+        setCrafting(false);
+        setEnded(true);
+    }
+
+    public default void clear() {
+        setLevelItem(null);
+        setCrafting(false);
+        setUntilEnd(-1);
+        setEnded(false);
+        for (int i = 0; i < 4; i++)
+            getShards()[i] = null;
+    }
+
+    public default void cancel() {
+        setCrafting(false);
+        setUntilEnd(-1);
+        setEnded(false);
+    }
+
+    public default void startCrafting() {
+        setCrafting(true);
+        setUntilEnd(getEndLongForClaim(getCrafting()));
+    }
+
+    public default Claim getCrafting() {
+        if (getCraftingState() != CraftingState.READY)
+            return null;
+        return ClaimFactory.getClaimFromShard(getShards()[0].getItemStack());
     }
 
     public default long getEndLongForClaim(Claim cl) {
         long untilEnd = 0;
         if (cl.getLevel() == 1) {
-            untilEnd = 8L * 60L * 60L * 1000L;
+            // untilEnd = 8L * 60L * 60L * 1000L;
+            untilEnd = 30L * 1000L;
         }
         if (cl.getLevel() == 2) {
             untilEnd = 24L * 60L * 60L * 1000L;
@@ -39,30 +82,32 @@ public interface ICraftingClaim {
         return untilEnd;
     }
 
-    public long untilEnd();
+    public double getMultipliers();
 
-    public Date getEndDate();
-
-    public void startCrafting();
-
-    public default Claim getCrafting() {
-        if (getCraftingState() != CraftingState.READY)
-            return null;
-        return ClaimFactory.getClaimFromShard(getShards().get(0).getItemStack());
+    public default long getMultipliedEnd() {
+        return untilEnd() / (long) getMultipliers();
     }
 
-    public default boolean isCraftCompleted() {
-        return getEndDate() != null && getEndDate().before(new Date());
+    public default CraftingTime getCraftingTime() {
+        if (didEnd())
+            return CraftingTime.CRAFTED;
+        if (isCrafting())
+            return CraftingTime.CRAFTING;
+        return CraftingTime.NO_CRAFT;
     }
 
     public default CraftingState getCraftingState() {
-        if (getShards().size() < 4 || getLevelItem() == null) {
+        if (getLevelItem() == null) {
             return CraftingState.NOT_ENOUGH_ITEMS;
         }
 
         Claim cl = null;
 
-        for (SerItem si : getShards()) {
+        for (int i = 0; i < getShards().length; i++) {
+            SerItem si = getShards()[i];
+            if (si == null)
+                return CraftingState.NOT_ENOUGH_ITEMS;
+
             Claim siCl = ClaimFactory.getClaimFromShard(si.getItemStack());
             if (cl == null) {
                 cl = siCl;
@@ -81,8 +126,21 @@ public interface ICraftingClaim {
         return CraftingState.READY;
     }
 
+    public default List<PlaceableButtonNode> getShardLevelButtons() {
+        List<PlaceableButtonNode> list = new ArrayList<>();
+        list.add(new LevelItemButton(this));
+        for (int i = 0; i < 4; i++)
+            list.add(new ShardButton(this, i));
+
+        return list;
+    }
+
     public enum CraftingState {
         NOT_ENOUGH_ITEMS, DIFFERENT_SHARDS, SHARD_LEVEL_DIFF, READY;
+    }
+
+    public enum CraftingTime {
+        NO_CRAFT, CRAFTED, CRAFTING;
     }
 
 }

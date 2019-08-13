@@ -88,7 +88,7 @@ public abstract class UpgAddClaim extends AdditionalClaim implements Upgradeable
             }
         });
         // upgrade
-        nodes.add(new UpgradesButton());
+        nodes.add(new UpgradesButton(this));
         // show
         nodes.add(new ShowBordersButton(new ItemStack(Material.PAINTING)));
         return nodes;

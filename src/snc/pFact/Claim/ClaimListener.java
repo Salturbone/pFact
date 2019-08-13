@@ -30,7 +30,7 @@ import snc.pFact.GUIs.ClaimMenuGUI;
 import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.obj.cl.B_FactionMember;
 import snc.pFact.obj.cl.B_Player;
-import snc.pFact.obj.cl.B_Player.Rank;
+import snc.pFact.obj.cl.Rank;
 import snc.pFact.utils.Location2D;
 import snc.pFact.utils.Square3D;
 
@@ -156,7 +156,7 @@ public class ClaimListener implements Listener {
         Player p = ev.getPlayer();
         B_Player bp = DataIssues.players.get(p.getUniqueId());
         B_Faction bf = bp.getF();
-        if (bf.getRaidState().canBreak)
+        if (bf != null && bf.getRaidState().canBreak)
             return;
         Claim cl = ev.getClaim();
         if (bf != null && cl.getFaction().equals(bf)) {
@@ -205,7 +205,7 @@ public class ClaimListener implements Listener {
         Player p = ev.getPlayer();
         B_Player bp = DataIssues.players.get(p.getUniqueId());
         B_Faction bf = bp.getF();
-        if (bf.getRaidState().canBreak)
+        if (bf != null && bf.getRaidState().canBreak)
             return;
         Claim cl = ev.getClaim();
         if (bf != null && bf.equals(cl.getFaction())) {
@@ -257,7 +257,7 @@ public class ClaimListener implements Listener {
         Player p = ev.getPlayer();
         B_Player bp = DataIssues.players.get(p.getUniqueId());
         B_Faction bf = bp.getF();
-        if (bf.getRaidState().canBreak)
+        if (bf != null && bf.getRaidState().canBreak)
             return;
         Claim cl = ev.getClaim();
         if (bf != null && cl.getFaction().equals(bf)) {
@@ -282,7 +282,7 @@ public class ClaimListener implements Listener {
         Player p = ev.getPlayer();
         B_Player bp = DataIssues.players.get(p.getUniqueId());
         B_Faction bf = bp.getF();
-        if (bf.getRaidState().canBreak)
+        if (bf != null && bf.getRaidState().canBreak)
             return;
         Claim cl = ev.getClaim();
         if (bf != null && cl.getFaction().equals(bf)) {

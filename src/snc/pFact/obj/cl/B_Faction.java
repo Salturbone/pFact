@@ -17,24 +17,12 @@ import org.bukkit.entity.Player;
 import snc.pFact.Claim.AdditionalClaim;
 import snc.pFact.Claim.Claim;
 import snc.pFact.Claim.MainClaim;
-import snc.pFact.obj.cl.B_Player.Rank;
 import snc.pFact.utils.Square3D;
 
 public class B_Faction implements Serializable {
 
     private static final long serialVersionUID = 1L;
     public static int maxMaxClaimLength = 81;
-
-    public enum RaidState {
-        NO_RAID(false), ATTACK_HELPING(false), DEFENG_HELPING(false), DEFENDING(true), ATTACKING(true);
-
-        public boolean canBreak;
-
-        RaidState(boolean canbreak) {
-            this.canBreak = canbreak;
-        }
-
-    }
 
     private void readObject(ObjectInputStream in) {
         try {
@@ -157,6 +145,14 @@ public class B_Faction implements Serializable {
             }
         }
         return list;
+    }
+
+    public int getVIPCount() {
+        int i = 0;
+        for (B_FactionMember bfm : players.values())
+            if (bfm.isVIP())
+                i++;
+        return i;
     }
 
     public double getLevelUpXp() {
@@ -295,7 +291,7 @@ public class B_Faction implements Serializable {
 
             timer = 0;
             // seviye atlama
-            // addXP(toGainXP(true));
+            addXP(toGainXP(true));
 
         }
     }
