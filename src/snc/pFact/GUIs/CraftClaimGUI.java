@@ -90,8 +90,8 @@ public class CraftClaimGUI extends ChestGUI {
                 if (ct == CraftingTime.NO_CRAFT) {
                     lore.add("Currently: Empty");
                     if (crafting != null) {
-                        lore.add("Time to craft: " + Gerekli
-                                .getRemainingTime(icl.getEndLongForClaim(crafting) / (long) icl.getMultipliers()));
+                        lore.add("Time to craft: "
+                                + Gerekli.getRemainingTime(crafting.getCraftTime() / (long) icl.getMultipliers()));
                     }
 
                 } else {

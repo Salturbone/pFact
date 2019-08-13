@@ -32,7 +32,7 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
     private transient List<GlowingMagma> cgms;
     private transient GlowingMagma egm;
 
-    public Claim(int length, ItemStack claimBlock, ItemStack shard, Color color) {
+    public Claim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime) {
         ClaimData cd = new ClaimData();
         ClaimFactory.claimDatas.put(getName(), cd);
         cd.setObject("length", length);
@@ -42,6 +42,7 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
         cd.setItemStack("displayItem", getClaimItem("null"));
         cd.setObject("eggColor", color.name());
         cd.setObject("cornerColor", Color.WHITE.name());
+        cd.setObject("craftTime", craftTime);
     }
 
     public String getDisplayName() {
@@ -214,6 +215,10 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
 
     public Color getEggColor() {
         return Color.valueOf(claimData().getString("eggColor"));
+    }
+
+    public long getCraftTime() {
+        return claimData().getLong("craftTime");
     }
 
 }

@@ -24,8 +24,8 @@ public class CraftClaim extends UpgAddClaim implements ICraftingClaim {
     private long untilEnd;
     private boolean crafting, ended;
 
-    public CraftClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, int health) {
-        super(length, claimBlock, shard, color, health);
+    public CraftClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime, int health) {
+        super(length, claimBlock, shard, color, craftTime, health);
     }
 
     @Override

@@ -15,8 +15,8 @@ public class XPClaim extends UpgAddClaim {
 
     private transient int timer, random;
 
-    public XPClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, int health) {
-        super(length, claimBlock, shard, color, health);
+    public XPClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime, int health) {
+        super(length, claimBlock, shard, color, craftTime, health);
     }
 
     @Override

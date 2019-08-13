@@ -32,6 +32,10 @@ public class ClaimData implements Serializable {
         return (double) fields.get(str);
     }
 
+    public long getLong(String str) {
+        return (long) fields.get(str);
+    }
+
     public int getInt(String str) {
         return (int) fields.get(str);
     }
@@ -87,6 +91,16 @@ public class ClaimData implements Serializable {
                 return true;
             } catch (NumberFormatException e) {
                 p.sendMessage(ChatColor.RED + "You need to enter a double to configure " + key + ".");
+                return false;
+            }
+        }
+        if (val instanceof Long) {
+            try {
+                long d = Long.parseLong(args[0]);
+                setObject(key, d);
+                return true;
+            } catch (NumberFormatException e) {
+                p.sendMessage(ChatColor.RED + "You need to enter a long to configure " + key + ".");
                 return false;
             }
         }

@@ -31,7 +31,7 @@ public class MainClaim extends Claim implements ICraftingClaim {
     private boolean crafting, ended;
 
     public MainClaim(int length, ItemStack claimBlock, ItemStack shard, Color color) {
-        super(length, claimBlock, shard, color);
+        super(length, claimBlock, shard, color, 0);
     }
 
     @Override

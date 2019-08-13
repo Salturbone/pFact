@@ -31,8 +31,8 @@ public abstract class UpgAddClaim extends AdditionalClaim implements Upgradeable
 
     private List<ClaimUpgrade> upgrades;
 
-    public UpgAddClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, int health) {
-        super(length, claimBlock, shard, color, health);
+    public UpgAddClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime, int health) {
+        super(length, claimBlock, shard, color, craftTime, health);
         upgrades = new ArrayList<>();
     }
 

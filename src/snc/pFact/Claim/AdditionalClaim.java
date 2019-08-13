@@ -20,8 +20,8 @@ public abstract class AdditionalClaim extends Claim {
     private static final long serialVersionUID = 1L;
     private transient int curHealth;
 
-    public AdditionalClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, int health) {
-        super(length, claimBlock, shard, color);
+    public AdditionalClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime, int health) {
+        super(length, claimBlock, shard, color, craftTime);
         claimData().setObject("health", health);
     }
 

@@ -14,6 +14,7 @@ import me.Zindev.utils.Itemizer.Itemizer;
 import me.Zindev.utils.text.Cutty;
 import me.Zindev.utils.text.SoShorten;
 import snc.pFact.Main;
+import snc.pFact.Claim.AdditionalClaims.CraftClaim;
 import snc.pFact.Claim.AdditionalClaims.XPClaim;
 import snc.pFact.Claim.Upgrade.ClaimUpgrade;
 import snc.pFact.Claim.Upgrade.GainMultiplierUpgrade;
@@ -130,8 +131,14 @@ public class ClaimFactory {
                 .setLore(Cutty.wrap(SoShorten.colorize("Breaks claim & gives its block."), 16).asLines()).build());
         addStandartClaim(
                 new MainClaim(4, new ItemStack(Material.DRAGON_EGG), new ItemStack(Material.ANVIL), Color.AQUA));
+        // level 1 8 hours
+        // level 2 24 hours
+        // level 3 72 hours
+
         addStandartClaim(new XPClaim(4, new ItemStack(Material.DRAGON_EGG), new ItemStack(Material.PRISMARINE_SHARD),
-                Color.DARK_GREEN, 30));
+                Color.DARK_GREEN, 8L * 60L * 60L * 1000L, 30));
+        addStandartClaim(new CraftClaim(4, new ItemStack(Material.DRAGON_EGG), new ItemStack(Material.PRISMARINE_SHARD),
+                Color.DARK_GREEN, 24L * 60L * 60L * 1000L, 30));
         for (int i = 1; i <= 3; i++) {
             craftLevelIS.put(i, new SerItem(getItemByLevel(i)));
         }

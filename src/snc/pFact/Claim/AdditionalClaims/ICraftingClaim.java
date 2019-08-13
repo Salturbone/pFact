@@ -58,28 +58,13 @@ public interface ICraftingClaim {
 
     public default void startCrafting() {
         setCrafting(true);
-        setUntilEnd(getEndLongForClaim(getCrafting()));
+        setUntilEnd(getCrafting().getCraftTime());
     }
 
     public default Claim getCrafting() {
         if (getCraftingState() != CraftingState.READY)
             return null;
         return ClaimFactory.getClaimFromShard(getShards()[0].getItemStack());
-    }
-
-    public default long getEndLongForClaim(Claim cl) {
-        long untilEnd = 0;
-        if (cl.getLevel() == 1) {
-            // untilEnd = 8L * 60L * 60L * 1000L;
-            untilEnd = 30L * 1000L;
-        }
-        if (cl.getLevel() == 2) {
-            untilEnd = 24L * 60L * 60L * 1000L;
-        }
-        if (cl.getLevel() == 3) {
-            untilEnd = 3L * 24L * 60L * 60L * 1000L;
-        }
-        return untilEnd;
     }
 
     public double getMultipliers();
