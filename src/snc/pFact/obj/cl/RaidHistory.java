@@ -16,7 +16,7 @@ public class RaidHistory implements Serializable {
     private List<String> a_allies = new ArrayList<String>();
     String winner;
 
-    private RaidHistory(String att, String def, int d_lost, int a_lost, List<String> d_a, List<String> a_a,
+    public RaidHistory(String att, String def, int d_lost, int a_lost, List<String> d_a, List<String> a_a,
             String win) {
 
         this.attacker = att;
