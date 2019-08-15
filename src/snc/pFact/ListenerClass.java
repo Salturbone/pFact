@@ -11,7 +11,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import snc.pFact.DM.DataIssues;
 import snc.pFact.obj.cl.B_Faction;
+import snc.pFact.obj.cl.B_FactionMember;
 import snc.pFact.obj.cl.B_Player;
+import snc.pFact.obj.cl.Rank;
 
 public class ListenerClass implements Listener {
 
@@ -56,12 +58,22 @@ public class ListenerClass implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent ev) {
         ev.setCancelled(true);
         B_Player plyr = DataIssues.players.get(ev.getPlayer().getUniqueId());
+        B_FactionMember bfm = DataIssues.factions.get(plyr.getF().getName()).getFactionMembers().get(plyr.uuid());
         if (!plyr.hasFaction()) {
             Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GRAY + "AYLAK " + ChatColor.RESET
-                    + ChatColor.DARK_AQUA + ev.getPlayer().getDisplayName() + ": " + ChatColor.RESET + ev.getMessage());
+                    + ChatColor.DARK_AQUA + ev.getPlayer().getName() + " >> " + ChatColor.RESET + ev.getMessage());
         } else {
-            Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GRAY + plyr.getF().getName() + " " + ChatColor.RESET
-                    + ChatColor.DARK_AQUA + ev.getPlayer().getDisplayName() + ": " + ChatColor.RESET + ev.getMessage());
+            if (bfm.rank() == Rank.Founder) {
+                Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GOLD + plyr.getF().getName() + " " + ChatColor.GRAY + "KURUCU "+ ChatColor.RESET
+                    + ChatColor.DARK_AQUA + ev.getPlayer().getName() + " >> " + ChatColor.RESET + ev.getMessage());
+            } else if (bfm.rank() == Rank.Moderator) {
+                Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GOLD + plyr.getF().getName() + " " + ChatColor.GRAY + "YETKİLİ "+ ChatColor.RESET
+                    + ChatColor.DARK_AQUA + ev.getPlayer().getName() + " >> " + ChatColor.RESET + ev.getMessage());
+            } else {
+                Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GOLD + plyr.getF().getName() + " " + ChatColor.RESET
+                    + ChatColor.DARK_AQUA + ev.getPlayer().getName() + " >> " + ChatColor.RESET + ev.getMessage());
+            }
+            
         }
 
     }
