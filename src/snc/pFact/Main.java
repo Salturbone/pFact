@@ -569,6 +569,33 @@ public class Main extends JavaPlugin {
             }
         }
 
+        if (args[0].equalsIgnoreCase("evyap")) {
+            if(bp.hasFaction()) {
+                B_FactionMember bfm = bf.getFactionMembers().get(bp.uuid());
+                if (bfm.rank() == Rank.Founder) {
+                    bf.setHome(p.getLocation());
+                    p.sendMessage(ChatColor.GREEN + "Klan evi oluşturuldu!");
+                    return false;
+                } else {
+                    p.sendMessage(ChatColor.DARK_RED + "Klan evini yapabilmek için kurucu olmalısın!");
+                    return false;
+                }
+            } else {
+                p.sendMessage(ChatColor.DARK_RED + "Bir klana mensup değilsin!");
+                return false;
+            }
+            
+        }
+        if (args[0].equalsIgnoreCase("ev")) {
+            if(bp.hasFaction()) {
+                bf.tpPlayerToHome(p);
+            } else {
+                p.sendMessage(ChatColor.DARK_RED + "Bir klana mensup değilsin!");
+                return false;
+            }
+            
+        }
+
         if (args[0].equalsIgnoreCase("clearfiles") && p.isOp()) {
             if (args.length >= 2 && args[1].equalsIgnoreCase("true")) {
                 DataIssues.factions.clear();

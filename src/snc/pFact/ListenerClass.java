@@ -58,11 +58,12 @@ public class ListenerClass implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent ev) {
         ev.setCancelled(true);
         B_Player plyr = DataIssues.players.get(ev.getPlayer().getUniqueId());
-        B_FactionMember bfm = DataIssues.factions.get(plyr.getF().getName()).getFactionMembers().get(plyr.uuid());
-        if (!plyr.hasFaction()) {
+        
+        if (!plyr.hasFaction()){
             Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GRAY + "AYLAK " + ChatColor.RESET
                     + ChatColor.DARK_AQUA + ev.getPlayer().getName() + " >> " + ChatColor.RESET + ev.getMessage());
         } else {
+            B_FactionMember bfm = plyr.getF().getFactionMembers().get(plyr.uuid());
             if (bfm.rank() == Rank.Founder) {
                 Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GOLD + plyr.getF().getName() + " " + ChatColor.GRAY + "KURUCU "+ ChatColor.RESET
                     + ChatColor.DARK_AQUA + ev.getPlayer().getName() + " >> " + ChatColor.RESET + ev.getMessage());
