@@ -13,7 +13,7 @@ import snc.pFact.utils.ZSIGN;
  */
 public abstract class ClaimUpgrade implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -4826842068790315783L;
 
     public abstract String getName();
 

@@ -7,7 +7,7 @@ import snc.pFact.DM.DataIssues;
 
 public class B_Player implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 8584153525493905698L;
 
     public static final B_Faction getFactionOfPlayer(UUID id) {
         B_Player bp = DataIssues.players.get(id);

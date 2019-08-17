@@ -23,8 +23,7 @@ import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
 
 public class MainClaim extends Claim implements ICraftingClaim {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = -7709034004024030740L;
     private SerItem[] shards;
     private SerItem levelItem;
     private long untilEnd;

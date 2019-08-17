@@ -23,7 +23,7 @@ import snc.pFact.utils.Square3D;
 
 public class B_Faction implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -5192871401095680611L;
     public static int maxMaxClaimLength = 81;
 
     private void readObject(ObjectInputStream in) {

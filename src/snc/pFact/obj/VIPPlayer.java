@@ -13,8 +13,7 @@ import me.Zindev.utils.common.Disposable;
  */
 public class VIPPlayer implements Disposable, Serializable {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = 2808327056769688264L;
     private UUID uid;
     private int remainingTime;
 

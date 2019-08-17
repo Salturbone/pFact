@@ -25,8 +25,8 @@ import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaFactory;
 import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
 
 public abstract class Claim implements Cloneable, Serializable, GUIConfigurable, ProcessItem {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = -9137671999897728700L;
     private String faction;
     private SerLocation centerBlock;
     private transient List<GlowingMagma> cgms;

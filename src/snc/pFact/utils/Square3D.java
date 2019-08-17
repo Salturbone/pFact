@@ -7,7 +7,8 @@ import java.io.Serializable;
  */
 public class Square3D implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = 1L;
+    
+    private static final long serialVersionUID = 976098511444129186L;
     private Location2D center;
     private int length;
 

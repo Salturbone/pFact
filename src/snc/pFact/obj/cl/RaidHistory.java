@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public class RaidHistory implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 7700834292704341001L;
     String attacker, defender;
     int d_lost_claim, a_lost_claim;
     private List<String> d_allies = new ArrayList<String>();

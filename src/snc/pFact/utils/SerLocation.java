@@ -7,7 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 public class SerLocation implements Serializable, Cloneable {
-    private static final long serialVersionUID = 1L;
+    
+    private static final long serialVersionUID = 3455127761672450463L;
     private String world;
     private float yaw, pitch;
     private double x, y, z;
