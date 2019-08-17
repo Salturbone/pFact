@@ -68,6 +68,10 @@ public class B_Faction implements Serializable {
         this.raidState = RaidState.NO_RAID;
         rh = new ArrayList<RaidHistory>();
     }
+    
+    public Location getHomeLocation() {
+        return home.getLocation();
+    }
 
     public void setHome(Location loc) {
         home = new SerLocation(loc);
