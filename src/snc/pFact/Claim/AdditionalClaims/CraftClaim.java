@@ -7,8 +7,11 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
+import me.Zindev.utils.ZChestLibV6.ChestGUI;
+import me.Zindev.utils.ZChestLibV6.ChestNode;
 import snc.pFact.Claim.ClaimFactory;
 import snc.pFact.Claim.Upgrade.GainMultiplierUpgrade;
+import snc.pFact.GUIs.GoToCraftingButton;
 import snc.pFact.utils.SerItem;
 import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
 
@@ -72,6 +75,13 @@ public class CraftClaim extends UpgAddClaim implements ICraftingClaim {
         cc.levelItem = null;
         cc.ended = false;
         return cc;
+    }
+
+    @Override
+    public List<ChestNode> getConfigurableList(ChestGUI arg0) {
+        List<ChestNode> list = super.getConfigurableList(arg0);
+        list.add(1, new GoToCraftingButton(this));
+        return list;
     }
 
     @Override

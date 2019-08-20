@@ -58,7 +58,7 @@ public class ClaimFactory {
 
         initStandartClaims();
         initStandartUpgrades();
-        // loadObjects();
+        loadObjects();
         task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.ekl, new Runnable() {
 
             @Override
@@ -66,6 +66,53 @@ public class ClaimFactory {
                 getAllClaims().forEach(c -> c.update());
             }
         }, 1L, (long) interval);
+    }
+
+    public static void deInitialize() {
+        saveObjects();
+        standartClaims.clear();
+        Bukkit.getScheduler().cancelTask(task);
+    }
+
+    public static void loadObjects() {
+        System.out.println("a");
+        if (!claimDatas.getDataFolder().exists()) {
+            claimDatas.getDataFolder().mkdirs();
+        }
+        if (!upgradeDatas.getDataFolder().exists()) {
+            upgradeDatas.getDataFolder().mkdirs();
+        }
+        if (!craftLevelIS.getDataFolder().exists()) {
+            craftLevelIS.getDataFolder().mkdirs();
+        }
+        for (ClaimData cd : claimDatas.values()) {
+            System.out.println(cd.getString("displayName") + "   " + cd.getInt("length") + "");
+        }
+        claimDatas.loadAllData(true);
+        for (ClaimData cd : claimDatas.values()) {
+            System.out.println(cd.getString("displayName") + "   " + cd.getInt("length") + "");
+        }
+        craftLevelIS.loadAllData(true);
+        upgradeDatas.loadAllData(true);
+        noUpgradeItemFile = new File(claimFolder, "noUpgradeItem.si");
+        if (noUpgradeItemFile.exists()) {
+            noUpgradeItem = (SerItem) DataIssues.loadObject(noUpgradeItemFile);
+        }
+        breakClaimFile = new File(claimFolder, "breakClaim.si");
+        if (breakClaimFile.exists()) {
+            breakClaim = (SerItem) DataIssues.loadObject(breakClaimFile);
+        }
+    }
+
+    public static void saveObjects() {
+        claimDatas.saveAndUnloadAllDatas();
+
+        craftLevelIS.saveAndUnloadAllDatas();
+
+        upgradeDatas.saveAndUnloadAllDatas();
+
+        DataIssues.saveObject(noUpgradeItem, noUpgradeItemFile);
+        DataIssues.saveObject(breakClaim, breakClaimFile);
     }
 
     public static void initStandartUpgrades() {
@@ -147,46 +194,6 @@ public class ClaimFactory {
 
     public static ItemStack getItemByLevel(int level) {
         return ZSIGN.imzalaZ("levelItem", level + "", craftLevelIS.get(level).getItemStack());
-    }
-
-    public static void loadObjects() {
-        if (!claimDatas.getDataFolder().exists()) {
-            claimDatas.getDataFolder().mkdirs();
-        }
-        if (!upgradeDatas.getDataFolder().exists()) {
-            upgradeDatas.getDataFolder().mkdirs();
-        }
-        if (!craftLevelIS.getDataFolder().exists()) {
-            craftLevelIS.getDataFolder().mkdirs();
-        }
-        claimDatas.loadAllData(true);
-        craftLevelIS.loadAllData(true);
-        upgradeDatas.loadAllData(true);
-        noUpgradeItemFile = new File(claimFolder, "noUpgradeItem.si");
-        if (noUpgradeItemFile.exists()) {
-            noUpgradeItem = (SerItem) DataIssues.loadObject(noUpgradeItemFile);
-        }
-        breakClaimFile = new File(claimFolder, "breakClaim.si");
-        if (breakClaimFile.exists()) {
-            breakClaim = (SerItem) DataIssues.loadObject(breakClaimFile);
-        }
-    }
-
-    public static void saveObjects() {
-        claimDatas.saveAndUnloadAllDatas();
-
-        craftLevelIS.saveAndUnloadAllDatas();
-
-        upgradeDatas.saveAndUnloadAllDatas();
-
-        DataIssues.saveObject(noUpgradeItem, noUpgradeItemFile);
-        DataIssues.saveObject(breakClaim, breakClaimFile);
-    }
-
-    public static void deInitialize() {
-        // saveObjects();
-        standartClaims.clear();
-        Bukkit.getScheduler().cancelTask(task);
     }
 
     public static int getLevelFromItem(ItemStack is) {
