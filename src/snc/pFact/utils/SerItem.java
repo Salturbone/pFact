@@ -10,7 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class SerItem implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -4074925905044320706L;
     public static transient ItemStack NULLITEM = SerItem.yapEsya(new ItemStack(Material.BARRIER), "#EMPTY", null,
             (short) 0);
     private String itemstack;

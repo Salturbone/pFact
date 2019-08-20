@@ -12,12 +12,14 @@ import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
 
 public abstract class AdditionalClaim extends Claim {
 
+    private static final long serialVersionUID = -5229148213223165619L;
+
     private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
         in.defaultReadObject();
         curHealth = claimData().getInt("health");
     }
 
-    private static final long serialVersionUID = 1L;
+    
     private transient int curHealth;
 
     public AdditionalClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime, int health) {

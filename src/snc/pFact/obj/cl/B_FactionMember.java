@@ -13,7 +13,7 @@ import snc.pFact.DM.DataIssues;
  */
 public class B_FactionMember implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 8982698787406379807L;
     private final UUID id;
     private Rank rank;
 

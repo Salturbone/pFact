@@ -15,8 +15,9 @@ import snc.pFact.utils.SerItem;
  * UpgradeData
  */
 public class UpgradeData implements Serializable {
-    private static final long serialVersionUID = 1L;
+    
 
+    private static final long serialVersionUID = -2938162765387011095L;
     private HashMap<String, Object> fields = new HashMap<>();
 
     public void setObject(String str, Object obj) {

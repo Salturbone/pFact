@@ -27,8 +27,7 @@ import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
  */
 public abstract class UpgAddClaim extends AdditionalClaim implements UpgradeableClaim {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = 5817805506610848515L;
     private List<ClaimUpgrade> upgrades;
 
     public UpgAddClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime, int health) {

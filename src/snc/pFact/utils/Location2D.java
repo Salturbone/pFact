@@ -9,7 +9,8 @@ import org.bukkit.Location;
  * Location2D
  */
 public class Location2D implements Serializable, Cloneable {
-    private static final long serialVersionUID = 1L;
+    
+    private static final long serialVersionUID = 4386769926377424068L;
     private double x, z;
     private String world;
 

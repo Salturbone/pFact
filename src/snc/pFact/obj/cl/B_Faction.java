@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -17,11 +18,12 @@ import org.bukkit.entity.Player;
 import snc.pFact.Claim.AdditionalClaim;
 import snc.pFact.Claim.Claim;
 import snc.pFact.Claim.MainClaim;
+import snc.pFact.utils.SerLocation;
 import snc.pFact.utils.Square3D;
 
 public class B_Faction implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -5192871401095680611L;
     public static int maxMaxClaimLength = 81;
 
     private void readObject(ObjectInputStream in) {
@@ -45,6 +47,7 @@ public class B_Faction implements Serializable {
     private List<AdditionalClaim> addClaims = new ArrayList<AdditionalClaim>();
     private transient RaidState raidState = RaidState.NO_RAID;
     private List<RaidHistory> rh = new ArrayList<RaidHistory>();
+    private SerLocation home = null;
 
     /*
      * public b_Faction(String name, int level, int member_count, double xp, double
@@ -52,7 +55,7 @@ public class B_Faction implements Serializable {
      * level; this.member_count = member_count; this.xp = xp; this.prestige =
      * prestige; this.players = players; }
      */
-
+    
     public B_Faction(String name, UUID founder) {
         this.name = name;
         this.level = 1;
@@ -64,6 +67,22 @@ public class B_Faction implements Serializable {
         players.put(founder, this.founder);
         this.raidState = RaidState.NO_RAID;
         rh = new ArrayList<RaidHistory>();
+    }
+    
+    public Location getHomeLocation() {
+        return home.getLocation();
+    }
+
+    public void setHome(Location loc) {
+        home = new SerLocation(loc);
+    }
+
+    public void tpPlayerToHome(Player p) {
+        if (home != null) {
+            p.teleport(home.getLocation());
+        } else {
+            p.sendMessage(ChatColor.DARK_RED + "Klanının evi belirlenmemiş!");
+        }
     }
 
     public void addRaidHistory(RaidHistory h) {

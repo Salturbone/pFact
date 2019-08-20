@@ -16,8 +16,7 @@ import snc.pFact.utils.SerItem;
  */
 public class ClaimData implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = 4198059210543277934L;
     private HashMap<String, Object> fields = new HashMap<>();
 
     public void setObject(String str, Object obj) {
