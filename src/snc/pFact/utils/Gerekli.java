@@ -2,6 +2,8 @@ package snc.pFact.utils;
 
 import java.util.Random;
 
+import org.bukkit.ChatColor;
+
 /**
  * Gerekli
  */
@@ -11,6 +13,10 @@ public class Gerekli {
 
     public static boolean chanceOf(double chance) {
         return random.nextDouble() <= chance;
+    }
+
+    public static String cevc(String a) {
+        return ChatColor.translateAlternateColorCodes('&', a);
     }
 
     public static String getRemainingTime(long date) {

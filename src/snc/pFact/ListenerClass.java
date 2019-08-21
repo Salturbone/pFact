@@ -58,23 +58,24 @@ public class ListenerClass implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent ev) {
         ev.setCancelled(true);
         B_Player plyr = DataIssues.players.get(ev.getPlayer().getUniqueId());
-        
-        if (!plyr.hasFaction()){
-            Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GRAY + "AYLAK " + ChatColor.RESET
-                    + ChatColor.DARK_AQUA + ev.getPlayer().getName() + " >> " + ChatColor.RESET + ev.getMessage());
+        String format = "<faction> <rank> " + ChatColor.DARK_AQUA + "<player> >>" + ChatColor.RESET + " <message>";
+        format.replace("<player>", "%1$s");
+        format.replace("<message>", "%2$s");
+        if (!plyr.hasFaction()) {
+            format.replace("<faction>", ChatColor.BOLD + "" + ChatColor.GRAY + "AYLAK");
+            format.replace("<rank>", "");
         } else {
             B_FactionMember bfm = plyr.getF().getFactionMembers().get(plyr.uuid());
+            Bukkit.broadcastMessage(bfm + "               " + plyr.getF());
+            format.replace("<faction>", ChatColor.GOLD + plyr.getF().getName());
             if (bfm.rank() == Rank.Founder) {
-                Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GOLD + plyr.getF().getName() + " " + ChatColor.GRAY + "KURUCU "+ ChatColor.RESET
-                    + ChatColor.DARK_AQUA + ev.getPlayer().getName() + " >> " + ChatColor.RESET + ev.getMessage());
+                format.replace("<rank>", ChatColor.GRAY + "-K-");
             } else if (bfm.rank() == Rank.Moderator) {
-                Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GOLD + plyr.getF().getName() + " " + ChatColor.GRAY + "YETKİLİ "+ ChatColor.RESET
-                    + ChatColor.DARK_AQUA + ev.getPlayer().getName() + " >> " + ChatColor.RESET + ev.getMessage());
+                format.replace("<rank>", ChatColor.GRAY + "-Y-");
             } else {
-                Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GOLD + plyr.getF().getName() + " " + ChatColor.RESET
-                    + ChatColor.DARK_AQUA + ev.getPlayer().getName() + " >> " + ChatColor.RESET + ev.getMessage());
+                format.replace("<rank>", "");
             }
-            
+            ev.setFormat(format);
         }
 
     }
