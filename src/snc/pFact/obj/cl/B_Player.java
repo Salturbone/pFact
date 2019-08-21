@@ -83,7 +83,7 @@ public class B_Player implements Serializable {
 
     public void update() {
         timer++;
-        if (timer == 60) {
+        if (timer == 4 * 60) {
             addCoin(1);
             timer = 0;
         }

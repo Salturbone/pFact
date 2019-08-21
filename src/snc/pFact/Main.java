@@ -72,7 +72,7 @@ public class Main extends JavaPlugin {
                     }
                 }
             }
-        }, 5L, 20L);
+        }, 5L, 5L);
         languages = new File(getDataFolder(), "languages.yml");
         languagesyml = new YamlConfiguration();
         if (!languages.exists()) {
@@ -93,6 +93,7 @@ public class Main extends JavaPlugin {
             if (languagesyml.contains(m.id))
                 m.sub = Gerekli.cevc(languagesyml.getString(m.id));
         }
+
     }
 
     @Override
