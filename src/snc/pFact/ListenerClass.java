@@ -56,28 +56,27 @@ public class ListenerClass implements Listener {
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent ev) {
-        ev.setCancelled(true);
         B_Player plyr = DataIssues.players.get(ev.getPlayer().getUniqueId());
         String format = "<faction> <rank> " + ChatColor.DARK_AQUA + "<player> >>" + ChatColor.RESET + " <message>";
-        format.replace("<player>", "%1$s");
-        format.replace("<message>", "%2$s");
+        format = format.replace("<player>", "%1$s");
+        format = format.replace("<message>", "%2$s");
         if (!plyr.hasFaction()) {
-            format.replace("<faction>", ChatColor.BOLD + "" + ChatColor.GRAY + "AYLAK");
-            format.replace("<rank>", "");
+            format = format.replace("<faction>", ChatColor.BOLD + "" + ChatColor.GRAY + "AYLAK");
+            format = format.replace("<rank>", "");
         } else {
             B_FactionMember bfm = plyr.getF().getFactionMembers().get(plyr.uuid());
-            Bukkit.broadcastMessage(bfm + "               " + plyr.getF());
-            format.replace("<faction>", ChatColor.GOLD + plyr.getF().getName());
+            // Bukkit.broadcastMessage(bfm + " " + plyr);
+            format = format.replace("<faction>", ChatColor.GOLD + plyr.getF().getName());
             if (bfm.rank() == Rank.Founder) {
-                format.replace("<rank>", ChatColor.GRAY + "-K-");
+                format = format.replace("<rank>", ChatColor.GRAY + "-K-");
             } else if (bfm.rank() == Rank.Moderator) {
-                format.replace("<rank>", ChatColor.GRAY + "-Y-");
+                format = format.replace("<rank>", ChatColor.GRAY + "-Y-");
             } else {
-                format.replace("<rank>", "");
+                format = format.replace("<rank>", "");
             }
-            ev.setFormat(format);
-        }
 
+        }
+        ev.setFormat(format);
     }
 
 }
