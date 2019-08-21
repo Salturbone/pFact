@@ -309,7 +309,7 @@ public class B_Faction implements Serializable {
     public void update() {
         timer++;
         // klanların xp kazanma mekaniği
-        if (timer >= 60) {
+        if (timer >= 4 * 60) {
             // sabit 10 üzerinden her aktif üye başına %2 artar
             // sabit 10 üzerinden her 5 seviye başına level_blocker kadar sağlar
             // aktif oyuncu yoksa deneyim kazanılmaz.
