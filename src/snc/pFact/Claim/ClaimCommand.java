@@ -1,5 +1,7 @@
 package snc.pFact.Claim;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -11,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.Permissible;
 
 import snc.pFact.DM.DataIssues;
+import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.utils.SerItem;
 
 /**
@@ -116,16 +119,18 @@ public class ClaimCommand implements CommandExecutor {
                 sender.sendMessage("couldn't find a claim with name " + args[0] + ".");
                 return true;
             }
-            String fact = "null";
+            UUID uid = null;
             if (args.length >= 3) {
-                fact = args[2];
-                if (!DataIssues.factions.containsKey(fact)) {
-                    sender.sendMessage("Invalid faction name: " + fact);
+
+                if (!DataIssues.factions.containsKey(args[2])) {
+                    sender.sendMessage("Invalid faction name: " + args[2]);
                     return true;
                 }
+                B_Faction bf = DataIssues.factions.get(args[2]);
+                uid = bf.getUUID();
             }
             Player p = (Player) sender;
-            ItemStack is = cl.getClaimItem(fact);
+            ItemStack is = cl.getClaimItem(uid);
             p.getInventory().addItem(is);
             p.sendMessage("Given block of " + args[0]);
             return true;

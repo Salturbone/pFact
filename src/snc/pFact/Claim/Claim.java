@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -16,6 +18,7 @@ import me.Zindev.utils.ZChestLibV6.GUIReadLine.GUIConfigurable;
 import snc.pFact.Main;
 import snc.pFact.DM.DataIssues;
 import snc.pFact.obj.cl.B_Faction;
+import snc.pFact.utils.Gerekli;
 import snc.pFact.utils.Location2D;
 import snc.pFact.utils.SerLocation;
 import snc.pFact.utils.Square3D;
@@ -32,17 +35,19 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
     private transient List<GlowingMagma> cgms;
     private transient GlowingMagma egm;
 
-    public Claim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime) {
+    public Claim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime,
+            double shardDropChance) {
         ClaimData cd = new ClaimData();
         ClaimFactory.claimDatas.put(getName(), cd);
         cd.setObject("length", length);
         cd.setItemStack("block", claimBlock);
         cd.setItemStack("shard", shard);
         cd.setObject("displayName", getName());
-        cd.setItemStack("displayItem", getClaimItem("null"));
+        cd.setItemStack("displayItem", getClaimItem(null));
         cd.setObject("eggColor", color.name());
         cd.setObject("cornerColor", Color.WHITE.name());
         cd.setObject("craftTime", craftTime);
+        cd.setObject("shardDropChance", shardDropChance);
     }
 
     public String getDisplayName() {
@@ -74,9 +79,13 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
         return DataIssues.factions.get(faction);
     }
 
-    public final ItemStack getClaimItem(String fact) {
-        return ZSIGN.imzalaZ("claim", getName(),
-                ZSIGN.imzalaZ("claimFaction", fact, claimData().getItemStack("block")));
+    public final ItemStack getClaimItem(UUID uid) {
+        if (uid == null) {
+            return ZSIGN.imzalaZ("claim", getName(), claimData().getItemStack("block"));
+        } else {
+            return ZSIGN.imzalaZ("claim", getName(),
+                    ZSIGN.imzalaZ("claimFaction", uid.toString(), claimData().getItemStack("block")));
+        }
     }
 
     public boolean canBreak(Location loc) {
@@ -219,6 +228,42 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
 
     public long getCraftTime() {
         return claimData().getLong("craftTime");
+    }
+
+    public void destroy(boolean naturally) {
+        this.getCenterBlock().getBlock().setType(Material.AIR);
+        getDrops(naturally).forEach(is -> getCenterBlock().getWorld().dropItemNaturally(getCenterBlock(), is));
+        if (this instanceof MainClaim) {
+            getFaction().setMainClaim(null);
+        } else if (this instanceof AdditionalClaim) {
+            getFaction().getAdditionalClaims().remove(this);
+        }
+
+    }
+
+    public List<ItemStack> getDrops(boolean naturally) {
+        List<ItemStack> items = new ArrayList<>();
+        if (naturally) {
+            int drop = shardDropAmount();
+            for (int i = 0; i < drop; i++)
+                items.add(getShard());
+        } else {
+            items.add(getClaimItem(getFaction().getUUID()));
+        }
+        return items;
+    }
+
+    public int shardDropAmount() {
+        int i = 0;
+        for (int a = 0; a < 4; a++) {
+            if (Gerekli.chanceOf(shardDropChance()))
+                i++;
+        }
+        return i;
+    }
+
+    public double shardDropChance() {
+        return claimData().getDouble("shardDropChance");
     }
 
 }

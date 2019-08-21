@@ -167,7 +167,7 @@ public class CraftClaimGUI extends ChestGUI {
                         return;
                     }
                 } else if (ct == CraftingTime.CRAFTED) {
-                    ItemStack is = cl.getClaimItem(bf.getName());
+                    ItemStack is = cl.getClaimItem(bf.getUUID());
                     p.getInventory().addItem(is).values()
                             .forEach(iss -> p.getWorld().dropItemNaturally(p.getLocation(), iss));
                     icl.clear();

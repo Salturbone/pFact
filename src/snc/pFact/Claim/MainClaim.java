@@ -30,7 +30,7 @@ public class MainClaim extends Claim implements ICraftingClaim {
     private boolean crafting, ended;
 
     public MainClaim(int length, ItemStack claimBlock, ItemStack shard, Color color) {
-        super(length, claimBlock, shard, color, 0);
+        super(length, claimBlock, shard, color, 0, 0);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class MainClaim extends Claim implements ICraftingClaim {
                 if (fact.getAdditionalClaims().size() != 0) {
                     return;
                 }
-                arg0.getUser().getInventory().addItem(cl.getClaimItem(fact.getName()));
+                arg0.getUser().getInventory().addItem(cl.getClaimItem(fact.getUUID()));
                 cl.getCenterBlock().getBlock().setType(Material.AIR);
                 fact.setMainClaim(null);
                 new SoundData(1f, 1f, Sound.BLOCK_GLASS_BREAK).play(arg0.getUser());
@@ -170,6 +170,21 @@ public class MainClaim extends Claim implements ICraftingClaim {
     @Override
     public double getMultipliers() {
         return Math.floor(Math.pow(1.25, Math.pow(getFaction().getVIPCount(), 3 / 4)));
+    }
+
+    @Override
+    public List<ItemStack> getDrops(boolean naturally) {
+        List<ItemStack> items = super.getDrops(naturally);
+        if (!naturally) {
+            for (SerItem item : shards) {
+                if (item == null)
+                    continue;
+                items.add(item.getItemStack());
+            }
+            if (getLevelItem() != null)
+                items.add(getLevelItem().getItemStack());
+        }
+        return items;
     }
 
 }

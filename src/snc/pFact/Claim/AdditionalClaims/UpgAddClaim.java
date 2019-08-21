@@ -19,7 +19,7 @@ import snc.pFact.Claim.Upgrade.HealthMultiplierUpgrade;
 import snc.pFact.GUIs.ClaimMenuGUI;
 import snc.pFact.GUIs.ShowBordersButton;
 import snc.pFact.GUIs.UpgradesButton;
-import snc.pFact.obj.cl.B_Faction;
+import snc.pFact.utils.Gerekli;
 import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
 
 /**
@@ -30,9 +30,11 @@ public abstract class UpgAddClaim extends AdditionalClaim implements Upgradeable
     private static final long serialVersionUID = 5817805506610848515L;
     private List<ClaimUpgrade> upgrades;
 
-    public UpgAddClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime, int health) {
-        super(length, claimBlock, shard, color, craftTime, health);
+    public UpgAddClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime,
+            double shardDropChance, double shardWoUpgChance, int health) {
+        super(length, claimBlock, shard, color, craftTime, shardDropChance, health);
         upgrades = new ArrayList<>();
+        claimData().setObject("shardDropWithoutUpgradeChance", shardWoUpgChance);
     }
 
     @Override
@@ -66,6 +68,20 @@ public abstract class UpgAddClaim extends AdditionalClaim implements Upgradeable
     }
 
     @Override
+    public List<ItemStack> getDrops(boolean naturally) {
+        List<ItemStack> items = super.getDrops(naturally);
+        for (ClaimUpgrade upg : upgrades) {
+            if (naturally) {
+                if (Gerekli.chanceOf(upg.getUpgradeDropChance()))
+                    items.add(upg.getUpgradeItem());
+            } else {
+                items.add(upg.getUpgradeItem());
+            }
+        }
+        return items;
+    }
+
+    @Override
     public List<ChestNode> getConfigurableList(ChestGUI arg0) {
         List<ChestNode> nodes = new ArrayList<>();
         // egg
@@ -78,10 +94,7 @@ public abstract class UpgAddClaim extends AdditionalClaim implements Upgradeable
                 AdditionalClaim cl = (AdditionalClaim) ((ClaimMenuGUI) arg0).getClaim();
                 if (cl == null)
                     return;
-                B_Faction fact = cl.getFaction();
-                arg0.getUser().getInventory().addItem(cl.getClaimItem(fact.getName()));
-                cl.getCenterBlock().getBlock().setType(Material.AIR);
-                fact.getAdditionalClaims().remove(cl);
+                cl.destroy(false);
                 new SoundData(1f, 1f, Sound.BLOCK_GLASS_BREAK).play(arg0.getUser());
                 arg0.close(true);
             }
@@ -92,5 +105,14 @@ public abstract class UpgAddClaim extends AdditionalClaim implements Upgradeable
         nodes.add(new ShowBordersButton(new ItemStack(Material.PAINTING)));
         return nodes;
 
+    }
+
+    public double getShardDropWithoutUpgradeChance() {
+        return claimData().getDouble("shardDropWithoutUpgradeChance");
+    }
+
+    @Override
+    public double shardDropChance() {
+        return upgrades.isEmpty() ? getShardDropWithoutUpgradeChance() : shardDropChance();
     }
 }

@@ -17,10 +17,11 @@ public abstract class ClaimUpgrade implements Serializable, Cloneable {
 
     public abstract String getName();
 
-    public ClaimUpgrade(ItemStack item) {
+    public ClaimUpgrade(ItemStack item, double dropChance) {
         UpgradeData upData = new UpgradeData();
         ClaimFactory.upgradeDatas.put(getName(), upData);
         upgradeData().setItemStack("upgradeItem", item);
+        upgradeData().setObject("dropChance", dropChance);
     }
 
     public void setup(Claim cl) {
@@ -47,4 +48,7 @@ public abstract class ClaimUpgrade implements Serializable, Cloneable {
         return null;
     }
 
+    public double getUpgradeDropChance() {
+        return upgradeData().getDouble("dropChance");
+    }
 }

@@ -19,11 +19,11 @@ public abstract class AdditionalClaim extends Claim {
         curHealth = claimData().getInt("health");
     }
 
-    
     private transient int curHealth;
 
-    public AdditionalClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime, int health) {
-        super(length, claimBlock, shard, color, craftTime);
+    public AdditionalClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime,
+            double shardDropChance, int health) {
+        super(length, claimBlock, shard, color, craftTime, shardDropChance);
         claimData().setObject("health", health);
     }
 
@@ -51,8 +51,7 @@ public abstract class AdditionalClaim extends Claim {
     }
 
     public double getHealthMultiplier() {
-        double multiplier = 1;
-        return multiplier;
+        return 1;
     }
 
     @Override

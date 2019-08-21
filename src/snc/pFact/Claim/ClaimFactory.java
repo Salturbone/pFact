@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -118,8 +119,8 @@ public class ClaimFactory {
     public static void initStandartUpgrades() {
         noUpgradeItem = new SerItem(Itemizer.wrap(new ItemStack(Material.ANVIL)).setDisplayName("No Upgrades")
                 .setLore(Cutty.wrap(SoShorten.colorize("Put an upgrade in this slot."), 16).asLines()).build());
-        addStandartUpgrade(new GainMultiplierUpgrade(new ItemStack(Material.GOLD_INGOT), 2));
-        addStandartUpgrade(new HealthMultiplierUpgrade(new ItemStack(Material.GOLDEN_APPLE), 2));
+        addStandartUpgrade(new GainMultiplierUpgrade(new ItemStack(Material.GOLD_INGOT), 0.2, 2));
+        addStandartUpgrade(new HealthMultiplierUpgrade(new ItemStack(Material.GOLDEN_APPLE), 0.2, 2));
     }
 
     private static void initMaps() {
@@ -183,9 +184,9 @@ public class ClaimFactory {
         // level 3 72 hours
 
         addStandartClaim(new XPClaim(4, new ItemStack(Material.DRAGON_EGG), new ItemStack(Material.PRISMARINE_SHARD),
-                Color.DARK_GREEN, 8L * 60L * 60L * 1000L, 30));
+                Color.DARK_GREEN, 8L * 60L * 60L * 1000L, 0.5, 0.6, 30));
         addStandartClaim(new CraftClaim(4, new ItemStack(Material.DRAGON_EGG), new ItemStack(Material.PRISMARINE_SHARD),
-                Color.DARK_GREEN, 24L * 60L * 60L * 1000L, 30));
+                Color.DARK_GREEN, 24L * 60L * 60L * 1000L, 0.5, 0.6, 30));
         for (int i = 1; i <= 3; i++) {
             craftLevelIS.put(i, new SerItem(getItemByLevel(i)));
         }
@@ -214,8 +215,9 @@ public class ClaimFactory {
         standartUpgrades.put(upg.getName(), upg);
     }
 
-    public static String getClaimStackFaction(ItemStack is) {
-        return is == null ? null : ZSIGN.alImzaZ(is, "claimFaction");
+    public static UUID getClaimStackFaction(ItemStack is) {
+        return is == null ? null
+                : (ZSIGN.sorImzaZ(is, "claimFaction") ? UUID.fromString(ZSIGN.alImzaZ(is, "claimFaction")) : null);
     }
 
     public static boolean isClaimStack(ItemStack is) {

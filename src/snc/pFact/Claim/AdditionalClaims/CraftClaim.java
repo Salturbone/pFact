@@ -26,8 +26,9 @@ public class CraftClaim extends UpgAddClaim implements ICraftingClaim {
     private long untilEnd;
     private boolean crafting, ended;
 
-    public CraftClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime, int health) {
-        super(length, claimBlock, shard, color, craftTime, health);
+    public CraftClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime,
+            double shardDropChance, double shardWoUpgChance, int health) {
+        super(length, claimBlock, shard, color, craftTime, shardDropChance, shardWoUpgChance, health);
     }
 
     @Override
@@ -131,6 +132,21 @@ public class CraftClaim extends UpgAddClaim implements ICraftingClaim {
     @Override
     public void setEnded(boolean bool) {
         this.ended = bool;
+    }
+
+    @Override
+    public List<ItemStack> getDrops(boolean naturally) {
+        List<ItemStack> items = super.getDrops(naturally);
+        if (!naturally) {
+            for (SerItem item : shards) {
+                if (item == null)
+                    continue;
+                items.add(item.getItemStack());
+            }
+            if (getLevelItem() != null)
+                items.add(getLevelItem().getItemStack());
+        }
+        return items;
     }
 
     @Override

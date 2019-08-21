@@ -36,6 +36,7 @@ public class B_Faction implements Serializable {
     }
 
     private String name;
+    private UUID uid;
     private int level;
     private double xp;
     private double prestige;
@@ -55,8 +56,9 @@ public class B_Faction implements Serializable {
      * level; this.member_count = member_count; this.xp = xp; this.prestige =
      * prestige; this.players = players; }
      */
-    
+
     public B_Faction(String name, UUID founder) {
+        uid = UUID.randomUUID();
         this.name = name;
         this.level = 1;
         this.xp = 0;
@@ -68,7 +70,11 @@ public class B_Faction implements Serializable {
         this.raidState = RaidState.NO_RAID;
         rh = new ArrayList<RaidHistory>();
     }
-    
+
+    public UUID getUUID() {
+        return uid;
+    }
+
     public Location getHomeLocation() {
         return home.getLocation();
     }
@@ -77,11 +83,11 @@ public class B_Faction implements Serializable {
         home = new SerLocation(loc);
     }
 
-    public void tpPlayerToHome(Player p) {
+    public void tpPlayerToHome(B_Player bp) {
         if (home != null) {
-            p.teleport(home.getLocation());
+            bp.warp(getHomeLocation());
         } else {
-            p.sendMessage(ChatColor.DARK_RED + "Klanının evi belirlenmemiş!");
+            bp.getPlayer().sendMessage(ChatColor.DARK_RED + "Klanının evi belirlenmemiş!");
         }
     }
 

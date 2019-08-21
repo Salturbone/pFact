@@ -2,6 +2,7 @@ package snc.pFact.Claim;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -57,8 +58,8 @@ public class ClaimListener implements Listener {
                 }
 
                 B_FactionMember bfm = bf.getPlayer(p.getUniqueId());
-                String isFact = ClaimFactory.getClaimStackFaction(is);
-                if (!isFact.equals("null") && !bf.getName().equals(isFact)) {
+                UUID isuid = ClaimFactory.getClaimStackFaction(is);
+                if (isuid != null && !bf.getUUID().equals(isuid)) {
                     p.sendMessage("this claim item is not created in your faction");
                     ev.setCancelled(true);
                     return;

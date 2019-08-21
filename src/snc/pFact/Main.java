@@ -23,6 +23,7 @@ import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.obj.cl.B_FactionMember;
 import snc.pFact.obj.cl.B_Player;
 import snc.pFact.obj.cl.Rank;
+import snc.pFact.utils.Location2D;
 import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaFactory;
 import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols112;
 
@@ -57,9 +58,12 @@ public class Main extends JavaPlugin {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     if (DataIssues.players.containsKey(p.getUniqueId()))
                         DataIssues.players.get(p.getUniqueId()).update();
+                    else {
+                        DataIssues.players.put(p.getUniqueId(), new B_Player(p.getUniqueId(), null, 0));
+                    }
                 }
             }
-        }, 0L, 20L);
+        }, 5L, 20L);
 
     }
 
@@ -182,7 +186,7 @@ public class Main extends JavaPlugin {
 
                     sender.sendMessage(
                             ChatColor.GREEN + "Klanın başarıyla oluşturuldu!! ::: " + ChatColor.RESET + bf.getName());
-                    ItemStack is = ClaimFactory.getStandartMainClaim().getClaimItem(bf.getName());
+                    ItemStack is = ClaimFactory.getStandartMainClaim().getClaimItem(bf.getUUID());
                     p.getInventory().addItem(is);
                     return true;
                 } else {
@@ -570,9 +574,14 @@ public class Main extends JavaPlugin {
         }
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("evyap")) {
-                if(bp.hasFaction()) {
+                if (bp.hasFaction()) {
                     B_FactionMember bfm = bf.getFactionMembers().get(bp.uuid());
                     if (bfm.rank() == Rank.Founder) {
+                        if (bf.GetMainClaim() == null
+                                || !bf.GetMainClaim().getSquare().isInside(Location2D.fromLocation(p.getLocation()))) {
+                            p.sendMessage(ChatColor.RED + "Evin klanının ana bölgesinin içerisinde olmak zorunda!");
+                            return true;
+                        }
                         bf.setHome(p.getLocation());
                         p.sendMessage(ChatColor.GREEN + "Klan evi oluşturuldu!");
                         return true;
@@ -586,14 +595,14 @@ public class Main extends JavaPlugin {
                 }
             }
             if (args[0].equalsIgnoreCase("ev")) {
-                if(bp.hasFaction()) {
-                    bf.tpPlayerToHome(p);
+                if (bp.hasFaction()) {
+                    bf.tpPlayerToHome(bp);
                     return true;
                 } else {
                     p.sendMessage(ChatColor.DARK_RED + "Bir klana mensup değilsin!");
                     return true;
                 }
-                
+
             }
         }
         if (args[0].equalsIgnoreCase("clearfiles") && p.isOp()) {

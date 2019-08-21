@@ -14,8 +14,9 @@ public class XPClaim extends UpgAddClaim {
     private static final long serialVersionUID = -6508729199203042348L;
     private transient int timer, random;
 
-    public XPClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime, int health) {
-        super(length, claimBlock, shard, color, craftTime, health);
+    public XPClaim(int length, ItemStack claimBlock, ItemStack shard, Color color, long craftTime,
+            double shardDropChance, double shardWoUpgChance, int health) {
+        super(length, claimBlock, shard, color, craftTime, shardDropChance, shardWoUpgChance, health);
     }
 
     @Override

@@ -3,6 +3,11 @@ package snc.pFact.obj.cl;
 import java.io.Serializable;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
 import snc.pFact.DM.DataIssues;
 
 public class B_Player implements Serializable {
@@ -21,6 +26,8 @@ public class B_Player implements Serializable {
     private boolean e_state = false;
     public int timer = 0;
     private double coin;
+    private transient Location warpingStart, toWarp;
+    private transient int warpingTime;
 
     public B_Player(UUID id, String fct, double coin) {
         this.id = id;
@@ -80,10 +87,44 @@ public class B_Player implements Serializable {
             addCoin(1);
             timer = 0;
         }
+
+        if (warpingTime > 0) {
+            warpingTime--;
+            if (warpingTime <= 0) {
+                getPlayer().teleport(toWarp);
+                warpingTime = -1;
+                toWarp = null;
+                warpingStart = null;
+            } else {
+                Player p = getPlayer();
+                Location loc = p.getLocation();
+                if (!loc.getWorld().equals(warpingStart.getWorld())
+                        || warpingStart.distance(getPlayer().getLocation()) >= 0.2) {
+                    getPlayer().sendMessage(ChatColor.RED + "Hareket ettiğin için ışınlanamadın!");
+                    warpingTime = -1;
+                    toWarp = null;
+                    warpingStart = null;
+                }
+            }
+        }
+    }
+
+    public void warp(Location warping) {
+        this.toWarp = warping;
+        this.warpingStart = getPlayer().getLocation();
+        warpingTime = 4 * 3;
+    }
+
+    public boolean isWarping() {
+        return warpingTime > 0;
     }
 
     public boolean isVIP() {
         return DataIssues.vips.containsKey(uuid());
+    }
+
+    public Player getPlayer() {
+        return Bukkit.getPlayer(id);
     }
 
 }

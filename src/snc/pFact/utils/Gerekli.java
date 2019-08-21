@@ -9,6 +9,10 @@ public class Gerekli {
 
     public static final Random random = new Random();
 
+    public static boolean chanceOf(double chance) {
+        return random.nextDouble() <= chance;
+    }
+
     public static String getRemainingTime(long date) {
 
         int days = (int) Math.floorDiv(date, 24 * 60 * 60 * 1000);
