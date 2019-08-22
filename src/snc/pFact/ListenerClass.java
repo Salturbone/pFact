@@ -1,6 +1,5 @@
 package snc.pFact;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,6 +41,10 @@ public class ListenerClass implements Listener {
                 bp.setF(null);
                 player.sendMessage("Klanından atıldın.");
             }
+            if (bp.isVIP()) {
+                player.setPlayerListName(
+                        ChatColor.AQUA + "" + ChatColor.BOLD + "VIP" + ChatColor.GRAY + player.getDisplayName());
+            }
         }
     }
 
@@ -65,7 +68,6 @@ public class ListenerClass implements Listener {
             format = format.replace("<rank>", "");
         } else {
             B_FactionMember bfm = plyr.getF().getFactionMembers().get(plyr.uuid());
-            // Bukkit.broadcastMessage(bfm + " " + plyr);
             format = format.replace("<faction>", ChatColor.GOLD + plyr.getF().getName());
             if (bfm.rank() == Rank.Founder) {
                 format = format.replace("<rank>", ChatColor.GRAY + "-K-");

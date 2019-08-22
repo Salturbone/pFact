@@ -15,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import snc.pFact.Main;
 import snc.pFact.Claim.AdditionalClaim;
 import snc.pFact.Claim.Claim;
 import snc.pFact.Claim.MainClaim;
@@ -251,7 +252,6 @@ public class B_Faction implements Serializable {
         for (Claim cl : getAllClaims()) {
             Block bl = cl.getCenterBlock().getBlock();
             bl.setType(Material.AIR);
-
         }
     }
 
@@ -309,7 +309,7 @@ public class B_Faction implements Serializable {
     public void update() {
         timer++;
         // klanların xp kazanma mekaniği
-        if (timer >= 4 * 60) {
+        if (timer >= (20 / Main.taskRepeating) * 60) {
             // sabit 10 üzerinden her aktif üye başına %2 artar
             // sabit 10 üzerinden her 5 seviye başına level_blocker kadar sağlar
             // aktif oyuncu yoksa deneyim kazanılmaz.

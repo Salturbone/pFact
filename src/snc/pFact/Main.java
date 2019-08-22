@@ -24,6 +24,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import me.Zindev.utils.ZChestLibV6.ChestManager;
 import snc.pFact.Claim.ClaimFactory;
 import snc.pFact.DM.DataIssues;
+import snc.pFact.obj.VIPPlayer;
 import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.obj.cl.B_FactionMember;
 import snc.pFact.obj.cl.B_Player;
@@ -42,6 +43,7 @@ public class Main extends JavaPlugin {
     public static GlowingMagmaFactory gmf;
     public static File languages;
     public static FileConfiguration languagesyml;
+    public static long taskRepeating;
 
     @Override
     public void onEnable() {
@@ -58,6 +60,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new ListenerClass(), this);
 
         BukkitScheduler scheduler = getServer().getScheduler();
+        taskRepeating = 5L;
         task = scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
@@ -71,8 +74,17 @@ public class Main extends JavaPlugin {
                         DataIssues.players.put(p.getUniqueId(), new B_Player(p.getUniqueId(), null, 0));
                     }
                 }
+                for (VIPPlayer vip : DataIssues.vips.values()) {
+                    vip.refresh();
+                }
+                DataIssues.vips.entrySet().removeIf(entry -> {
+                    if (!entry.getValue().isGarbage())
+                        return false;
+                    entry.getValue().destroy();
+                    return true;
+                });
             }
-        }, 5L, 5L);
+        }, 5L, taskRepeating);
         languages = new File(getDataFolder(), "languages.yml");
         languagesyml = new YamlConfiguration();
         if (!languages.exists()) {
@@ -91,8 +103,12 @@ public class Main extends JavaPlugin {
         loadYamls();
         for (Msgs m : Msgs.values()) {
             if (languagesyml.contains(m.id))
-                m.sub = Gerekli.cevc(languagesyml.getString(m.id));
+                m.sub = languagesyml.getString(m.id);
+            else
+                languagesyml.set(m.id, m.sub.replaceAll("§", "&"));
+            m.sub = Gerekli.cevc(m.sub);
         }
+        saveYamls();
 
     }
 
@@ -670,7 +686,33 @@ public class Main extends JavaPlugin {
             Bukkit.broadcastMessage(ChatColor.AQUA + "Cleared Faction & Player files and Factions.");
             return true;
         }
+        if (args[0].equalsIgnoreCase("makevip") && p.isOp()) {
+            if (args.length < 3) {
+                p.sendMessage("/klan makevip <oyuncu> <gün sayısı>");
+                return true;
+            }
+            Player ap = Bukkit.getPlayer(args[1]);
+            if (ap == null || !ap.isOnline()) {
+                p.sendMessage("/klan makevip <oyuncu> <gün sayısı>");
+                return true;
+            }
+            try {
+                int i = Integer.parseInt(args[2]);
+                VIPPlayer vip = new VIPPlayer(ap.getUniqueId(), i * 24 * 60 * 60);
+                DataIssues.vips.put(ap.getUniqueId(), vip);
+            } catch (NumberFormatException e) {
+                p.sendMessage("/klan makevip <oyuncu> <gün sayısı>");
+                return true;
+            }
+        }
         return false;
+    }
+
+    public void sendHelp(Player p) {
+        for (Msgs m : Msgs.values()) {
+            if (m.name().startsWith("HELP_"))
+                p.sendMessage(m.sub);
+        }
     }
 
 }

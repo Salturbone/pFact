@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import snc.pFact.Main;
 import snc.pFact.DM.DataIssues;
 
 public class B_Player implements Serializable {
@@ -83,8 +84,8 @@ public class B_Player implements Serializable {
 
     public void update() {
         timer++;
-        if (timer == 4 * 60) {
-            addCoin(1);
+        if (timer == (20 / Main.taskRepeating) * 60) {
+            addCoin(isVIP() ? 2 : 1);
             timer = 0;
         }
 
@@ -112,7 +113,7 @@ public class B_Player implements Serializable {
     public void warp(Location warping) {
         this.toWarp = warping;
         this.warpingStart = getPlayer().getLocation();
-        warpingTime = 4 * 3;
+        warpingTime = (int) ((20 / Main.taskRepeating) * 3);
     }
 
     public boolean isWarping() {
