@@ -1,6 +1,8 @@
 package snc.pFact;
 
-import org.bukkit.ChatColor;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -42,9 +44,7 @@ public class ListenerClass implements Listener {
                 bp.setF(null);
                 player.sendMessage(Msgs.KICKED_FROM_FACTION.sub);
             }
-            if (bp.isVIP()) {
-                player.setPlayerListName(Msgs.VIP_TAG.sub + ChatColor.GRAY + player.getDisplayName());
-            }
+            bp.tabNameUpdate();
         }
     }
 
@@ -63,13 +63,16 @@ public class ListenerClass implements Listener {
         String format = Msgs.CHAT_FORMAT.sub;
         format = format.replace("<player>", "%1$s");
         format = format.replace("<message>", "%2$s");
-        String tags = "";
+        List<String> tags = new ArrayList<String>();
         if (plyr.isVIP()) {
-            tags += Msgs.VIP_TAG.sub;
+            tags.add(Msgs.VIP_TAG.sub);
         }
-        if (ev.getPlayer().isOp())
-            tags += Msgs.ADMIN_TAG.sub;
-        format.replace("<tag>", tags);
+        String tag = "";
+        for (int i = 0; i < tags.size(); i++) {
+            tag += tags.get(i);
+            tag += " ";
+        }
+        format = format.replace("<tag>", tag);
         if (!plyr.hasFaction()) {
             format = format.replace("<faction>", Msgs.SLACK_TAG.sub);
             format = format.replace("<rank>", "");

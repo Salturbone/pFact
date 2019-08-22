@@ -1,6 +1,8 @@
 package snc.pFact.obj.cl;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -24,7 +26,6 @@ public class B_Player implements Serializable {
     private UUID id;
     private String fct = null;
     private String e_fct = null;
-    private boolean e_state = false;
     public int timer = 0;
     private double coin;
     private transient Location warpingStart, toWarp;
@@ -36,9 +37,32 @@ public class B_Player implements Serializable {
         this.coin = coin;
     }
 
+    public void tabNameUpdate() {
+        List<String> tags = new ArrayList<String>();
+        if (getPlayer().isOp()) {
+            tags.add(Msgs.TABLIST_ADMIN.sub);
+        }
+        if (isVIP()) {
+            tags.add(Msgs.TABLIST_VIP.sub);
+        }
+        String name = "";
+        for (int i = 0; i < tags.size(); i++) {
+            name += tags.get(i);
+            name += " ";
+        }
+        if (getF() != null) {
+            name += Msgs.TABLIST_MEMBER_COLOR.sub;
+        } else {
+            name += Msgs.TABLIST_SLACK_COLOR.sub;
+        }
+        name += getPlayer().getDisplayName();
+        getPlayer().setPlayerListName(name);
+    }
+
     // Faction
     public void setF(String fct) {
         this.fct = fct;
+        tabNameUpdate();
     }
 
     public B_Faction getF() {
@@ -63,19 +87,11 @@ public class B_Player implements Serializable {
     }
 
     public B_Faction getEF() {
-        return DataIssues.factions.get(e_fct);
+        return e_fct == null ? null : DataIssues.factions.get(e_fct);
     }
 
     public void setEF(String fff) {
         e_fct = fff;
-    }
-
-    public boolean getES() {
-        return e_state;
-    }
-
-    public void setES(boolean s) {
-        e_state = s;
     }
 
     public boolean hasFaction() {

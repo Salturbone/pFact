@@ -20,7 +20,6 @@ public class Gerekli {
     }
 
     public static String getRemainingTime(long date) {
-
         int days = (int) Math.floorDiv(date, 24 * 60 * 60 * 1000);
         date -= days * 24 * 60 * 60 * 1000;
         int hours = (int) Math.floorDiv(date, 60 * 60 * 1000);

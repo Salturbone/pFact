@@ -168,7 +168,6 @@ public class B_Faction implements Serializable {
                         Msgs.FACTION_LEVEL_UP_SUBTITLE.sub.replaceAll("<level>", level + ""), -1, -1, -1);
             }
         }
-        xp = Math.floor(xp * 100) / 100;
     }
 
     public List<Player> getOnlinePlayers() {

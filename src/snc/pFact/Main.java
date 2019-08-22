@@ -47,6 +47,31 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        languages = new File(getDataFolder(), "languages.yml");
+        languagesyml = new YamlConfiguration();
+        if (!languages.exists()) {
+            languages.getParentFile().mkdirs();
+            try {
+                languages.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            loadYamls();
+            for (Msgs m : Msgs.values()) {
+                languagesyml.set(m.id, m.sub.replaceAll("§", "&"));
+            }
+            saveYamls();
+        }
+        loadYamls();
+        for (Msgs m : Msgs.values()) {
+            if (languagesyml.contains(m.id))
+                m.sub = languagesyml.getString(m.id);
+            else
+                languagesyml.set(m.id, m.sub.replaceAll("§", "&"));
+            m.sub = Gerekli.cevc(m.sub);
+        }
+        saveYamls();
+
         ekl = this;
         gmf = new GlowingMagmaFactory(this, new GlowingMagmaProtocols112(), 300000);
         gmf.doInitialize();
@@ -85,30 +110,6 @@ public class Main extends JavaPlugin {
                 });
             }
         }, 5L, taskRepeating);
-        languages = new File(getDataFolder(), "languages.yml");
-        languagesyml = new YamlConfiguration();
-        if (!languages.exists()) {
-            languages.getParentFile().mkdirs();
-            try {
-                languages.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            loadYamls();
-            for (Msgs m : Msgs.values()) {
-                languagesyml.set(m.id, m.sub.replaceAll("§", "&"));
-            }
-            saveYamls();
-        }
-        loadYamls();
-        for (Msgs m : Msgs.values()) {
-            if (languagesyml.contains(m.id))
-                m.sub = languagesyml.getString(m.id);
-            else
-                languagesyml.set(m.id, m.sub.replaceAll("§", "&"));
-            m.sub = Gerekli.cevc(m.sub);
-        }
-        saveYamls();
 
     }
 
@@ -163,38 +164,87 @@ public class Main extends JavaPlugin {
          * if (label.equalsIgnoreCase("param")) { p.sendMessage(ChatColor.GREEN +
          * "Mevcut Paranız: " + ChatColor.RESET + bp.getCoin()); return true; }
          */
-        if (!label.equalsIgnoreCase("klan"))
+        if (!label.equalsIgnoreCase("klan")) {
             return false;
-        if (args.length == 0)
-            return false;
+        }
+        if (args.length == 0) {
+            sendHelp(p);
+            return true;
+        }
 
         if (args[0].equalsIgnoreCase("bağış")) {
-            if (args.length == 2 && bp.getF() != null) {
-                double bagis;
-                try {
-                    bagis = Double.parseDouble(args[1]);
-                } catch (NumberFormatException e) {
-                    p.sendMessage(Msgs.VALUE_ERROR.sub);
-                    return false;
-                }
-                if (bp.getCoin() >= bagis) {
-                    bp.addCoin((-1) * bagis);
-                    bp.getF().addBankAmount(bagis);
-                    p.sendMessage(Msgs.DONATED_TO_FACTION.sub.replaceAll("<amount>", bagis + ""));
-                } else {
-                    p.sendMessage(Msgs.NOT_ENOUGH_MONEY.sub);
-                }
+            if (bf == null) {
+                p.sendMessage(Msgs.NOT_A_MEMBER_OF_CLAN.sub);
+                return true;
+            }
+            if (args.length <= 1) {
+                p.sendMessage(Msgs.HELP_BAGIS.sub);
+                return true;
+            }
+
+            double bagis;
+            try {
+                bagis = Double.parseDouble(args[1]);
+            } catch (NumberFormatException e) {
+                p.sendMessage(Msgs.HELP_BAGIS.sub);
+                return true;
+            }
+            if (bp.getCoin() >= bagis) {
+                bp.addCoin((-1) * bagis);
+                bp.getF().addBankAmount(bagis);
+                p.sendMessage(Msgs.DONATED_TO_FACTION.sub.replaceAll("<amount>", bagis + ""));
+                return true;
             } else {
-                p.sendMessage(Msgs.DONT_HAVE_A_CLAN.sub);
+                p.sendMessage(Msgs.NOT_ENOUGH_MONEY.sub);
+                return true;
             }
         }
         if (args[0].equalsIgnoreCase("bilgi")) {
+            if (args.length >= 2) {
+                B_Faction abf = DataIssues.factions.get(args[1]);
+                if (abf == null) {
+                    sendMessage(p, Msgs.COULDNT_FIND_FACTION, "<faction>%%" + args[1]);
+                    return true;
+                }
+                List<B_FactionMember> list = abf.getByRank(Rank.Moderator);
+                String yetkililer = "";
+                if (!list.isEmpty()) {
+                    for (B_FactionMember l : list) {
+                        yetkililer += (l.isOnline() ? Msgs.INFO_ONLINE_COLOR.sub : Msgs.INFO_OFFLINE_COLOR.sub)
+                                + l.getName() + ChatColor.RESET + ",";
+                    }
+                    yetkililer = yetkililer.substring(0, yetkililer.length() - 1);
+                } else {
+                    yetkililer = "-";
+                }
+                String oyuncular = "";
+                List<B_FactionMember> list0 = abf.getByRank(Rank.Player);
+                if (!list0.isEmpty()) {
+                    for (B_FactionMember l : list0) {
+                        oyuncular += (l.isOnline() ? Msgs.INFO_ONLINE_COLOR.sub : Msgs.INFO_OFFLINE_COLOR.sub)
+                                + l.getName() + ChatColor.RESET + ",";
+                    }
+                    oyuncular = oyuncular.substring(0, oyuncular.length() - 1);
+                } else {
+                    oyuncular = "-";
+                }
+                B_FactionMember founder = abf.getFounder();
+                String fname = (founder.isOnline() ? Msgs.INFO_ONLINE_COLOR.sub : Msgs.INFO_OFFLINE_COLOR.sub)
+                        + founder.getName();
+                sendMessage(p, Msgs.INFO_OTHER, "<faction>%%" + abf.getName(), "<founder>%%" + fname,
+                        "<admins>%%" + yetkililer, "<players>%%" + oyuncular, "<level>%%" + abf.getLevel(),
+                        "<xp>%%" + Math.floor(abf.getXP() * 10) / 10,
+                        "<neededxp>%%" + Math.ceil(abf.getLevelUpXp() * 10) / 10, "<prestige>%%" + abf.getPrestige(),
+                        "<money>%%" + bf.getBank());
+                return true;
+            }
             if (bp.getF() != null) {
                 List<B_FactionMember> list = bf.getByRank(Rank.Moderator);
                 String yetkililer = "";
                 if (!list.isEmpty()) {
                     for (B_FactionMember l : list) {
-                        yetkililer += l.getName() + ",";
+                        yetkililer += (l.isOnline() ? Msgs.INFO_ONLINE_COLOR.sub : Msgs.INFO_OFFLINE_COLOR.sub)
+                                + l.getName() + ChatColor.RESET + ",";
                     }
                     yetkililer = yetkililer.substring(0, yetkililer.length() - 1);
                 } else {
@@ -204,14 +254,18 @@ public class Main extends JavaPlugin {
                 List<B_FactionMember> list0 = bf.getByRank(Rank.Player);
                 if (!list0.isEmpty()) {
                     for (B_FactionMember l : list0) {
-                        oyuncular += l.getName() + ",";
+                        oyuncular += (l.isOnline() ? Msgs.INFO_ONLINE_COLOR.sub : Msgs.INFO_OFFLINE_COLOR.sub)
+                                + l.getName() + ChatColor.RESET + ",";
                     }
                     oyuncular = oyuncular.substring(0, oyuncular.length() - 1);
                 } else {
                     oyuncular = "-";
                 }
-                sendMessage(p, Msgs.INFO, "<founder>%%" + bf.getFounder().getName(), "<admins>%%" + yetkililer,
-                        "<players>%%" + oyuncular, "<level>%%" + bf.getLevel(),
+                B_FactionMember founder = bf.getFounder();
+                String fname = (founder.isOnline() ? Msgs.INFO_ONLINE_COLOR.sub : Msgs.INFO_OFFLINE_COLOR.sub)
+                        + founder.getName();
+                sendMessage(p, Msgs.INFO, "<faction>%%" + bf.getName(), "<founder>%%" + fname,
+                        "<admins>%%" + yetkililer, "<players>%%" + oyuncular, "<level>%%" + bf.getLevel(),
                         "<xp>%%" + Math.floor(bf.getXP() * 10) / 10,
                         "<neededxp>%%" + Math.ceil(bf.getLevelUpXp() * 10) / 10, "<prestige>%%" + bf.getPrestige(),
                         "<money>%%" + bf.getBank());
@@ -224,7 +278,7 @@ public class Main extends JavaPlugin {
 
         if (args[0].equalsIgnoreCase("kur")) {
             if (args.length == 1) {
-                sender.sendMessage(Msgs.ENTER_A_NAME.sub);
+                sender.sendMessage(Msgs.HELP_KUR.sub);
                 return true;
             } else { // Faction kurma
                 if (bf == null) {
@@ -284,6 +338,10 @@ public class Main extends JavaPlugin {
                 }
             } else {
                 OfflinePlayer gp = Bukkit.getOfflinePlayer(args[1]);
+                if (gp == null) {
+                    sendMessage(p, Msgs.COULDNT_FIND_PLAYER, "<player>%%" + args[1]);
+                    return true;
+                }
                 if (bp.getF().getPlayer(gp.getUniqueId()) == null) {
                     sender.sendMessage(Msgs.NOT_A_MEMBER_OF_CLAN.sub);
                     return true;
@@ -300,8 +358,8 @@ public class Main extends JavaPlugin {
                 sender.sendMessage(Msgs.DONT_HAVE_A_CLAN.sub);
                 return true;
             }
-            if (bf.getFounder().uuid() != bp.uuid()) {
-
+            B_FactionMember bfm = bf.getPlayer(p.getUniqueId());
+            if (bfm.rank() != Rank.Founder) {
                 bf.getFactionMembers().remove(bp.uuid());
                 bp.setF(null);
                 p.sendMessage(Msgs.NOT_A_MEMBER_OF_CLAN_ANYMORE.sub);
@@ -331,7 +389,7 @@ public class Main extends JavaPlugin {
                 return true;
             }
             if (args.length == 1) {
-                sender.sendMessage(Msgs.ENTER_AN_ARGUMENT.sub);
+                sender.sendMessage(Msgs.HELP_OYUNCU.sub);
                 return true;
             }
             if (args.length == 2) {
@@ -358,19 +416,18 @@ public class Main extends JavaPlugin {
                         sender.sendMessage(Msgs.PLAYER_IS_IN_ANOTHER_CLAN.sub.replaceAll("<player>", args[2]));
                         return true;
                     }
-                    if (bgp.getES()) {
+                    if (bgp.getEF() != null) {
                         sender.sendMessage(Msgs.PLAYER_IS_INVITED_BY_ANOTHER_CLAN.sub.replaceAll("<player>", args[2]));
                         return true;
                     }
-                    bgp.setES(true);
                     bgp.setEF(bp.getF().getName());
-                    sender.sendMessage(Msgs.PLAYER_IS_INVITED_BY_ANOTHER_CLAN.sub.replaceAll("<player>", args[2]));
-                    sendMessage(p, Msgs.INVITED_TO_CLAN, "<faction>%%" + bf.getName());
+                    sender.sendMessage(Msgs.PLAYER_INVITED.sub.replaceAll("<player>", args[2]));
+                    sendMessage(gp, Msgs.INVITED_TO_CLAN, "<faction>%%" + bf.getName());
                     return true;
                 }
                 if (args[1].equalsIgnoreCase("at")) {
-                    Player gp = Bukkit.getPlayer(args[2]);
-                    if (gp != null && gp.isOnline()) {
+                    if (Bukkit.getPlayer(args[2]) != null && Bukkit.getPlayer(args[2]).isOnline()) {
+                        Player gp = Bukkit.getPlayer(args[2]);
                         B_Player bgp = DataIssues.players.get(gp.getUniqueId());
                         B_Faction gf = bgp.getF();
                         if (bgp.getF() != bp.getF()) {
@@ -422,12 +479,12 @@ public class Main extends JavaPlugin {
                             return true;
                         }
                         if (bfm.rank() == Rank.Founder) {
-                            bf.getFactionMembers().remove(gp.getUniqueId());
+                            bf.getFactionMembers().remove(ogp.getUniqueId());
                             sendMessage(p, Msgs.KICKER_MESSAGE, "<player>%%" + args[2]);
                             return true;
                         }
                         if (bfm.rank() == Rank.Moderator && gfm.rank() == Rank.Player) {
-                            bf.getFactionMembers().remove(gp.getUniqueId());
+                            bf.getFactionMembers().remove(ogp.getUniqueId());
                             sendMessage(p, Msgs.KICKER_MESSAGE, "<player>%%" + args[2]);
                             return true;
                         }
@@ -443,14 +500,13 @@ public class Main extends JavaPlugin {
 
         // Davet Kabul ve Reddi
         if (args[0].equalsIgnoreCase("kabul")) {
-            if (!bp.getES() || bp.hasFaction()) {
+            if (bp.getEF() == null || bp.hasFaction()) {
                 sender.sendMessage(Msgs.NO_INVITE.sub);
                 return true;
             }
             bp.setF(bp.getEF().getName());
             bp.getEF().addMember(bp.uuid());
             bp.setEF(null);
-            bp.setES(false);
             sendMessage(p, Msgs.JOINED_FACTION, "<faction>%%" + bp.getF().getName());
             for (Player pl : bp.getF().getOnlinePlayers()) {
                 if (!pl.getUniqueId().equals(p.getUniqueId()))
@@ -460,13 +516,12 @@ public class Main extends JavaPlugin {
             return true;
         }
         if (args[0].equalsIgnoreCase("ret")) {
-            if (!bp.getES() || bp.hasFaction()) {
+            if (bp.getEF() == null || bp.hasFaction()) {
                 sender.sendMessage(Msgs.NO_INVITE.sub);
                 return true;
             }
             sendMessage(p, Msgs.REJECTED_INVITE, "<faction>%%" + bp.getEF().getName());
             bp.setEF(null);
-            bp.setES(false);
             return true;
         }
 
@@ -501,12 +556,12 @@ public class Main extends JavaPlugin {
                         return true;
                     }
                 } else {
-                    Player ggp = (Player) Bukkit.getOfflinePlayer(args[2]);
-                    if (ggp == null) {
+                    OfflinePlayer ogp = Bukkit.getOfflinePlayer(args[2]);
+                    if (ogp == null) {
                         sendMessage(p, Msgs.COULDNT_FIND_PLAYER, "<player>%%" + args[2]);
                         return true;
                     }
-                    B_FactionMember gfm = bf.getPlayer(ggp.getUniqueId());
+                    B_FactionMember gfm = bf.getPlayer(ogp.getUniqueId());
                     if (gfm == null) {
                         sender.sendMessage(Msgs.NOT_A_MEMBER_OF_YOUR_FACTION.sub);
                         return true;
@@ -648,8 +703,11 @@ public class Main extends JavaPlugin {
 
         if (args[0].equalsIgnoreCase("vip")) {
             if (bp.isVIP()) {
+                sendMessage(p, Msgs.VIP_FOR,
+                        "<time>%%" + Gerekli.getRemainingTime(DataIssues.vips.get(p.getUniqueId()).getRemainingTime()));
                 return true;
             } else {
+                p.sendMessage(Msgs.VIP_INFO.sub);
                 return true;
             }
         }
@@ -687,8 +745,7 @@ public class Main extends JavaPlugin {
             }
             try {
                 int i = Integer.parseInt(args[2]);
-                VIPPlayer vip = new VIPPlayer(ap.getUniqueId(), i * 24 * 60 * 60);
-                DataIssues.vips.put(ap.getUniqueId(), vip);
+                VIPPlayer vip = new VIPPlayer(ap.getUniqueId(), i * 24 * 60 * 60 * 1000L);
                 p.sendMessage("Oyuncu artık bir vip.");
                 sendMessage(ap, Msgs.VIP_FOR, "<time>%%" + Gerekli.getRemainingTime(vip.getRemainingTime()));
                 return true;
@@ -697,7 +754,9 @@ public class Main extends JavaPlugin {
                 return true;
             }
         }
-        return false;
+
+        sendHelp(p);
+        return true;
     }
 
     public void sendHelp(Player p) {
