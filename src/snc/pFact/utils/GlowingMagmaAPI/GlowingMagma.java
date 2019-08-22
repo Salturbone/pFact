@@ -84,7 +84,6 @@ public class GlowingMagma {
 
     protected void remove(Player p) {
         if (p != null) {
-            playerTimers.remove(p.getUniqueId());
             this.createdSet.remove(p.getUniqueId());
             this.pr.removeFromTeam(p, color, uid);
             this.pr.removeGlowingMagma(p, this.entityid);
@@ -131,8 +130,9 @@ public class GlowingMagma {
         for (UUID uid : toRemove) {
             Player p = Bukkit.getPlayer(uid);
             playerTimers.remove(uid);
-            remove(p);
             getPlayers().remove(uid);
+            createdSet.remove(uid);
+            remove(p);
         }
         HashMap<UUID, Integer> nmap = new HashMap<>();
         for (Entry<UUID, Integer> en : playerTimers.entrySet()) {
@@ -143,6 +143,7 @@ public class GlowingMagma {
                 remove(Bukkit.getPlayer(en.getKey()));
                 getPlayers().remove(en.getKey());
                 playerTimers.remove(en.getKey());
+                createdSet.remove(en.getKey());
             } else {
                 playerTimers.put(en.getKey(), en.getValue());
             }

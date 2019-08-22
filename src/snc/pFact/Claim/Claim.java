@@ -139,8 +139,9 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
         int max = 0;
         for (int i = 0; i < ints.size(); i++) {
             if (fctLevel < ints.get(i)) {
-                max = i;
+                return i;
             }
+            max++;
         }
         return max;
     }
@@ -230,7 +231,7 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
         return claimData().getLong("craftTime");
     }
 
-    public void destroy(boolean naturally) {
+    public void breakClaim(boolean naturally) {
         this.getCenterBlock().getBlock().setType(Material.AIR);
         getDrops(naturally).forEach(is -> getCenterBlock().getWorld().dropItemNaturally(getCenterBlock(), is));
         if (this instanceof MainClaim) {

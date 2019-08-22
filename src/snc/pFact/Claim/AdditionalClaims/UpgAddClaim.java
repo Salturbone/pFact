@@ -5,18 +5,14 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 
-import me.Zindev.utils.ZChestLibV6.ButtonNode;
 import me.Zindev.utils.ZChestLibV6.ChestGUI;
 import me.Zindev.utils.ZChestLibV6.ChestNode;
-import me.Zindev.utils.data.SoundData;
 import snc.pFact.Claim.AdditionalClaim;
-import snc.pFact.Claim.ClaimFactory;
 import snc.pFact.Claim.Upgrade.ClaimUpgrade;
 import snc.pFact.Claim.Upgrade.HealthMultiplierUpgrade;
-import snc.pFact.GUIs.ClaimMenuGUI;
+import snc.pFact.GUIs.BreakClaimButton;
 import snc.pFact.GUIs.ShowBordersButton;
 import snc.pFact.GUIs.UpgradesButton;
 import snc.pFact.utils.Gerekli;
@@ -87,18 +83,7 @@ public abstract class UpgAddClaim extends AdditionalClaim implements Upgradeable
         // egg
         nodes.add(getSingularItem());
         // break
-        nodes.add(new ButtonNode(ClaimFactory.breakClaim.getItemStack()) {
-
-            @Override
-            public void onClick(ChestGUI arg0, ChestGUIClickEvent arg1) {
-                AdditionalClaim cl = (AdditionalClaim) ((ClaimMenuGUI) arg0).getClaim();
-                if (cl == null)
-                    return;
-                cl.destroy(false);
-                new SoundData(1f, 1f, Sound.BLOCK_GLASS_BREAK).play(arg0.getUser());
-                arg0.close(true);
-            }
-        });
+        nodes.add(new BreakClaimButton());
         // upgrade
         nodes.add(new UpgradesButton(this));
         // show

@@ -34,8 +34,7 @@ public class CraftClaim extends UpgAddClaim implements ICraftingClaim {
     @Override
     public void update() {
         if (untilEnd >= 0) {
-            untilEnd -= ((double) ClaimFactory.interval / 20) * 1000L * getMultipliers();
-
+            untilEnd -= ((double) ClaimFactory.interval / 20) * (double) 1000L * getMultipliers();
         }
         check();
     }
@@ -80,7 +79,7 @@ public class CraftClaim extends UpgAddClaim implements ICraftingClaim {
     @Override
     public List<ChestNode> getConfigurableList(ChestGUI arg0) {
         List<ChestNode> list = super.getConfigurableList(arg0);
-        list.add(1, new GoToCraftingButton(this));
+        list.add(2, new GoToCraftingButton(this));
         return list;
     }
 

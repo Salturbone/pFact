@@ -76,6 +76,14 @@ public class B_Faction implements Serializable {
         return uid;
     }
 
+    public SerLocation getHomeSerLocation() {
+        return home;
+    }
+
+    public void setSerHome(SerLocation loc) {
+        home = loc;
+    }
+
     public Location getHomeLocation() {
         return home.getLocation();
     }

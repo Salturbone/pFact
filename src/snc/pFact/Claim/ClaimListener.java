@@ -50,7 +50,7 @@ public class ClaimListener implements Listener {
         Claim isCl = ClaimFactory.getClaimFromStack(is);
         if (isCl != null) {
             if (cl == null) {
-                B_Faction bf = DataIssues.players.getLoaded(p.getUniqueId()).getF();
+                B_Faction bf = B_Player.getFactionOfPlayer(p.getUniqueId());
                 if (bf == null) {
                     p.sendMessage("you need a faction to claim a area");
                     ev.setCancelled(true);

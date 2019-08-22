@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.Zindev.utils.ZChestLibV6.ButtonNode;
@@ -97,15 +98,15 @@ public class MainClaim extends Claim implements ICraftingClaim {
             @Override
             public void onClick(ChestGUI arg0, ChestGUIClickEvent arg1) {
                 MainClaim cl = (MainClaim) ((ClaimMenuGUI) arg0).getClaim();
+                Player p = arg0.getUser();
                 if (cl == null)
                     return;
                 B_Faction fact = cl.getFaction();
                 if (fact.getAdditionalClaims().size() != 0) {
+                    p.sendMessage("Ek bölgeler varken ana bölgeyi kıramazsın!");
                     return;
                 }
-                arg0.getUser().getInventory().addItem(cl.getClaimItem(fact.getUUID()));
-                cl.getCenterBlock().getBlock().setType(Material.AIR);
-                fact.setMainClaim(null);
+                cl.breakClaim(false);
                 new SoundData(1f, 1f, Sound.BLOCK_GLASS_BREAK).play(arg0.getUser());
                 arg0.close(true);
             }
@@ -125,6 +126,12 @@ public class MainClaim extends Claim implements ICraftingClaim {
     @Override
     public SerItem[] getShards() {
         return shards;
+    }
+
+    @Override
+    public void breakClaim(boolean naturally) {
+        getFaction().setSerHome(null);
+        super.breakClaim(naturally);
     }
 
     @Override

@@ -119,8 +119,8 @@ public class ClaimFactory {
     public static void initStandartUpgrades() {
         noUpgradeItem = new SerItem(Itemizer.wrap(new ItemStack(Material.ANVIL)).setDisplayName("No Upgrades")
                 .setLore(Cutty.wrap(SoShorten.colorize("Put an upgrade in this slot."), 16).asLines()).build());
-        addStandartUpgrade(new GainMultiplierUpgrade(new ItemStack(Material.GOLD_INGOT), 0.2, 2));
-        addStandartUpgrade(new HealthMultiplierUpgrade(new ItemStack(Material.GOLDEN_APPLE), 0.2, 2));
+        addStandartUpgrade(new GainMultiplierUpgrade(new ItemStack(Material.GOLD_INGOT), 0.2, 1.5));
+        addStandartUpgrade(new HealthMultiplierUpgrade(new ItemStack(Material.GOLDEN_APPLE), 0.2, 1.5));
     }
 
     private static void initMaps() {

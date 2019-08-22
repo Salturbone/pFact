@@ -70,7 +70,7 @@ public interface ICraftingClaim {
     public double getMultipliers();
 
     public default long getMultipliedEnd() {
-        return untilEnd() / (long) getMultipliers();
+        return (long) (untilEnd() / getMultipliers());
     }
 
     public default CraftingTime getCraftingTime() {
