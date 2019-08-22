@@ -13,6 +13,7 @@ import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.obj.cl.B_FactionMember;
 import snc.pFact.obj.cl.B_Player;
 import snc.pFact.obj.cl.Rank;
+import snc.pFact.utils.Msgs;
 
 public class ListenerClass implements Listener {
 
@@ -64,15 +65,15 @@ public class ListenerClass implements Listener {
         format = format.replace("<player>", "%1$s");
         format = format.replace("<message>", "%2$s");
         if (!plyr.hasFaction()) {
-            format = format.replace("<faction>", ChatColor.BOLD + "" + ChatColor.GRAY + "AYLAK");
+            format = format.replace("<faction>", Msgs.SLACK_TAG.sub);
             format = format.replace("<rank>", "");
         } else {
             B_FactionMember bfm = plyr.getF().getFactionMembers().get(plyr.uuid());
             format = format.replace("<faction>", ChatColor.GOLD + plyr.getF().getName());
             if (bfm.rank() == Rank.Founder) {
-                format = format.replace("<rank>", ChatColor.GRAY + "-K-");
+                format = format.replace("<rank>", Msgs.FACTION_OWNER_TAG.sub);
             } else if (bfm.rank() == Rank.Moderator) {
-                format = format.replace("<rank>", ChatColor.GRAY + "-Y-");
+                format = format.replace("<rank>", Msgs.FACTION_MODERATOR_TAG.sub);
             } else {
                 format = format.replace("<rank>", "");
             }

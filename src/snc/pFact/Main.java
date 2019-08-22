@@ -260,7 +260,7 @@ public class Main extends JavaPlugin {
 
         if (args[0].equalsIgnoreCase("kurucuyap")) {
             if (args.length < 2) {
-                sender.sendMessage(ChatColor.RED + "/klan kurucuyap <isim>");
+                sender.sendMessage(Msgs.HELP_KURUCUYAP.sub);
                 return true;
             }
 
@@ -314,15 +314,16 @@ public class Main extends JavaPlugin {
                 return true;
             } else {
                 if (bf.getFactionMembers().size() != 1) {
-                    p.sendMessage(ChatColor.RED + "Kurucusu olduğun klandan ayrılamazsın!!");
-                    p.sendMessage(ChatColor.RED + "Klanını devretmek için:" + ChatColor.RESET
-                            + " /klan kurucuyap <oyuncu_ismi>");
+                    String[] ab = Msgs.CANT_LEAVE_FACTION_OWNER.sub.split("%%");
+                    for (String s: ab) {
+                        p.sendMessage(s);
+                    }
                     return true;
                 } else {
                     bf.disband();
                     DataIssues.factions.remove(bf.getName());
                     bp.setF(null);
-                    p.sendMessage(ChatColor.GREEN + "Artık bir klana mensup değilsin!");
+                    p.sendMessage(Msgs.NOT_A_MEMBER_OF_CLAN_ANYMORE.sub);
                     return true;
                 }
 
@@ -331,12 +332,11 @@ public class Main extends JavaPlugin {
 
         if (args[0].equalsIgnoreCase("oyuncu")) {
             if (bf == null) {
-                sender.sendMessage(ChatColor.RED + "Bir klana mensup değilsin.");
+                sender.sendMessage(Msgs.DONT_HAVE_A_CLAN.sub);
                 return true;
             }
             if (bf.getPlayer(bp.uuid()).rank() == Rank.Player) {
-                sender.sendMessage(ChatColor.DARK_RED + "Bu komutu girmek için "
-                        + "gerekli yetkiye sahip değilsin ya da bir klana dahil değil.");
+                sender.sendMessage(Msgs.NOT_ENOUGH_PERMISSION.sub);
                 return true;
             }
             if (args.length == 1) {
