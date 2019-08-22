@@ -766,9 +766,9 @@ public class Main extends JavaPlugin {
         }
     }
 
-    public static void sendMessage(Player p, Msgs message, String... replacements) {
-        if (message.sub.contains("%%")) {
-            for (String s : message.sub.split("%%")) {
+    public static void sendMessage(Player p, String message, String... replacements) {
+        if (message.contains("%%")) {
+            for (String s : message.split("%%")) {
                 String str = s;
                 for (String rep : replacements) {
                     str = str.replaceAll(rep.split("%%")[0], rep.split("%%")[1]);
@@ -776,7 +776,7 @@ public class Main extends JavaPlugin {
                 p.sendMessage(str);
             }
         } else {
-            String str = message.sub;
+            String str = message;
             for (String rep : replacements) {
                 str = str.replaceAll(rep.split("%%")[0], rep.split("%%")[1]);
             }
