@@ -36,15 +36,14 @@ public class ListenerClass implements Listener {
             B_Faction bf = bp.getF();
             if (bf == null && bp.hasFaction()) {
                 bp.setF(null);
-                player.sendMessage("Klanın dağıldı.");
+                player.sendMessage(Msgs.FACTION_DISBANDED.sub);
             }
             if (bf != null && bf.getPlayer(player.getUniqueId()) == null) {
                 bp.setF(null);
-                player.sendMessage("Klanından atıldın.");
+                player.sendMessage(Msgs.KICKED_FROM_FACTION.sub);
             }
             if (bp.isVIP()) {
-                player.setPlayerListName(
-                        ChatColor.AQUA + "" + ChatColor.BOLD + "VIP" + ChatColor.GRAY + player.getDisplayName());
+                player.setPlayerListName(Msgs.VIP_TAG.sub + ChatColor.GRAY + player.getDisplayName());
             }
         }
     }
@@ -61,15 +60,22 @@ public class ListenerClass implements Listener {
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent ev) {
         B_Player plyr = DataIssues.players.get(ev.getPlayer().getUniqueId());
-        String format = "<faction> <rank> " + ChatColor.DARK_AQUA + "<player> >>" + ChatColor.RESET + " <message>";
+        String format = Msgs.CHAT_FORMAT.sub;
         format = format.replace("<player>", "%1$s");
         format = format.replace("<message>", "%2$s");
+        String tags = "";
+        if (plyr.isVIP()) {
+            tags += Msgs.VIP_TAG.sub;
+        }
+        if (ev.getPlayer().isOp())
+            tags += Msgs.ADMIN_TAG.sub;
+        format.replace("<tag>", tags);
         if (!plyr.hasFaction()) {
             format = format.replace("<faction>", Msgs.SLACK_TAG.sub);
             format = format.replace("<rank>", "");
         } else {
             B_FactionMember bfm = plyr.getF().getFactionMembers().get(plyr.uuid());
-            format = format.replace("<faction>", ChatColor.GOLD + plyr.getF().getName());
+            format = format.replace("<faction>", plyr.getF().getName());
             if (bfm.rank() == Rank.Founder) {
                 format = format.replace("<rank>", Msgs.FACTION_OWNER_TAG.sub);
             } else if (bfm.rank() == Rank.Moderator) {

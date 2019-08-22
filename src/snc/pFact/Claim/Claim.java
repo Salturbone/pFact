@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,6 +18,7 @@ import me.Zindev.utils.ZChestLibV6.ChestNode.ProcessItem;
 import me.Zindev.utils.ZChestLibV6.GUIReadLine.GUIConfigurable;
 import snc.pFact.Main;
 import snc.pFact.DM.DataIssues;
+import snc.pFact.GUIs.ClaimMenuGUI;
 import snc.pFact.obj.cl.B_Faction;
 import snc.pFact.utils.Gerekli;
 import snc.pFact.utils.Location2D;
@@ -232,6 +234,7 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
     }
 
     public void breakClaim(boolean naturally) {
+        closeGUIS();
         this.getCenterBlock().getBlock().setType(Material.AIR);
         getDrops(naturally).forEach(is -> getCenterBlock().getWorld().dropItemNaturally(getCenterBlock(), is));
         if (this instanceof MainClaim) {
@@ -240,6 +243,17 @@ public abstract class Claim implements Cloneable, Serializable, GUIConfigurable,
             getFaction().getAdditionalClaims().remove(this);
         }
 
+    }
+
+    public void closeGUIS() {
+        for (Entry<UUID, ChestGUI> ent : Main.cm.entrySet()) {
+            ChestGUI gui = ent.getValue();
+            if (gui instanceof ClaimMenuGUI) {
+                Claim cl = ((ClaimMenuGUI) gui).getClaim();
+                if (cl == this)
+                    gui.close(true);
+            }
+        }
     }
 
     public List<ItemStack> getDrops(boolean naturally) {

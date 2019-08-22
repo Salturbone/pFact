@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,6 +18,7 @@ import snc.pFact.Main;
 import snc.pFact.Claim.AdditionalClaim;
 import snc.pFact.Claim.Claim;
 import snc.pFact.Claim.MainClaim;
+import snc.pFact.utils.Msgs;
 import snc.pFact.utils.SerLocation;
 import snc.pFact.utils.Square3D;
 
@@ -96,7 +96,7 @@ public class B_Faction implements Serializable {
         if (home != null) {
             bp.warp(getHomeLocation());
         } else {
-            bp.getPlayer().sendMessage(ChatColor.DARK_RED + "Klanının evi belirlenmemiş!");
+            bp.getPlayer().sendMessage(Msgs.NO_HOME.sub);
         }
     }
 
@@ -164,8 +164,8 @@ public class B_Faction implements Serializable {
             xp -= getLevelUpXp();
             level += 1;
             for (Player p : getOnlinePlayers()) {
-                p.sendTitle(ChatColor.GREEN + "Yeni Klan Seviyesi: " + ChatColor.DARK_PURPLE + level,
-                        ChatColor.DARK_GREEN + "Klanın seviye atladı!", -1, -1, -1);
+                p.sendTitle(Msgs.FACTION_LEVEL_UP_TITLE.sub,
+                        Msgs.FACTION_LEVEL_UP_SUBTITLE.sub.replaceAll("<level>", level + ""), -1, -1, -1);
             }
         }
         xp = Math.floor(xp * 100) / 100;

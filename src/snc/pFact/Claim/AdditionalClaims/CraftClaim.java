@@ -3,14 +3,18 @@ package snc.pFact.Claim.AdditionalClaims;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
 import me.Zindev.utils.ZChestLibV6.ChestGUI;
 import me.Zindev.utils.ZChestLibV6.ChestNode;
+import snc.pFact.Main;
 import snc.pFact.Claim.ClaimFactory;
 import snc.pFact.Claim.Upgrade.GainMultiplierUpgrade;
+import snc.pFact.GUIs.CraftClaimGUI;
 import snc.pFact.GUIs.GoToCraftingButton;
 import snc.pFact.utils.SerItem;
 import snc.pFact.utils.GlowingMagmaAPI.GlowingMagmaProtocols.Color;
@@ -157,4 +161,16 @@ public class CraftClaim extends UpgAddClaim implements ICraftingClaim {
         return multiplier * Math.floor(Math.pow(1.25, Math.pow(getFaction().getVIPCount(), 3 / 4)));
     }
 
+    @Override
+    public void closeGUIS() {
+        super.closeGUIS();
+        for (Entry<UUID, ChestGUI> ent : Main.cm.entrySet()) {
+            ChestGUI gui = ent.getValue();
+            if (gui instanceof CraftClaimGUI) {
+                ICraftingClaim cl = ((CraftClaimGUI) gui).getClaim();
+                if (cl == this)
+                    gui.close(true);
+            }
+        }
+    }
 }

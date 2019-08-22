@@ -2,6 +2,8 @@ package snc.pFact.Claim;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,8 +16,10 @@ import me.Zindev.utils.ZChestLibV6.ChestGUI;
 import me.Zindev.utils.ZChestLibV6.ChestNode;
 import me.Zindev.utils.ZChestLibV6.ItemNode;
 import me.Zindev.utils.data.SoundData;
+import snc.pFact.Main;
 import snc.pFact.Claim.AdditionalClaims.ICraftingClaim;
 import snc.pFact.GUIs.ClaimMenuGUI;
+import snc.pFact.GUIs.CraftClaimGUI;
 import snc.pFact.GUIs.GoToCraftingButton;
 import snc.pFact.GUIs.ShowBordersButton;
 import snc.pFact.obj.cl.B_Faction;
@@ -194,4 +198,16 @@ public class MainClaim extends Claim implements ICraftingClaim {
         return items;
     }
 
+    @Override
+    public void closeGUIS() {
+        super.closeGUIS();
+        for (Entry<UUID, ChestGUI> ent : Main.cm.entrySet()) {
+            ChestGUI gui = ent.getValue();
+            if (gui instanceof CraftClaimGUI) {
+                ICraftingClaim cl = ((CraftClaimGUI) gui).getClaim();
+                if (cl == this)
+                    gui.close(true);
+            }
+        }
+    }
 }

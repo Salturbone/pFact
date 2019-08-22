@@ -4,12 +4,12 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import snc.pFact.Main;
 import snc.pFact.DM.DataIssues;
+import snc.pFact.utils.Msgs;
 
 public class B_Player implements Serializable {
 
@@ -101,7 +101,7 @@ public class B_Player implements Serializable {
                 Location loc = p.getLocation();
                 if (!loc.getWorld().equals(warpingStart.getWorld())
                         || warpingStart.distance(getPlayer().getLocation()) >= 0.2) {
-                    getPlayer().sendMessage(ChatColor.RED + "Hareket ettiğin için ışınlanamadın!");
+                    getPlayer().sendMessage(Msgs.WARP_CANCELLED.sub);
                     warpingTime = -1;
                     toWarp = null;
                     warpingStart = null;

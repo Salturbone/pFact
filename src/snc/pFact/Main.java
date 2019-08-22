@@ -190,35 +190,31 @@ public class Main extends JavaPlugin {
         }
         if (args[0].equalsIgnoreCase("bilgi")) {
             if (bp.getF() != null) {
-                B_Faction fac = DataIssues.factions.get(bp.getF().getName());
-                p.sendMessage(Msgs.INFO_FACTION.sub.replaceAll("<faction>", fac.getName()));
-                p.sendMessage(Msgs.INFO_FOUNDER.sub.replaceAll("<player>", fac.getFounder().getName()));
-                List<B_FactionMember> list = fac.getByRank(Rank.Moderator);
+                List<B_FactionMember> list = bf.getByRank(Rank.Moderator);
                 String yetkililer = "";
                 if (!list.isEmpty()) {
                     for (B_FactionMember l : list) {
                         yetkililer += l.getName() + ",";
                     }
                     yetkililer = yetkililer.substring(0, yetkililer.length() - 1);
-                    p.sendMessage(Msgs.INFO_ADMINS.sub.replaceAll("<players>", yetkililer));
                 } else {
-                    p.sendMessage(Msgs.INFO_ADMINS.sub.replaceAll("<players>", "-"));
+                    yetkililer = "-";
                 }
                 String oyuncular = "";
-                List<B_FactionMember> list0 = fac.getByRank(Rank.Player);
+                List<B_FactionMember> list0 = bf.getByRank(Rank.Player);
                 if (!list0.isEmpty()) {
                     for (B_FactionMember l : list0) {
                         oyuncular += l.getName() + ",";
                     }
                     oyuncular = oyuncular.substring(0, oyuncular.length() - 1);
-                    p.sendMessage(Msgs.INFO_PLAYERS.sub.replaceAll("<players>", oyuncular));
                 } else {
-                    p.sendMessage(Msgs.INFO_PLAYERS.sub.replaceAll("<players>", "-"));
+                    oyuncular = "-";
                 }
-                p.sendMessage(Msgs.INFO_LEVEL.sub.replaceAll("<amount>", fac.getLevel() + ""));
-                p.sendMessage(Msgs.INFO_EXP.sub.replaceAll("<amount>", Math.floor(fac.getXP() * 10) / 10 + ""));
-                p.sendMessage(Msgs.INFO_PRESTIGE.sub.replaceAll("<amount>", fac.getPrestige() + ""));
-                p.sendMessage(Msgs.INFO_BANK.sub.replaceAll("<amount>", fac.getBank() + ""));
+                sendMessage(p, Msgs.INFO, "<founder>%%" + bf.getFounder().getName(), "<admins>%%" + yetkililer,
+                        "<players>%%" + oyuncular, "<level>%%" + bf.getLevel(),
+                        "<xp>%%" + Math.floor(bf.getXP() * 10) / 10,
+                        "<neededxp>%%" + Math.ceil(bf.getLevelUpXp() * 10) / 10, "<prestige>%%" + bf.getPrestige(),
+                        "<money>%%" + bf.getBank());
                 return true;
             } else {
                 p.sendMessage(Msgs.DONT_HAVE_A_CLAN.sub);
@@ -235,9 +231,7 @@ public class Main extends JavaPlugin {
                     Pattern pt = Pattern.compile("[\\w\\-+|<>şçıüö,&*?/\\\\#]+");
                     if (args[1].length() < 4 || args[1].length() > 20 || !pt.matcher(args[1]).matches()
                             || DataIssues.factions.containsKey(args[1])) {
-                        sender.sendMessage(Msgs.FACTION_NAME_ERROR.sub);
-                        sender.sendMessage(Msgs.FACTION_NAME_ERROR2.sub);
-                        sender.sendMessage(Msgs.FACTION_NAME_ERROR3.sub);
+                        sendMessage(p, Msgs.FACTION_NAME_ERROR);
                         return true;
                     }
                     bf = new B_Faction(args[1], p.getUniqueId());
@@ -285,7 +279,7 @@ public class Main extends JavaPlugin {
                 } else {
                     gf.changeFounder(ggp.uuid());
                     sender.sendMessage(Msgs.NOT_FOUNDER_ANYMORE.sub);
-                    gp.sendMessage(Msgs.NEW_FOUNDER.sub);
+                    gp.sendMessage(Msgs.FOUNDER_NOW.sub);
                     return true;
                 }
             } else {
@@ -314,10 +308,7 @@ public class Main extends JavaPlugin {
                 return true;
             } else {
                 if (bf.getFactionMembers().size() != 1) {
-                    String[] ab = Msgs.CANT_LEAVE_FACTION_OWNER.sub.split("%%");
-                    for (String s: ab) {
-                        p.sendMessage(s);
-                    }
+                    sendMessage(p, Msgs.CANT_LEAVE_FACTION_OWNER);
                     return true;
                 } else {
                     bf.disband();
@@ -340,12 +331,12 @@ public class Main extends JavaPlugin {
                 return true;
             }
             if (args.length == 1) {
-                sender.sendMessage(ChatColor.RED + "Bir işlev gir!");
+                sender.sendMessage(Msgs.ENTER_AN_ARGUMENT.sub);
                 return true;
             }
             if (args.length == 2) {
                 if (args[1].equalsIgnoreCase("davet") || args[1].equalsIgnoreCase("çıkar")) {
-                    sender.sendMessage(ChatColor.RED + "Bir oyuncunun adını gir!");
+                    sender.sendMessage(Msgs.ENTER_A_PLAYER_NAME.sub);
                     return true;
                 }
             }
@@ -354,32 +345,27 @@ public class Main extends JavaPlugin {
                 if (args[1].equalsIgnoreCase("davet")) {
                     Player gp = Bukkit.getPlayer(args[2]);
                     if (gp == null || !gp.isOnline()) {
-                        sender.sendMessage(ChatColor.RED + "Oyuncu bulunamadı:" + ChatColor.RESET + args[2]);
+                        sender.sendMessage(Msgs.COULDNT_FIND_PLAYER.sub.replaceAll("<player>", args[2]));
                         return true;
                     }
                     B_Player bgp = DataIssues.players.get(gp.getUniqueId());
 
                     if (bgp.getF() == bf) {
-                        sender.sendMessage(ChatColor.RED + "Oyuncu zaten senin klanında: " + ChatColor.RESET + args[2]);
+                        sender.sendMessage(Msgs.PLAYER_IS_IN_CLAN_ALREADY.sub.replaceAll("<player>", args[2]));
                         return true;
                     }
                     if (bgp.hasFaction()) {
-                        sender.sendMessage(ChatColor.RED + "Oyuncu başka bir klana üye: " + ChatColor.RESET + args[2]);
+                        sender.sendMessage(Msgs.PLAYER_IS_IN_ANOTHER_CLAN.sub.replaceAll("<player>", args[2]));
                         return true;
                     }
                     if (bgp.getES()) {
-                        sender.sendMessage(ChatColor.RED + "Oyuncu başka bir klan tarafından davet edilmiş olabilir: "
-                                + ChatColor.RESET + args[2]);
+                        sender.sendMessage(Msgs.PLAYER_IS_INVITED_BY_ANOTHER_CLAN.sub.replaceAll("<player>", args[2]));
                         return true;
                     }
                     bgp.setES(true);
                     bgp.setEF(bp.getF().getName());
-                    sender.sendMessage(ChatColor.GREEN + "Oyuncu davet edildi! "
-                            + "Teklifini kabul ederse klanının bir üyesi olacak!:" + ChatColor.RESET + args[2]);
-                    gp.sendMessage(
-                            ChatColor.RED + bp.getF().getName() + ChatColor.GREEN + " Klanı tarafından davet edildin!");
-                    gp.sendMessage(ChatColor.GREEN + "Kabul etmek için: /klan kabul");
-                    gp.sendMessage(ChatColor.GREEN + "Reddetmek için: /klan ret");
+                    sender.sendMessage(Msgs.PLAYER_IS_INVITED_BY_ANOTHER_CLAN.sub.replaceAll("<player>", args[2]));
+                    sendMessage(p, Msgs.INVITED_TO_CLAN, "<faction>%%" + bf.getName());
                     return true;
                 }
                 if (args[1].equalsIgnoreCase("at")) {
@@ -388,65 +374,65 @@ public class Main extends JavaPlugin {
                         B_Player bgp = DataIssues.players.get(gp.getUniqueId());
                         B_Faction gf = bgp.getF();
                         if (bgp.getF() != bp.getF()) {
-                            sender.sendMessage(ChatColor.RED + "Bu oyuncu klanına dahil değil");
+                            p.sendMessage(Msgs.NOT_A_MEMBER_OF_CLAN.sub);
                             return true;
                         }
                         B_FactionMember bfm = bf.getPlayer(bp.uuid());
                         B_FactionMember gfm = gf.getPlayer(bgp.uuid());
                         if (gfm.rank() == Rank.Founder) {
-                            sender.sendMessage(ChatColor.RED + "Bu oyuncu klanında yönetici!");
+                            sender.sendMessage(Msgs.NOT_ENOUGH_PERMISSION.sub);
                             return true;
                         }
                         if (bfm.rank() == Rank.Founder) {
                             bf.getFactionMembers().remove(gp.getUniqueId());
                             bgp.setF(null);
-                            sender.sendMessage(ChatColor.GREEN + "Oyuncu klanından atıldı!");
-                            gp.sendMessage(ChatColor.DARK_RED + "Bulunduğun klandan atıldın!");
+                            sendMessage(p, Msgs.KICKER_MESSAGE, "<player>%%" + args[2]);
+                            gp.sendMessage(Msgs.KICKED_FROM_FACTION.sub);
                             return true;
                         }
                         if (bfm.rank() == Rank.Moderator && gfm.rank() == Rank.Player) {
 
                             bf.getFactionMembers().remove(gp.getUniqueId());
                             bgp.setF(null);
-                            sender.sendMessage(ChatColor.GREEN + "Oyuncu klanından atıldı!");
-                            gp.sendMessage(ChatColor.DARK_RED + "Bulunduğun klandan atıldın!");
+                            sendMessage(p, Msgs.KICKER_MESSAGE, "<player>%%" + args[2]);
+                            gp.sendMessage(Msgs.KICKED_FROM_FACTION.sub);
                             return true;
                         }
                         if (gfm.rank() == Rank.Moderator) {
-                            sender.sendMessage(ChatColor.RED + "Oyuncu klanında bir yetkili.");
+                            sender.sendMessage(Msgs.NOT_ENOUGH_PERMISSION.sub);
                             return true;
                         }
                         return true;
                     } else {
                         OfflinePlayer ogp = Bukkit.getOfflinePlayer(args[2]);
                         if (ogp == null) {
-                            sender.sendMessage(ChatColor.RED + "Oyuncu bulunamadı!");
+                            sendMessage(p, Msgs.COULDNT_FIND_PLAYER, "<player>%%" + args[2]);
                             return true;
                         }
 
                         B_FactionMember gfm = bf.getPlayer(ogp.getUniqueId());
                         if (gfm == null) {
-                            sender.sendMessage(ChatColor.RED + "Bu oyuncu klanına dahil değil");
+                            p.sendMessage(Msgs.NOT_A_MEMBER_OF_CLAN.sub);
                             return true;
                         }
 
                         B_FactionMember bfm = bf.getPlayer(bp.uuid());
                         if (gfm.rank() == Rank.Founder) {
-                            sender.sendMessage(ChatColor.RED + "Bu oyuncu klanında yönetici!");
+                            sender.sendMessage(Msgs.NOT_ENOUGH_PERMISSION.sub);
                             return true;
                         }
                         if (bfm.rank() == Rank.Founder) {
                             bf.getFactionMembers().remove(gp.getUniqueId());
-                            sender.sendMessage(ChatColor.GREEN + "Oyuncu klanından atıldı!");
+                            sendMessage(p, Msgs.KICKER_MESSAGE, "<player>%%" + args[2]);
                             return true;
                         }
                         if (bfm.rank() == Rank.Moderator && gfm.rank() == Rank.Player) {
                             bf.getFactionMembers().remove(gp.getUniqueId());
-                            sender.sendMessage(ChatColor.GREEN + "Oyuncu klanından atıldı!");
+                            sendMessage(p, Msgs.KICKER_MESSAGE, "<player>%%" + args[2]);
                             return true;
                         }
                         if (gfm.rank() == Rank.Moderator) {
-                            sender.sendMessage(ChatColor.RED + "Oyuncu klanında bir yetkili.");
+                            sender.sendMessage(Msgs.NOT_ENOUGH_PERMISSION.sub);
                             return true;
                         }
                         return true;
@@ -457,28 +443,28 @@ public class Main extends JavaPlugin {
 
         // Davet Kabul ve Reddi
         if (args[0].equalsIgnoreCase("kabul")) {
-            if (!bp.getES()) {
-                sender.sendMessage(ChatColor.RED + "Bir davet almadın ya da halihazırda bir klana mensupsun!");
+            if (!bp.getES() || bp.hasFaction()) {
+                sender.sendMessage(Msgs.NO_INVITE.sub);
+                return true;
             }
             bp.setF(bp.getEF().getName());
             bp.getEF().addMember(bp.uuid());
             bp.setEF(null);
             bp.setES(false);
-            sender.sendMessage(ChatColor.GREEN + bp.getF().getName() + ChatColor.RESET + " Klanına katıldın!");
+            sendMessage(p, Msgs.JOINED_FACTION, "<faction>%%" + bp.getF().getName());
             for (Player pl : bp.getF().getOnlinePlayers()) {
                 if (!pl.getUniqueId().equals(p.getUniqueId()))
-                    pl.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + p.getDisplayName() + ChatColor.RESET
-                            + " Adlı oyuncu klana katıldı!");
+                    sendMessage(pl, Msgs.JOINED_FACTION_BROADCAST, "<player>%%" + p.getName());
             }
 
             return true;
         }
         if (args[0].equalsIgnoreCase("ret")) {
-            if (!bp.getES()) {
-                sender.sendMessage(ChatColor.RED + "Bir davet almadın ya da halihazırda bir klana mensupsun!");
+            if (!bp.getES() || bp.hasFaction()) {
+                sender.sendMessage(Msgs.NO_INVITE.sub);
+                return true;
             }
-            sender.sendMessage(
-                    ChatColor.GREEN + bp.getEF().getName() + ChatColor.RESET + " Klanının daveti reddedildi!");
+            sendMessage(p, Msgs.REJECTED_INVITE, "<faction>%%" + bp.getEF().getName());
             bp.setEF(null);
             bp.setES(false);
             return true;
@@ -486,69 +472,96 @@ public class Main extends JavaPlugin {
 
         if (args[0].equalsIgnoreCase("yetki")) {
             if (bf == null) {
-                sender.sendMessage(ChatColor.RED + "Bir klana mensup değilsin.");
+                sender.sendMessage(Msgs.NOT_A_MEMBER_OF_CLAN.sub);
                 return true;
             }
             if (args.length < 3) {
-                sender.sendMessage(ChatColor.RED + "/klan yetki ver/al <isim>");
+                sender.sendMessage(Msgs.HELP_YETKI.sub);
                 return true;
             }
             B_FactionMember bfm = bf.getPlayer(p.getUniqueId());
             if (bfm.rank() == Rank.Founder) {
                 Player gp = Bukkit.getPlayer(args[2]);
                 if (gp != null && gp.isOnline()) {
-                    // B_Player ggp = DataIssues.players.get(gp.getUniqueId());
                     B_FactionMember gfm = bf.getPlayer(gp.getUniqueId());
                     if (gfm == null) {
-                        sender.sendMessage(ChatColor.RED + "Oyuncu klanının bir mensubu değil!");
+                        sender.sendMessage(Msgs.NOT_A_MEMBER_OF_YOUR_FACTION.sub);
                         return true;
                     }
                     if (args[1].equalsIgnoreCase("ver")) {
                         gfm.setRank(Rank.Moderator);
-                        sender.sendMessage(ChatColor.GREEN + gp.getDisplayName() + ChatColor.RESET
-                                + " adlı oyuncuya yönetici yetkisi verildi!");
-                        gp.sendMessage(ChatColor.GREEN + "Artık klanında bir yetkilisin!");
+                        sendMessage(p, Msgs.GIVEN_ADMIN, "<player>%%" + args[2]);
+                        gp.sendMessage(Msgs.ADMIN_NOW.sub);
                         return true;
                     }
                     if (args[1].equalsIgnoreCase("al")) {
                         gfm.setRank(Rank.Player);
-                        sender.sendMessage(ChatColor.GREEN + gp.getDisplayName() + ChatColor.RESET
-                                + " adlı oyuncunun yetkisi geri alındı!");
-                        gp.sendMessage(ChatColor.GREEN + "Artık klanında bir yetkili değilsin!");
+                        sendMessage(p, Msgs.TAKEN_ADMIN, "<player>%%" + args[2]);
+                        gp.sendMessage(Msgs.NOT_ADMIN_NOW.sub);
                         return true;
                     }
                 } else {
                     Player ggp = (Player) Bukkit.getOfflinePlayer(args[2]);
                     if (ggp == null) {
-                        sender.sendMessage(ChatColor.RED + "Oyuncu bulunamadı.");
+                        sendMessage(p, Msgs.COULDNT_FIND_PLAYER, "<player>%%" + args[2]);
                         return true;
                     }
                     B_FactionMember gfm = bf.getPlayer(ggp.getUniqueId());
                     if (gfm == null) {
-                        sender.sendMessage(ChatColor.RED + "Oyuncu klanının bir mensubu değil!");
+                        sender.sendMessage(Msgs.NOT_A_MEMBER_OF_YOUR_FACTION.sub);
                         return true;
                     }
                     if (args[1].equalsIgnoreCase("ver")) {
                         gfm.setRank(Rank.Moderator);
-                        sender.sendMessage(ChatColor.GREEN + gp.getDisplayName() + ChatColor.RESET
-                                + " adlı oyuncuya yönetici yetkisi verildi!");
+                        sendMessage(p, Msgs.GIVEN_ADMIN, "<player>%%" + args[2]);
                         return true;
                     }
                     if (args[1].equalsIgnoreCase("al")) {
                         gfm.setRank(Rank.Player);
-                        sender.sendMessage(ChatColor.GREEN + gp.getDisplayName() + ChatColor.RESET
-                                + " adlı oyuncunun yetkisi geri alındı!");
+                        sendMessage(p, Msgs.TAKEN_ADMIN, "<player>%%" + args[2]);
                         return true;
                     }
 
                 }
 
             } else {
-                sender.sendMessage(ChatColor.RED + "Klanının kurucusu değilsin!");
+                sender.sendMessage(Msgs.NOT_ENOUGH_PERMISSION.sub);
                 return true;
             }
         }
+        if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("evyap")) {
+                if (bp.hasFaction()) {
+                    B_FactionMember bfm = bf.getFactionMembers().get(bp.uuid());
+                    if (bfm.rank() == Rank.Founder) {
+                        if (bf.GetMainClaim() == null
+                                || !bf.GetMainClaim().getSquare().isInside(Location2D.fromLocation(p.getLocation()))) {
+                            p.sendMessage(Msgs.CANT_CHANGE_HOME.sub);
+                            return true;
+                        }
+                        bf.setHome(p.getLocation());
+                        p.sendMessage(Msgs.CHANGED_HOME.sub);
+                        return true;
+                    } else {
+                        p.sendMessage(Msgs.NOT_ENOUGH_PERMISSION.sub);
+                        return true;
+                    }
+                } else {
+                    p.sendMessage(Msgs.DONT_HAVE_A_CLAN.sub);
+                    return true;
+                }
+            }
+            if (args[0].equalsIgnoreCase("ev")) {
+                if (bp.hasFaction()) {
+                    bf.tpPlayerToHome(bp);
+                    return true;
+                } else {
+                    p.sendMessage(ChatColor.DARK_RED + "Bir klana mensup değilsin!");
+                    return true;
+                }
 
+            }
+        }
         if (args[0].equalsIgnoreCase("admin") && p.isOp()) {
             if (args.length < 3) {
                 sender.sendMessage("/klan admin <klan ismi> <xp/yık/at/katıl/para> <args> <args>");
@@ -606,65 +619,41 @@ public class Main extends JavaPlugin {
                 }
                 Player ap = Bukkit.getPlayerExact(args[3]);
                 if (ap == null || !ap.isOnline() || bff.getPlayer(ap.getUniqueId()) == null) {
-                    sender.sendMessage("geçersiz üye");
+                    sender.sendMessage("Geçersiz üye");
                     return true;
                 }
                 B_FactionMember abfm = bff.getPlayer(ap.getUniqueId());
                 if (abfm.rank() == Rank.Founder) {
-                    sender.sendMessage("kurucuyu klandan atamazsın");
+                    sender.sendMessage("Kurucuyu klandan atamazsın");
                     return true;
                 }
                 B_Player abp = DataIssues.players.get(p.getUniqueId());
                 abp.setF(null);
-                ap.sendMessage("klanından atıldın");
+                ap.sendMessage(Msgs.KICKED_FROM_FACTION.sub);
                 sender.sendMessage("oyuncu klandan atıldı");
                 bff.getFactionMembers().remove(p.getUniqueId());
                 return true;
             }
             if (args[2].equalsIgnoreCase("katıl")) {
                 if (bf != null) {
-                    sender.sendMessage("zaten bir klandasın");
+                    sender.sendMessage("Zaten bir klandasın");
                     return true;
                 }
                 bp.setF(bff.getName());
                 bff.addMember(p.getUniqueId());
-                sender.sendMessage("klana katıldın");
+                sender.sendMessage("Klana katıldın");
                 return true;
             }
         }
-        if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("evyap")) {
-                if (bp.hasFaction()) {
-                    B_FactionMember bfm = bf.getFactionMembers().get(bp.uuid());
-                    if (bfm.rank() == Rank.Founder) {
-                        if (bf.GetMainClaim() == null
-                                || !bf.GetMainClaim().getSquare().isInside(Location2D.fromLocation(p.getLocation()))) {
-                            p.sendMessage(ChatColor.RED + "Evin klanının ana bölgesinin içerisinde olmak zorunda!");
-                            return true;
-                        }
-                        bf.setHome(p.getLocation());
-                        p.sendMessage(ChatColor.GREEN + "Klan evi oluşturuldu!");
-                        return true;
-                    } else {
-                        p.sendMessage(ChatColor.DARK_RED + "Klan evini yapabilmek için kurucu olmalısın!");
-                        return true;
-                    }
-                } else {
-                    p.sendMessage(ChatColor.DARK_RED + "Bir klana mensup değilsin!");
-                    return true;
-                }
-            }
-            if (args[0].equalsIgnoreCase("ev")) {
-                if (bp.hasFaction()) {
-                    bf.tpPlayerToHome(bp);
-                    return true;
-                } else {
-                    p.sendMessage(ChatColor.DARK_RED + "Bir klana mensup değilsin!");
-                    return true;
-                }
 
+        if (args[0].equalsIgnoreCase("vip")) {
+            if (bp.isVIP()) {
+                return true;
+            } else {
+                return true;
             }
         }
+
         if (args[0].equalsIgnoreCase("clearfiles") && p.isOp()) {
             if (args.length >= 2 && args[1].equalsIgnoreCase("true")) {
                 DataIssues.factions.clear();
@@ -700,6 +689,9 @@ public class Main extends JavaPlugin {
                 int i = Integer.parseInt(args[2]);
                 VIPPlayer vip = new VIPPlayer(ap.getUniqueId(), i * 24 * 60 * 60);
                 DataIssues.vips.put(ap.getUniqueId(), vip);
+                p.sendMessage("Oyuncu artık bir vip.");
+                sendMessage(ap, Msgs.VIP_FOR, "<time>%%" + Gerekli.getRemainingTime(vip.getRemainingTime()));
+                return true;
             } catch (NumberFormatException e) {
                 p.sendMessage("/klan makevip <oyuncu> <gün sayısı>");
                 return true;
@@ -712,6 +704,24 @@ public class Main extends JavaPlugin {
         for (Msgs m : Msgs.values()) {
             if (m.name().startsWith("HELP_"))
                 p.sendMessage(m.sub);
+        }
+    }
+
+    public static void sendMessage(Player p, Msgs message, String... replacements) {
+        if (message.sub.contains("%%")) {
+            for (String s : message.sub.split("%%")) {
+                String str = s;
+                for (String rep : replacements) {
+                    str = str.replaceAll(rep.split("%%")[0], rep.split("%%")[1]);
+                }
+                p.sendMessage(str);
+            }
+        } else {
+            String str = message.sub;
+            for (String rep : replacements) {
+                str = str.replaceAll(rep.split("%%")[0], rep.split("%%")[1]);
+            }
+            p.sendMessage(str);
         }
     }
 
