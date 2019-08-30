@@ -3,6 +3,7 @@
 module-info.java
 bin\
 settings.json
+.factorypath
 # Log file
 *.log
 

@@ -82,11 +82,8 @@ public abstract class UpgAddClaim extends AdditionalClaim implements Upgradeable
         List<ChestNode> nodes = new ArrayList<>();
         // egg
         nodes.add(getSingularItem());
-        // break
         nodes.add(new BreakClaimButton());
-        // upgrade
         nodes.add(new UpgradesButton(this));
-        // show
         nodes.add(new ShowBordersButton(new ItemStack(Material.PAINTING)));
         return nodes;
 
@@ -98,6 +95,6 @@ public abstract class UpgAddClaim extends AdditionalClaim implements Upgradeable
 
     @Override
     public double shardDropChance() {
-        return upgrades.isEmpty() ? getShardDropWithoutUpgradeChance() : shardDropChance();
+        return upgrades.isEmpty() ? getShardDropWithoutUpgradeChance() : super.shardDropChance();
     }
 }
